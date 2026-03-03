@@ -3,15 +3,16 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { MORTGAGE_PROGRAMS } from '@/lib/mortgage-programs'
+import { useRouter } from 'next/navigation'
 
-export default function AddDocDropdown({ clientId, existingLabels, onAdded }: {
+export default function AddDocDropdown({ clientId, existingLabels }: {
   clientId: string
   existingLabels: string[]
-  onAdded: () => void
 }) {
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState('')
   const supabase = createClient()
+  const router = useRouter()
 
   const allPresets = MORTGAGE_PROGRAMS.flatMap(p =>
     p.docs.map(d => ({ label: d.label, category: d.category, program: p.name }))
@@ -25,7 +26,7 @@ export default function AddDocDropdown({ clientId, existingLabels, onAdded }: {
     await supabase.from('document_requests').insert({ client_id: clientId, label, category, required: false })
     setOpen(false)
     setSearch('')
-    onAdded()
+    router.refresh()
   }
 
   async function addCustom() {
@@ -33,7 +34,7 @@ export default function AddDocDropdown({ clientId, existingLabels, onAdded }: {
     await supabase.from('document_requests').insert({ client_id: clientId, label: search.trim().slice(0, 200), category: 'Custom', required: false })
     setOpen(false)
     setSearch('')
-    onAdded()
+    router.refresh()
   }
 
   return (

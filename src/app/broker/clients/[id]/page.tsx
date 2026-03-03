@@ -119,7 +119,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
         {/* Documents by category */}
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-semibold text-gray-800">Document Checklist</h3>
-          <AddDocDropdown clientId={client.id} existingLabels={existingLabels} onAdded={() => { window.location.reload() }} />
+          <AddDocDropdown clientId={client.id} existingLabels={existingLabels} />
         </div>
 
         <div className="space-y-4">
