@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { createClient } from '@/lib/supabase'
 import { use } from 'react'
-import { MORTGAGE_PROGRAMS } from '@/lib/mortgage-programs'
+
 
 interface DocRequest {
   id: string
@@ -26,7 +26,6 @@ export default function ClientUploadPage({ params }: { params: Promise<{ token: 
   const [loading, setLoading] = useState(true)
   const [uploading, setUploading] = useState<string | null>(null)
   const [error, setError] = useState('')
-  const [showPresets, setShowPresets] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const supabase = createClient()
 
@@ -217,35 +216,6 @@ export default function ClientUploadPage({ params }: { params: Promise<{ token: 
               </div>
             </div>
           ))}
-        </div>
-
-        {/* Add missing preset doc */}
-        <div className="mb-6">
-          <button
-            onClick={() => setShowPresets(!showPresets)}
-            className="text-sm text-blue-600 border border-blue-200 bg-blue-50 px-4 py-2 rounded-xl hover:bg-blue-100 transition"
-          >
-            + Add a document from standard list
-          </button>
-
-          {showPresets && (
-            <div className="mt-3 bg-white rounded-2xl border border-gray-100 shadow-sm max-h-72 overflow-y-auto">
-              {availablePresets.length === 0 ? (
-                <p className="px-4 py-3 text-sm text-gray-400">All standard documents already added.</p>
-              ) : (
-                availablePresets.map((p, i) => (
-                  <button
-                    key={i}
-                    onClick={() => addPresetDoc(p.label, p.category)}
-                    className="w-full text-left px-4 py-3 text-sm hover:bg-gray-50 border-b border-gray-50 last:border-0 transition"
-                  >
-                    <p className="text-gray-800">{p.label}</p>
-                    <p className="text-xs text-gray-400">{p.category} · {p.program}</p>
-                  </button>
-                ))
-              )}
-            </div>
-          )}
         </div>
 
         {/* Submit button */}

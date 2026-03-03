@@ -3,6 +3,8 @@ import { redirect, notFound } from 'next/navigation'
 import Nav from '@/components/ui/Nav'
 import Link from 'next/link'
 import ResendEmailButton from '@/components/ui/ResendEmailButton'
+import AddDocDropdown from '@/components/ui/AddDocDropdown'
+import DocViewer from '@/components/ui/DocViewer'
 
 export default async function ClientDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -12,7 +14,13 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
 
   const { data: client } = await supabase
     .from('clients')
-    .select(`id, full_name, email, status, invite_token, created_at, document_requests (id, label, status, required, category, notes)`)
+    .select(`
+      id, full_name, email, status, invite_token, created_at,
+      document_requests (
+        id, label, status, required, category, notes,
+        documents (id, file_name, file_size, uploaded_at)
+      )
+    `)
     .eq('id', id)
     .eq('broker_id', user.id)
     .single()
@@ -24,6 +32,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
   const categories = [...new Set(docs.map((d: any) => d.category ?? 'Documents'))]
   const uploaded = docs.filter((d: any) => d.status !== 'missing').length
   const pct = docs.length ? Math.round((uploaded / docs.length) * 100) : 0
+  const existingLabels = docs.map((d: any) => d.label)
 
   return (
     <div className="flex min-h-screen bg-[#f8fafc]">
@@ -54,16 +63,25 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                 </p>
               </div>
             </div>
-            <span className={`text-sm px-3 py-1.5 rounded-full font-medium capitalize ${
-              client.status === 'complete' ? 'bg-green-100 text-green-700' :
-              client.status === 'in_progress' ? 'bg-blue-100 text-blue-700' :
-              'bg-gray-100 text-gray-500'
-            }`}>
-              {client.status.replace('_', ' ')}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className={`text-sm px-3 py-1.5 rounded-full font-medium capitalize ${
+                client.status === 'complete' ? 'bg-green-100 text-green-700' :
+                client.status === 'in_progress' ? 'bg-blue-100 text-blue-700' :
+                client.status === 'archived' ? 'bg-gray-100 text-gray-400' :
+                'bg-yellow-100 text-yellow-700'
+              }`}>
+                {client.status.replace('_', ' ')}
+              </span>
+              <Link
+                href={`/broker/clients/${client.id}/edit`}
+                className="text-sm bg-gray-50 text-gray-600 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition"
+              >
+                ✎ Edit
+              </Link>
+            </div>
           </div>
 
-          {/* Progress */}
+          {/* Stats */}
           <div className="mt-5 grid grid-cols-3 gap-4 pt-5 border-t border-gray-100">
             <div>
               <p className="text-2xl font-bold text-gray-900">{docs.length}</p>
@@ -89,22 +107,21 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
             </div>
           </div>
 
-          {/* Invite link + email */}
+          {/* Actions */}
           <div className="mt-5 pt-5 border-t border-gray-100 flex items-center gap-3 flex-wrap">
             <code className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs text-gray-500 truncate min-w-0">
               {inviteLink}
             </code>
             <ResendEmailButton clientId={client.id} />
-            <Link
-              href={`/broker/clients/${client.id}/edit`}
-              className="text-sm bg-gray-50 text-gray-600 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition"
-            >
-              ✎ Edit Client
-            </Link>
           </div>
         </div>
 
         {/* Documents by category */}
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="font-semibold text-gray-800">Document Checklist</h3>
+          <AddDocDropdown clientId={client.id} existingLabels={existingLabels} onAdded={() => { window.location.reload() }} />
+        </div>
+
         <div className="space-y-4">
           {categories.map((cat: any) => {
             const catDocs = docs.filter((d: any) => (d.category ?? 'Documents') === cat)
@@ -117,27 +134,50 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                 </div>
                 <div className="divide-y divide-gray-50">
                   {catDocs.map((doc: any) => (
-                    <div key={doc.id} className="flex items-center justify-between px-6 py-3.5">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                          doc.status === 'approved' ? 'bg-green-400' :
-                          doc.status === 'uploaded' ? 'bg-blue-400' :
-                          doc.status === 'rejected' ? 'bg-red-400' :
-                          'bg-gray-200'
-                        }`} />
-                        <div>
-                          <p className="text-sm text-gray-800">{doc.label}</p>
-                          {doc.required && <p className="text-xs text-red-400">Required</p>}
+                    <div key={doc.id} className="px-6 py-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                            doc.status === 'approved' ? 'bg-green-400' :
+                            doc.status === 'uploaded' ? 'bg-blue-400' :
+                            doc.status === 'rejected' ? 'bg-red-400' :
+                            'bg-gray-200'
+                          }`} />
+                          <div>
+                            <p className="text-sm text-gray-800">{doc.label}</p>
+                            {doc.required && <p className="text-xs text-red-400">Required</p>}
+                          </div>
                         </div>
+                        <span className={`text-xs px-2.5 py-1 rounded-full font-medium capitalize ${
+                          doc.status === 'approved' ? 'bg-green-100 text-green-700' :
+                          doc.status === 'uploaded' ? 'bg-blue-100 text-blue-700' :
+                          doc.status === 'rejected' ? 'bg-red-100 text-red-700' :
+                          'bg-gray-100 text-gray-400'
+                        }`}>
+                          {doc.status}
+                        </span>
                       </div>
-                      <span className={`text-xs px-2.5 py-1 rounded-full font-medium capitalize ${
-                        doc.status === 'approved' ? 'bg-green-100 text-green-700' :
-                        doc.status === 'uploaded' ? 'bg-blue-100 text-blue-700' :
-                        doc.status === 'rejected' ? 'bg-red-100 text-red-700' :
-                        'bg-gray-100 text-gray-400'
-                      }`}>
-                        {doc.status}
-                      </span>
+
+                      {/* Uploaded files */}
+                      {doc.documents && doc.documents.length > 0 && (
+                        <div className="mt-3 ml-5 space-y-2">
+                          {doc.documents.map((file: any) => (
+                            <div key={file.id} className="flex items-center justify-between bg-gray-50 rounded-xl px-3 py-2.5 border border-gray-100">
+                              <div className="flex items-center gap-2 min-w-0">
+                                <span className="text-sm">📄</span>
+                                <div className="min-w-0">
+                                  <p className="text-xs font-medium text-gray-700 truncate">{file.file_name}</p>
+                                  <p className="text-xs text-gray-400">
+                                    {file.file_size ? `${(file.file_size / 1024).toFixed(0)} KB · ` : ''}
+                                    {new Date(file.uploaded_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                  </p>
+                                </div>
+                              </div>
+                              <DocViewer docId={file.id} fileName={file.file_name} />
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>

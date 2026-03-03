@@ -10,6 +10,7 @@ export default function EditClientPage() {
   const { id } = useParams<{ id: string }>()
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
+  const [status, setStatus] = useState('')
   const [userEmail, setUserEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [fetching, setFetching] = useState(true)
@@ -26,7 +27,7 @@ export default function EditClientPage() {
 
       const { data } = await supabase
         .from('clients')
-        .select('full_name, email')
+        .select('full_name, email, status')
         .eq('id', id)
         .eq('broker_id', user.id)
         .single()
@@ -34,6 +35,7 @@ export default function EditClientPage() {
       if (data) {
         setFullName(data.full_name)
         setEmail(data.email)
+        setStatus(data.status)
       }
       setFetching(false)
     }
@@ -65,6 +67,13 @@ export default function EditClientPage() {
     if (!confirm('Archive this client? They will be hidden from your dashboard but not deleted.')) return
     await supabase.from('clients').update({ status: 'archived' }).eq('id', id)
     router.push('/broker/dashboard')
+  }
+
+  async function handleUnarchive() {
+    await supabase.from('clients').update({ status: 'pending' }).eq('id', id)
+    setStatus('pending')
+    setMessage('Client restored to dashboard.')
+    setIsError(false)
   }
 
   async function handleDelete() {
@@ -136,15 +145,24 @@ export default function EditClientPage() {
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-800">Archive Client</p>
-                <p className="text-xs text-gray-400">Hide from dashboard, keep all data</p>
+                <p className="text-sm font-medium text-gray-800">{status === 'archived' ? 'Restore Client' : 'Archive Client'}</p>
+                <p className="text-xs text-gray-400">{status === 'archived' ? 'Move back to active dashboard' : 'Hide from dashboard, keep all data'}</p>
               </div>
-              <button
-                onClick={handleArchive}
-                className="text-sm border border-yellow-300 text-yellow-700 bg-yellow-50 px-4 py-2 rounded-xl hover:bg-yellow-100 transition"
-              >
-                Archive
-              </button>
+              {status === 'archived' ? (
+                <button
+                  onClick={handleUnarchive}
+                  className="text-sm border border-green-300 text-green-700 bg-green-50 px-4 py-2 rounded-xl hover:bg-green-100 transition"
+                >
+                  Restore
+                </button>
+              ) : (
+                <button
+                  onClick={handleArchive}
+                  className="text-sm border border-yellow-300 text-yellow-700 bg-yellow-50 px-4 py-2 rounded-xl hover:bg-yellow-100 transition"
+                >
+                  Archive
+                </button>
+              )}
             </div>
             <div className="border-t border-gray-100 pt-3 flex items-center justify-between">
               <div>
