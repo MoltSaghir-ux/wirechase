@@ -109,57 +109,73 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // Notify broker by email
+  // Notify broker — debounced digest (max 1 email per 5 minutes per client)
   try {
-    const { data: brokerData } = await adminSupabase
+    const DEBOUNCE_MS = 5 * 60 * 1000 // 5 minutes
+
+    const { data: clientData } = await adminSupabase
       .from('clients')
-      .select('broker_id, full_name, brokers (email)')
+      .select('broker_id, full_name, broker_last_notified_at, brokers (email)')
       .eq('id', client.id)
       .single()
 
-    const { data: docLabel } = await adminSupabase
-      .from('document_requests')
-      .select('label')
-      .eq('id', docRequestId)
-      .single()
+    if (clientData?.brokers) {
+      const lastNotified = clientData.broker_last_notified_at
+        ? new Date(clientData.broker_last_notified_at).getTime()
+        : 0
+      const now = Date.now()
 
-    if (brokerData?.brokers) {
-      const brokerEmail = (brokerData.brokers as any).email
-      const clientName = brokerData.full_name
-      const label = docLabel?.label ?? 'a document'
-      const dashboardUrl = `${process.env.NEXT_PUBLIC_APP_URL}/broker/clients/${client.id}`
+      // Only send if it's been >5 min since last notification
+      if (now - lastNotified > DEBOUNCE_MS) {
+        // Mark notified immediately to prevent duplicate sends
+        await adminSupabase
+          .from('clients')
+          .update({ broker_last_notified_at: new Date().toISOString() })
+          .eq('id', client.id)
 
-      const { Resend } = await import('resend')
-      const resend = new Resend(process.env.RESEND_API_KEY)
-      const toEmail = process.env.NODE_ENV === 'production' ? brokerEmail : (process.env.RESEND_TEST_EMAIL ?? brokerEmail)
+        // Get all docs uploaded since last notification
+        const { data: recentDocs } = await adminSupabase
+          .from('document_requests')
+          .select('label')
+          .eq('client_id', client.id)
+          .eq('status', 'uploaded')
 
-      await resend.emails.send({
-        from: 'WireChase <onboarding@resend.dev>',
-        to: toEmail,
-        subject: `📄 ${clientName} uploaded a document`,
-        html: `
-          <div style="font-family: sans-serif; max-width: 560px; margin: 0 auto; padding: 32px 24px; color: #111;">
-            <div style="display:flex; align-items:center; gap:8px; margin-bottom:24px;">
-              <div style="background:#3b82f6; width:28px; height:28px; border-radius:6px; display:flex; align-items:center; justify-content:center;">
-                <span style="color:white; font-weight:bold; font-size:13px;">W</span>
+        const brokerEmail = (clientData.brokers as any).email
+        const clientName = clientData.full_name
+        const dashboardUrl = `${process.env.NEXT_PUBLIC_APP_URL}/broker/clients/${client.id}`
+        const docCount = recentDocs?.length ?? 1
+        const docList = recentDocs?.map(d => `<li style="margin:4px 0; color:#374151;">${d.label}</li>`).join('') ?? ''
+
+        const { Resend } = await import('resend')
+        const resend = new Resend(process.env.RESEND_API_KEY)
+        const toEmail = process.env.NODE_ENV === 'production' ? brokerEmail : (process.env.RESEND_TEST_EMAIL ?? brokerEmail)
+
+        await resend.emails.send({
+          from: 'WireChase <onboarding@resend.dev>',
+          to: toEmail,
+          subject: `${clientName} uploaded ${docCount} document${docCount > 1 ? 's' : ''}`,
+          html: `
+            <div style="font-family: sans-serif; max-width: 560px; margin: 0 auto; padding: 32px 24px; color: #111;">
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:24px;">
+                <div style="background:#3b82f6; width:28px; height:28px; border-radius:6px; display:flex; align-items:center; justify-content:center;">
+                  <span style="color:white; font-weight:bold; font-size:13px;">W</span>
+                </div>
+                <span style="font-weight:bold; font-size:16px;">WireChase</span>
               </div>
-              <span style="font-weight:bold; font-size:16px;">WireChase</span>
+              <h2 style="margin:0 0 8px;">${docCount} document${docCount > 1 ? 's' : ''} uploaded</h2>
+              <p style="color:#555; margin:0 0 16px;"><strong>${clientName}</strong> has uploaded the following:</p>
+              <ul style="padding-left:20px; margin:0 0 24px;">${docList}</ul>
+              <a href="${dashboardUrl}" style="display:inline-block; background:#2563eb; color:white; text-decoration:none; padding:12px 24px; border-radius:8px; font-weight:600; margin-bottom:24px;">
+                Review Documents →
+              </a>
+              <hr style="border:none; border-top:1px solid #eee; margin:24px 0;"/>
+              <p style="color:#bbb; font-size:12px; margin:0;">WireChase · Mortgage Document Platform</p>
             </div>
-            <h2 style="margin:0 0 8px;">New document uploaded</h2>
-            <p style="color:#555; margin:0 0 20px;">
-              <strong>${clientName}</strong> just uploaded <strong>${label}</strong>.
-            </p>
-            <a href="${dashboardUrl}" style="display:inline-block; background:#2563eb; color:white; text-decoration:none; padding:12px 24px; border-radius:8px; font-weight:600; margin-bottom:24px;">
-              View Document →
-            </a>
-            <hr style="border:none; border-top:1px solid #eee; margin:24px 0;"/>
-            <p style="color:#bbb; font-size:12px; margin:0;">WireChase · Mortgage Document Platform</p>
-          </div>
-        `,
-      })
+          `,
+        })
+      }
     }
   } catch (e) {
-    // Non-fatal — don't block the upload response
     console.error('Broker notification failed:', e)
   }
 

@@ -71,3 +71,6 @@ CREATE POLICY "Clients can update doc request status" ON document_requests FOR U
 USING (true);
 
 -- Allow clients to insert documents (via API route with service role — no RLS needed)
+
+-- Add notification debounce timestamp to clients
+ALTER TABLE clients ADD COLUMN IF NOT EXISTS broker_last_notified_at TIMESTAMPTZ;
