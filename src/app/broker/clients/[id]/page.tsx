@@ -21,13 +21,30 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  // Fetch client (with auth check)
-  const { data: client } = await supabase
-    .from('clients')
-    .select('id, full_name, email, status, invite_token, created_at, document_requests (id, label, status, required, category, notes)')
-    .eq('id', id)
-    .eq('broker_id', user.id)
+  // Get broker role + brokerage
+  const { data: broker } = await adminSupabase
+    .from('brokers')
+    .select('role, brokerage_id')
+    .eq('id', user.id)
     .single()
+
+  if (!broker?.brokerage_id) redirect('/onboard')
+  const isAdmin = broker.role === 'admin'
+
+  // Fetch client — admins use service role filtered to their brokerage; LOs use session (RLS enforced)
+  const { data: client } = isAdmin
+    ? await adminSupabase
+        .from('clients')
+        .select('id, full_name, email, status, invite_token, created_at, broker_id, document_requests (id, label, status, required, category, notes)')
+        .eq('id', id)
+        .eq('brokerage_id', broker.brokerage_id)  // ← cannot see other brokerages
+        .single()
+    : await supabase
+        .from('clients')
+        .select('id, full_name, email, status, invite_token, created_at, broker_id, document_requests (id, label, status, required, category, notes)')
+        .eq('id', id)
+        .eq('broker_id', user.id)
+        .single()
 
   if (!client) notFound()
 

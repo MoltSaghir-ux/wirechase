@@ -92,9 +92,21 @@ export default function NewClientPage() {
 
     await supabase.from('brokers').upsert({ id: user.id, full_name: user.email ?? 'Broker', email: user.email ?? '' }, { onConflict: 'id' })
 
+    // Get brokerage_id so admin can see this client
+    const { data: brokerProfile } = await supabase
+      .from('brokers')
+      .select('brokerage_id')
+      .eq('id', user.id)
+      .single()
+
     const { data: client, error: clientError } = await supabase
       .from('clients')
-      .insert({ broker_id: user.id, full_name: fullName.trim().slice(0, 100), email: email.trim().toLowerCase().slice(0, 200) })
+      .insert({
+        broker_id: user.id,
+        brokerage_id: brokerProfile?.brokerage_id ?? null,
+        full_name: fullName.trim().slice(0, 100),
+        email: email.trim().toLowerCase().slice(0, 200),
+      })
       .select()
       .single()
 

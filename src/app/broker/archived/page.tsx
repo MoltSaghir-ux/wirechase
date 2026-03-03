@@ -1,19 +1,41 @@
 import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { createClient } from '@supabase/supabase-js'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import Nav from '@/components/ui/Nav'
+
+const adminSupabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
 
 export default async function ArchivedPage() {
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: clients } = await supabase
-    .from('clients')
-    .select('id, full_name, email, created_at')
-    .eq('broker_id', user.id)
-    .eq('status', 'archived')
-    .order('created_at', { ascending: false })
+  const { data: broker } = await adminSupabase
+    .from('brokers')
+    .select('role, brokerage_id')
+    .eq('id', user.id)
+    .single()
+
+  if (!broker?.brokerage_id) redirect('/onboard')
+  const isAdmin = broker.role === 'admin'
+
+  const { data: clients } = isAdmin
+    ? await adminSupabase
+        .from('clients')
+        .select('id, full_name, email, created_at')
+        .eq('brokerage_id', broker.brokerage_id)
+        .eq('status', 'archived')
+        .order('created_at', { ascending: false })
+    : await supabase
+        .from('clients')
+        .select('id, full_name, email, created_at')
+        .eq('broker_id', user.id)
+        .eq('status', 'archived')
+        .order('created_at', { ascending: false })
 
   return (
     <div className="flex min-h-screen bg-[#f8fafc]">

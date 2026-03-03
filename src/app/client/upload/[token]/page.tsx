@@ -48,7 +48,7 @@ export default function ClientUploadPage({ params }: { params: Promise<{ token: 
     if (error || !data) {
       setError('This link is invalid or has expired.')
     } else {
-      setClient(data)
+      setClient(data as any)
       if (data.status === 'complete') setSubmitted(true)
     }
     setLoading(false)
@@ -88,7 +88,6 @@ export default function ClientUploadPage({ params }: { params: Promise<{ token: 
       required: false,
     })
     if (!error) {
-      setShowPresets(false)
       await fetchClient()
     }
   }

@@ -26,12 +26,23 @@ export default function EditClientPage() {
       if (!user) { router.push('/login'); return }
       setUserEmail(user.email ?? '')
 
-      const { data } = await supabase
-        .from('clients')
-        .select('full_name, email, status, deadline_at')
-        .eq('id', id)
-        .eq('broker_id', user.id)
+      // Check role — admins can edit any brokerage client
+      const { data: brokerProfile } = await supabase
+        .from('brokers')
+        .select('role, brokerage_id')
+        .eq('id', user.id)
         .single()
+
+      const isAdmin = brokerProfile?.role === 'admin'
+
+      const clientQuery = supabase
+        .from('clients')
+        .select('full_name, email, status, deadline_at, brokerage_id, broker_id')
+        .eq('id', id)
+
+      const { data } = isAdmin
+        ? await clientQuery.eq('brokerage_id', brokerProfile?.brokerage_id).single()
+        : await clientQuery.eq('broker_id', user.id).single()
 
       if (data) {
         setFullName(data.full_name)

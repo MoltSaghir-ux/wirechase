@@ -1,7 +1,13 @@
 import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { createClient } from '@supabase/supabase-js'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import Nav from '@/components/ui/Nav'
+
+const adminSupabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
 
 export default async function DashboardPage({ searchParams }: { searchParams: Promise<{ filter?: string }> }) {
   const { filter } = await searchParams
@@ -9,12 +15,32 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: allClients } = await supabase
-    .from('clients')
-    .select(`id, full_name, email, status, created_at, document_requests (id, status)`)
-    .eq('broker_id', user.id)
-    .neq('status', 'archived')
-    .order('created_at', { ascending: false })
+  // Get broker role + brokerage
+  const { data: broker } = await adminSupabase
+    .from('brokers')
+    .select('role, brokerage_id')
+    .eq('id', user.id)
+    .single()
+
+  if (!broker?.brokerage_id) redirect('/onboard')
+
+  const isAdmin = broker.role === 'admin'
+
+  // Admins: use service role client but filter strictly to their brokerage_id only
+  // LOs: use session client (RLS enforces broker_id = auth.uid())
+  const { data: allClients } = isAdmin
+    ? await adminSupabase
+        .from('clients')
+        .select(`id, full_name, email, status, created_at, broker_id, document_requests (id, status)`)
+        .eq('brokerage_id', broker.brokerage_id)  // ← hard isolation: only this brokerage
+        .neq('status', 'archived')
+        .order('created_at', { ascending: false })
+    : await supabase
+        .from('clients')
+        .select(`id, full_name, email, status, created_at, broker_id, document_requests (id, status)`)
+        .eq('broker_id', user.id)
+        .neq('status', 'archived')
+        .order('created_at', { ascending: false })
 
   const clients = allClients ?? []
   const total = clients.length
@@ -41,7 +67,13 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
         <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Dashboard</h2>
-            <p className="text-gray-400 text-sm mt-0.5">Manage your clients and document requests</p>
+            <p className="text-gray-400 text-sm mt-0.5">
+              {isAdmin ? 'All brokerage clients' : 'Your clients only'}
+              {' · '}
+              <span className={`font-medium ${isAdmin ? 'text-blue-500' : 'text-purple-500'}`}>
+                {isAdmin ? 'Admin' : 'Loan Officer'}
+              </span>
+            </p>
           </div>
           <Link href="/broker/clients/new" className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-700 transition shadow-sm">
             <span className="text-base leading-none">+</span> Add Client

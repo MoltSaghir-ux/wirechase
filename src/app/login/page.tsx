@@ -34,11 +34,20 @@ export default function LoginPage() {
       if (error) {
         setIsError(true)
         setMessage(error.message)
-      } else {
-        setIsError(false)
-        setMessage('Account created! Check your email to confirm, then sign in.')
+        setLoading(false)
+        return
       }
-      setLoading(false)
+      // Auto sign-in after signup (works when email confirmation is disabled in Supabase)
+      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password })
+      if (signInError) {
+        // Confirmation email required — tell them to check email
+        setIsError(false)
+        setMessage('Account created! Check your email for a confirmation link, then sign in.')
+        setLoading(false)
+        return
+      }
+      router.push('/onboard')
+      router.refresh()
     }
   }
 

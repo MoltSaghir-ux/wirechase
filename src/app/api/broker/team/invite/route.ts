@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
 
   if (error || !invite) return NextResponse.json({ error: 'Failed to create invite' }, { status: 500 })
 
-  const inviteLink = `${process.env.NEXT_PUBLIC_APP_URL}/onboard?token=${invite.token}`
+  const inviteLink = `${process.env.NEXT_PUBLIC_APP_URL}/join/${invite.token}`
   const toEmail = process.env.NODE_ENV === 'production' ? email : (process.env.RESEND_TEST_EMAIL ?? email)
 
   // Send invite email

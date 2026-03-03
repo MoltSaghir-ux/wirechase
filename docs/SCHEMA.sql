@@ -158,3 +158,13 @@ CREATE POLICY "Admins manage own team invites" ON team_invites FOR ALL
 
 -- Add brokerage_id to clients for cross-LO visibility
 ALTER TABLE clients ADD COLUMN IF NOT EXISTS brokerage_id UUID REFERENCES brokerages(id) ON DELETE SET NULL;
+
+-- Platform invite codes (controls who can create a new brokerage)
+CREATE TABLE IF NOT EXISTS platform_invite_codes (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  code TEXT UNIQUE NOT NULL,
+  used_by UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  used_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+-- No RLS needed — only accessed via service role API routes

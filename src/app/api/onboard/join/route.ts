@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { createClient } from '@supabase/supabase-js'
 
 const adminSupabase = createClient(
@@ -8,36 +7,35 @@ const adminSupabase = createClient(
 )
 
 export async function POST(req: NextRequest) {
-  const supabase = await createServerSupabaseClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const { token } = await req.json()
-  if (!token?.trim()) return NextResponse.json({ error: 'Invite token required' }, { status: 400 })
-
-  // Validate token format
-  if (!/^[a-zA-Z0-9\-]{10,100}$/.test(token)) {
-    return NextResponse.json({ error: 'Invalid invite link' }, { status: 403 })
+  const { token, userId, email, fullName } = await req.json()
+  if (!token || !userId || !email || !fullName) {
+    return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
   }
 
-  // Find invite
-  const { data: invite } = await adminSupabase
+  // Look up the invite
+  const { data: invite, error: iErr } = await adminSupabase
     .from('team_invites')
-    .select('id, brokerage_id, email, role, accepted_at')
+    .select('id, brokerage_id, role, email, accepted_at')
     .eq('token', token)
     .single()
 
-  if (!invite) return NextResponse.json({ error: 'Invite not found or expired' }, { status: 404 })
+  if (iErr || !invite) return NextResponse.json({ error: 'Invalid invite token' }, { status: 400 })
   if (invite.accepted_at) return NextResponse.json({ error: 'This invite has already been used' }, { status: 400 })
 
-  // Accept invite — join the brokerage
-  await adminSupabase.from('brokers').upsert({
-    id: user.id,
-    email: user.email ?? '',
-    full_name: user.email?.split('@')[0] ?? 'Loan Officer',
+  // Optional: enforce that the email matches the invite
+  if (invite.email && invite.email.toLowerCase() !== email.toLowerCase()) {
+    return NextResponse.json({ error: 'This invite was sent to a different email address' }, { status: 403 })
+  }
+
+  // Upsert broker record
+  const { error: bErr } = await adminSupabase.from('brokers').upsert({
+    id: userId,
+    email,
+    full_name: fullName,
     brokerage_id: invite.brokerage_id,
-    role: invite.role,
-  }, { onConflict: 'id' })
+    role: invite.role ?? 'loan_officer',
+  })
+  if (bErr) return NextResponse.json({ error: bErr.message }, { status: 500 })
 
   // Mark invite accepted
   await adminSupabase
@@ -45,5 +43,5 @@ export async function POST(req: NextRequest) {
     .update({ accepted_at: new Date().toISOString() })
     .eq('id', invite.id)
 
-  return NextResponse.json({ success: true })
+  return NextResponse.json({ ok: true })
 }
