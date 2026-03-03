@@ -74,3 +74,7 @@ USING (true);
 
 -- Add notification debounce timestamp to clients
 ALTER TABLE clients ADD COLUMN IF NOT EXISTS broker_last_notified_at TIMESTAMPTZ;
+
+-- Notification queue columns
+ALTER TABLE clients ADD COLUMN IF NOT EXISTS notification_pending BOOLEAN DEFAULT FALSE;
+ALTER TABLE clients ADD COLUMN IF NOT EXISTS notification_pending_since TIMESTAMPTZ;

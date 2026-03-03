@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/send-digests?secret=wc_cron_s3cr3t_2026",
+      "schedule": "*/5 * * * *"
+    }
+  ]
+}
