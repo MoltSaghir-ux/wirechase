@@ -1,4 +1,5 @@
 {
+  "regions": ["iad1"],
   "crons": [
     {
       "path": "/api/cron/deadline-reminders?secret=wc_cron_s3cr3t_2026",
