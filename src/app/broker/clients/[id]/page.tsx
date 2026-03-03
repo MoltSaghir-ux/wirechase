@@ -7,6 +7,8 @@ import ResendEmailButton from '@/components/ui/ResendEmailButton'
 import AddDocDropdown from '@/components/ui/AddDocDropdown'
 import DocViewer from '@/components/ui/DocViewer'
 import DocReview from '@/components/ui/DocReview'
+import ClientNotes from '@/components/ui/ClientNotes'
+import ActivityLog from '@/components/ui/ActivityLog'
 
 const adminSupabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -41,6 +43,14 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
     if (!filesByDocId[f.document_request_id]) filesByDocId[f.document_request_id] = []
     filesByDocId[f.document_request_id].push(f)
   }
+
+  // Fetch activity log
+  const { data: activities } = await adminSupabase
+    .from('activity_log')
+    .select('id, event, detail, created_at')
+    .eq('client_id', id)
+    .order('created_at', { ascending: false })
+    .limit(20)
 
   const inviteLink = `${process.env.NEXT_PUBLIC_APP_URL}/client/upload/${client.invite_token}`
   const docs = client.document_requests ?? []
@@ -186,6 +196,12 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
               </div>
             )
           })}
+        </div>
+
+        {/* Notes + Activity side by side */}
+        <div className="grid grid-cols-2 gap-4 mt-4">
+          <ClientNotes clientId={client.id} />
+          <ActivityLog activities={activities ?? []} />
         </div>
       </main>
     </div>

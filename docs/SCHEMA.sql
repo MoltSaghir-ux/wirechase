@@ -78,3 +78,48 @@ ALTER TABLE clients ADD COLUMN IF NOT EXISTS broker_last_notified_at TIMESTAMPTZ
 -- Notification queue columns
 ALTER TABLE clients ADD COLUMN IF NOT EXISTS notification_pending BOOLEAN DEFAULT FALSE;
 ALTER TABLE clients ADD COLUMN IF NOT EXISTS notification_pending_since TIMESTAMPTZ;
+
+-- Broker profile
+ALTER TABLE brokers ADD COLUMN IF NOT EXISTS phone TEXT;
+ALTER TABLE brokers ADD COLUMN IF NOT EXISTS company TEXT;
+ALTER TABLE brokers ADD COLUMN IF NOT EXISTS nmls TEXT;
+ALTER TABLE brokers ADD COLUMN IF NOT EXISTS logo_path TEXT;
+
+-- Client notes
+CREATE TABLE IF NOT EXISTS client_notes (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  client_id UUID REFERENCES clients(id) ON DELETE CASCADE,
+  broker_id UUID REFERENCES brokers(id) ON DELETE CASCADE,
+  content TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+ALTER TABLE client_notes ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Brokers manage own notes" ON client_notes FOR ALL USING (broker_id = auth.uid());
+
+-- Activity log
+CREATE TABLE IF NOT EXISTS activity_log (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  client_id UUID REFERENCES clients(id) ON DELETE CASCADE,
+  event TEXT NOT NULL,
+  detail TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+ALTER TABLE activity_log ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Brokers read activity for own clients" ON activity_log FOR SELECT
+  USING (client_id IN (SELECT id FROM clients WHERE broker_id = auth.uid()));
+
+-- Document templates
+CREATE TABLE IF NOT EXISTS doc_templates (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  broker_id UUID REFERENCES brokers(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  program TEXT,
+  docs JSONB NOT NULL DEFAULT '[]',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+ALTER TABLE doc_templates ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Brokers manage own templates" ON doc_templates FOR ALL USING (broker_id = auth.uid());
+
+-- Deadlines on clients
+ALTER TABLE clients ADD COLUMN IF NOT EXISTS deadline_at TIMESTAMPTZ;
+ALTER TABLE clients ADD COLUMN IF NOT EXISTS deadline_reminder_sent BOOLEAN DEFAULT FALSE;

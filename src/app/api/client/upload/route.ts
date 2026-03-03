@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { logActivity } from '@/lib/activity'
 
 // Service role client — bypasses RLS for client uploads
 const adminSupabase = createClient(
@@ -108,6 +109,9 @@ export async function POST(req: NextRequest) {
       await adminSupabase.from('clients').update({ status: 'in_progress' }).eq('id', client.id)
     }
   }
+
+  // Log activity
+  await logActivity(client.id, 'doc_uploaded', `Uploaded: ${(await adminSupabase.from('document_requests').select('label').eq('id', docRequestId).single()).data?.label ?? 'document'}`)
 
   // Queue a notification — cron will send the digest after 5 min of inactivity
   try {

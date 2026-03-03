@@ -11,6 +11,7 @@ export default function EditClientPage() {
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState('')
+  const [deadline, setDeadline] = useState('')
   const [userEmail, setUserEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [fetching, setFetching] = useState(true)
@@ -27,7 +28,7 @@ export default function EditClientPage() {
 
       const { data } = await supabase
         .from('clients')
-        .select('full_name, email, status')
+        .select('full_name, email, status, deadline_at')
         .eq('id', id)
         .eq('broker_id', user.id)
         .single()
@@ -36,6 +37,7 @@ export default function EditClientPage() {
         setFullName(data.full_name)
         setEmail(data.email)
         setStatus(data.status)
+        setDeadline(data.deadline_at ? new Date(data.deadline_at).toISOString().slice(0, 10) : '')
       }
       setFetching(false)
     }
@@ -49,7 +51,12 @@ export default function EditClientPage() {
 
     const { error } = await supabase
       .from('clients')
-      .update({ full_name: fullName.trim().slice(0, 100), email: email.trim().toLowerCase().slice(0, 200) })
+      .update({
+        full_name: fullName.trim().slice(0, 100),
+        email: email.trim().toLowerCase().slice(0, 200),
+        deadline_at: deadline ? new Date(deadline).toISOString() : null,
+        deadline_reminder_sent: false,
+      })
       .eq('id', id)
 
     if (error) {
@@ -110,6 +117,12 @@ export default function EditClientPage() {
                 maxLength={100}
                 className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Document Deadline</label>
+              <input type="date" value={deadline} onChange={e => setDeadline(e.target.value)}
+                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              <p className="text-xs text-gray-400 mt-1">Client will receive a reminder 3 days before</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Email Address</label>

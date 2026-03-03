@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
+import { logActivity } from '@/lib/activity'
 
 const adminSupabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -36,6 +37,8 @@ export async function POST(req: NextRequest) {
     .from('document_requests')
     .update({ status: action, notes: note?.slice(0, 500) ?? null })
     .eq('id', docRequestId)
+
+  await logActivity(client.id, action === 'approved' ? 'doc_approved' : 'doc_rejected', `${action === 'approved' ? 'Approved' : 'Rejected'}: ${docReq.label}${note ? ` — "${note}"` : ''}`)
 
   // If rejected, email client so they can re-upload
   if (action === 'rejected') {
