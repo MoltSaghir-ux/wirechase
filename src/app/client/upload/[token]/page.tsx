@@ -136,13 +136,19 @@ export default function ClientUploadPage({ params }: { params: Promise<{ token: 
   return (
     <div className="min-h-screen bg-[#f8fafc]">
       {/* Header */}
-      <header className="bg-[#0f172a] px-6 py-4 flex items-center gap-3">
-        <div className="w-7 h-7 bg-blue-500 rounded-md flex items-center justify-center">
-          <span className="text-white text-xs font-bold">W</span>
+      <header className="bg-[#0f172a] px-6 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-7 h-7 bg-blue-500 rounded-lg flex items-center justify-center">
+            <span className="text-white text-xs font-bold">W</span>
+          </div>
+          <div>
+            <h1 className="text-white font-bold text-sm">WireChase</h1>
+            <p className="text-white/40 text-xs">Secure Document Portal</p>
+          </div>
         </div>
-        <div>
-          <h1 className="text-white font-bold text-sm">WireChase</h1>
-          <p className="text-white/40 text-xs">Document Upload Portal</p>
+        <div className="flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-full">
+          <div className="w-1.5 h-1.5 bg-green-400 rounded-full" />
+          <span className="text-white/60 text-xs">Encrypted</span>
         </div>
       </header>
 

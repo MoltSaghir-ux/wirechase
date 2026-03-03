@@ -21,22 +21,21 @@ export default function DocViewer({ docId, fileName }: { docId: string; fileName
     }
   }
 
+  if (loading) return <span className="text-xs text-gray-400">Loading...</span>
+
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-3">
       <button
         onClick={() => open(false)}
-        disabled={loading}
-        className="text-xs text-blue-600 hover:underline disabled:opacity-50"
+        className="text-xs font-medium text-blue-600 bg-blue-50 border border-blue-100 px-2.5 py-1 rounded-lg hover:bg-blue-100 transition"
       >
-        {loading ? 'Loading...' : '👁 View'}
+        View
       </button>
-      <span className="text-gray-200">|</span>
       <button
         onClick={() => open(true)}
-        disabled={loading}
-        className="text-xs text-gray-500 hover:underline disabled:opacity-50"
+        className="text-xs font-medium text-gray-500 bg-gray-50 border border-gray-200 px-2.5 py-1 rounded-lg hover:bg-gray-100 transition"
       >
-        ⬇ Download
+        Download
       </button>
     </div>
   )
