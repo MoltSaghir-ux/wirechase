@@ -14,10 +14,10 @@ export async function GET() {
     supabaseError = e?.message ?? String(e)
   }
 
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
   return NextResponse.json({
-    supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL ? 'SET' : 'MISSING',
-    supabaseAnon: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'SET' : 'MISSING',
-    serviceRole: process.env.SUPABASE_SERVICE_ROLE_KEY ? 'SET' : 'MISSING',
+    supabaseUrlFull: url,
+    supabaseAnonFirst20: (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '').slice(0, 20),
     appUrl: process.env.NEXT_PUBLIC_APP_URL ?? 'MISSING',
     supabaseReach,
     supabaseError,
