@@ -54,3 +54,6 @@ CREATE POLICY "Brokers see own doc requests" ON document_requests FOR ALL
   USING (client_id IN (SELECT id FROM clients WHERE broker_id = auth.uid()));
 
 -- Clients can upload via token (handled in API route, not RLS)
+
+-- Migration: Add category column to document_requests
+ALTER TABLE document_requests ADD COLUMN IF NOT EXISTS category TEXT DEFAULT 'Documents';
