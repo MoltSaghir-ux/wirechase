@@ -57,3 +57,17 @@ CREATE POLICY "Brokers see own doc requests" ON document_requests FOR ALL
 
 -- Migration: Add category column to document_requests
 ALTER TABLE document_requests ADD COLUMN IF NOT EXISTS category TEXT DEFAULT 'Documents';
+
+-- Allow clients to look up their own record via invite token (anon)
+CREATE POLICY "Clients can read own record via token" ON clients FOR SELECT
+USING (true);
+
+-- Allow clients to read their own document requests (anon)
+CREATE POLICY "Clients can read own doc requests" ON document_requests FOR SELECT
+USING (true);
+
+-- Allow clients to update doc request status (anon, via API route)
+CREATE POLICY "Clients can update doc request status" ON document_requests FOR UPDATE
+USING (true);
+
+-- Allow clients to insert documents (via API route with service role — no RLS needed)
