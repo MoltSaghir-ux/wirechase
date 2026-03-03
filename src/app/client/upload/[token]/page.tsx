@@ -125,13 +125,7 @@ export default function ClientUploadPage({ params }: { params: Promise<{ token: 
   const pct = docs.length ? Math.round((uploaded / docs.length) * 100) : 0
   const allUploaded = docs.length > 0 && uploaded === docs.length
 
-  // All presets across all programs, deduped
-  const allPresets = MORTGAGE_PROGRAMS.flatMap(p =>
-    p.docs.map(d => ({ label: d.label, category: d.category, program: p.name }))
-  ).filter((p, i, arr) => arr.findIndex(x => x.label === p.label) === i)
 
-  const existingLabels = new Set(docs.map(d => d.label))
-  const availablePresets = allPresets.filter(p => !existingLabels.has(p.label))
 
   return (
     <div className="min-h-screen bg-[#f8fafc]">
