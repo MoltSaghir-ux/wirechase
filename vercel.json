@@ -1,10 +1,6 @@
 {
   "crons": [
     {
-      "path": "/api/cron/send-digests?secret=wc_cron_s3cr3t_2026",
-      "schedule": "*/5 * * * *"
-    },
-    {
       "path": "/api/cron/deadline-reminders?secret=wc_cron_s3cr3t_2026",
       "schedule": "0 9 * * *"
     }
