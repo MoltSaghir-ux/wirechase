@@ -168,3 +168,8 @@ CREATE TABLE IF NOT EXISTS platform_invite_codes (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 -- No RLS needed — only accessed via service role API routes
+
+-- Fix cascade delete on brokers so auth users can be deleted cleanly
+ALTER TABLE brokers DROP CONSTRAINT IF EXISTS brokers_id_fkey;
+ALTER TABLE brokers ADD CONSTRAINT brokers_id_fkey 
+  FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE;
