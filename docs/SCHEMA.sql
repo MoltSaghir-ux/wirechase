@@ -123,3 +123,38 @@ CREATE POLICY "Brokers manage own templates" ON doc_templates FOR ALL USING (bro
 -- Deadlines on clients
 ALTER TABLE clients ADD COLUMN IF NOT EXISTS deadline_at TIMESTAMPTZ;
 ALTER TABLE clients ADD COLUMN IF NOT EXISTS deadline_reminder_sent BOOLEAN DEFAULT FALSE;
+
+-- Brokerages (company/team entity)
+CREATE TABLE IF NOT EXISTS brokerages (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL,
+  nmls TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+ALTER TABLE brokerages ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Members can read own brokerage" ON brokerages FOR SELECT
+  USING (id IN (SELECT brokerage_id FROM brokers WHERE id = auth.uid()));
+CREATE POLICY "Admins can update own brokerage" ON brokerages FOR UPDATE
+  USING (id IN (SELECT brokerage_id FROM brokers WHERE id = auth.uid() AND role = 'admin'));
+
+-- Add brokerage + role to brokers
+ALTER TABLE brokers ADD COLUMN IF NOT EXISTS brokerage_id UUID REFERENCES brokerages(id) ON DELETE SET NULL;
+ALTER TABLE brokers ADD COLUMN IF NOT EXISTS role TEXT DEFAULT 'admin'; -- admin | loan_officer
+
+-- Team invites
+CREATE TABLE IF NOT EXISTS team_invites (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  brokerage_id UUID REFERENCES brokerages(id) ON DELETE CASCADE,
+  invited_by UUID REFERENCES brokers(id) ON DELETE CASCADE,
+  email TEXT NOT NULL,
+  role TEXT DEFAULT 'loan_officer',
+  token TEXT UNIQUE DEFAULT gen_random_uuid()::text,
+  accepted_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+ALTER TABLE team_invites ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Admins manage own team invites" ON team_invites FOR ALL
+  USING (brokerage_id IN (SELECT brokerage_id FROM brokers WHERE id = auth.uid() AND role = 'admin'));
+
+-- Add brokerage_id to clients for cross-LO visibility
+ALTER TABLE clients ADD COLUMN IF NOT EXISTS brokerage_id UUID REFERENCES brokerages(id) ON DELETE SET NULL;

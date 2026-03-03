@@ -30,7 +30,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  // Redirect logged-in users away from login
+  // Redirect logged-in users away from login/onboard entry
   if (request.nextUrl.pathname === '/login' && user) {
     return NextResponse.redirect(new URL('/broker/dashboard', request.url))
   }
@@ -39,5 +39,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/broker/:path*', '/login'],
+  matcher: ['/broker/:path*', '/login', '/onboard'],
 }
