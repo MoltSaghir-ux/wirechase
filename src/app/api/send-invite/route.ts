@@ -25,9 +25,13 @@ export async function POST(req: NextRequest) {
   const inviteLink = `${process.env.NEXT_PUBLIC_APP_URL}/client/upload/${client.invite_token}`
   const brokerEmail = user.email ?? 'your mortgage broker'
 
+  // In dev/testing mode, Resend only allows sending to the verified account email.
+  // Once a domain is verified at resend.com/domains, remove this override.
+  const toEmail = process.env.NODE_ENV === 'production' ? client.email : (process.env.RESEND_TEST_EMAIL ?? client.email)
+
   const { error } = await resend.emails.send({
     from: 'WireChase <onboarding@resend.dev>',
-    to: client.email,
+    to: toEmail,
     subject: 'Documents needed for your mortgage application',
     html: `
       <div style="font-family: sans-serif; max-width: 560px; margin: 0 auto; padding: 32px 24px; color: #111;">
