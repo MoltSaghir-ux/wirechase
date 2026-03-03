@@ -30,24 +30,28 @@ export default function LoginPage() {
       router.push('/broker/dashboard')
       router.refresh()
     } else {
-      const { error } = await supabase.auth.signUp({ email, password })
-      if (error) {
+      try {
+        const { error } = await supabase.auth.signUp({ email, password })
+        if (error) {
+          setIsError(true)
+          setMessage(error.message)
+          setLoading(false)
+          return
+        }
+        const { error: signInError } = await supabase.auth.signInWithPassword({ email, password })
+        if (signInError) {
+          setIsError(false)
+          setMessage('Account created! Check your email for a confirmation link, then sign in.')
+          setLoading(false)
+          return
+        }
+        router.push('/onboard')
+        router.refresh()
+      } catch (err: any) {
         setIsError(true)
-        setMessage(error.message)
+        setMessage(`Signup error: ${err?.message ?? 'Unknown error. Check console.'}`)
         setLoading(false)
-        return
       }
-      // Auto sign-in after signup (works when email confirmation is disabled in Supabase)
-      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password })
-      if (signInError) {
-        // Confirmation email required — tell them to check email
-        setIsError(false)
-        setMessage('Account created! Check your email for a confirmation link, then sign in.')
-        setLoading(false)
-        return
-      }
-      router.push('/onboard')
-      router.refresh()
     }
   }
 
