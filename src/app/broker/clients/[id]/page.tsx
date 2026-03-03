@@ -95,6 +95,12 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
               {inviteLink}
             </code>
             <ResendEmailButton clientId={client.id} />
+            <Link
+              href={`/broker/clients/${client.id}/edit`}
+              className="text-sm bg-gray-50 text-gray-600 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition"
+            >
+              ✎ Edit Client
+            </Link>
           </div>
         </div>
 

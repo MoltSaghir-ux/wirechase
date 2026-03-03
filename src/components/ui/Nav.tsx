@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 const navLinks = [
   { href: '/broker/dashboard', label: 'Dashboard', icon: '▦' },
   { href: '/broker/clients/new', label: 'Add Client', icon: '+' },
+  { href: '/broker/archived', label: 'Archived', icon: '○' },
 ]
 
 export default function Nav({ email }: { email: string }) {

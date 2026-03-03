@@ -12,6 +12,7 @@ export default async function DashboardPage() {
     .from('clients')
     .select(`id, full_name, email, status, created_at, document_requests (id, status)`)
     .eq('broker_id', user.id)
+    .neq('status', 'archived')
     .order('created_at', { ascending: false })
 
   const total = clients?.length ?? 0
