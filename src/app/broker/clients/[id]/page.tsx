@@ -6,6 +6,7 @@ import Link from 'next/link'
 import ResendEmailButton from '@/components/ui/ResendEmailButton'
 import AddDocDropdown from '@/components/ui/AddDocDropdown'
 import DocViewer from '@/components/ui/DocViewer'
+import DocReview from '@/components/ui/DocReview'
 
 const adminSupabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -159,22 +160,25 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                         {files.length > 0 && (
                           <div className="mt-3 ml-5 space-y-2">
                             {files.map((file: any) => (
-                              <div key={file.id} className="flex items-center justify-between bg-gray-50 rounded-xl px-3 py-2.5 border border-gray-100">
-                                <div className="flex items-center gap-2 min-w-0">
-                                  <span className="text-base">📄</span>
-                                  <div className="min-w-0">
-                                    <p className="text-xs font-medium text-gray-700 truncate">{file.file_name}</p>
-                                    <p className="text-xs text-gray-400">
-                                      {file.file_size ? `${(file.file_size / 1024).toFixed(0)} KB · ` : ''}
-                                      {new Date(file.uploaded_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                                    </p>
+                              <div key={file.id} className="bg-gray-50 rounded-xl px-3 py-2.5 border border-gray-100">
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-2 min-w-0">
+                                    <span className="text-base">📄</span>
+                                    <div className="min-w-0">
+                                      <p className="text-xs font-medium text-gray-700 truncate">{file.file_name}</p>
+                                      <p className="text-xs text-gray-400">
+                                        {file.file_size ? `${(file.file_size / 1024).toFixed(0)} KB · ` : ''}
+                                        {new Date(file.uploaded_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                      </p>
+                                    </div>
                                   </div>
+                                  <DocViewer docId={file.id} fileName={file.file_name} />
                                 </div>
-                                <DocViewer docId={file.id} fileName={file.file_name} />
                               </div>
                             ))}
                           </div>
                         )}
+                        <DocReview docRequestId={doc.id} currentStatus={doc.status} />
                       </div>
                     )
                   })}

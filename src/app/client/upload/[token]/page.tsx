@@ -121,9 +121,9 @@ export default function ClientUploadPage({ params }: { params: Promise<{ token: 
 
   const docs = client?.document_requests ?? []
   const categories = [...new Set(docs.map(d => d.category ?? 'Documents'))]
-  const uploaded = docs.filter(d => d.status !== 'missing').length
+  const uploaded = docs.filter(d => d.status === 'uploaded' || d.status === 'approved').length
   const pct = docs.length ? Math.round((uploaded / docs.length) * 100) : 0
-  const allUploaded = docs.length > 0 && uploaded === docs.length
+  const allUploaded = docs.length > 0 && docs.every(d => d.status === 'uploaded' || d.status === 'approved')
 
 
 
@@ -187,13 +187,19 @@ export default function ClientUploadPage({ params }: { params: Promise<{ token: 
                         {doc.required && <span className="text-xs text-red-400">Required</span>}
                       </div>
                       <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                        doc.status !== 'missing' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400'
+                        doc.status === 'approved' ? 'bg-green-100 text-green-700' :
+                        doc.status === 'uploaded' ? 'bg-blue-100 text-blue-700' :
+                        doc.status === 'rejected' ? 'bg-red-100 text-red-600' :
+                        'bg-gray-100 text-gray-400'
                       }`}>
-                        {doc.status === 'missing' ? 'Needed' : '✓ Uploaded'}
+                        {doc.status === 'missing' ? 'Needed' :
+                         doc.status === 'approved' ? '✓ Approved' :
+                         doc.status === 'rejected' ? '✕ Re-upload needed' :
+                         '✓ Uploaded'}
                       </span>
                     </div>
 
-                    {doc.status === 'missing' ? (
+                    {(doc.status === 'missing' || doc.status === 'rejected') ? (
                       <label className={`flex items-center justify-center gap-2 w-full border-2 border-dashed border-gray-200 rounded-xl p-3 text-sm text-gray-400 cursor-pointer hover:border-blue-400 hover:text-blue-500 hover:bg-blue-50 transition ${uploading === doc.id ? 'opacity-50 pointer-events-none' : ''}`}>
                         <input
                           type="file"

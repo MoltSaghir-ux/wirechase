@@ -109,5 +109,59 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // Notify broker by email
+  try {
+    const { data: brokerData } = await adminSupabase
+      .from('clients')
+      .select('broker_id, full_name, brokers (email)')
+      .eq('id', client.id)
+      .single()
+
+    const { data: docLabel } = await adminSupabase
+      .from('document_requests')
+      .select('label')
+      .eq('id', docRequestId)
+      .single()
+
+    if (brokerData?.brokers) {
+      const brokerEmail = (brokerData.brokers as any).email
+      const clientName = brokerData.full_name
+      const label = docLabel?.label ?? 'a document'
+      const dashboardUrl = `${process.env.NEXT_PUBLIC_APP_URL}/broker/clients/${client.id}`
+
+      const { Resend } = await import('resend')
+      const resend = new Resend(process.env.RESEND_API_KEY)
+      const toEmail = process.env.NODE_ENV === 'production' ? brokerEmail : (process.env.RESEND_TEST_EMAIL ?? brokerEmail)
+
+      await resend.emails.send({
+        from: 'WireChase <onboarding@resend.dev>',
+        to: toEmail,
+        subject: `📄 ${clientName} uploaded a document`,
+        html: `
+          <div style="font-family: sans-serif; max-width: 560px; margin: 0 auto; padding: 32px 24px; color: #111;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:24px;">
+              <div style="background:#3b82f6; width:28px; height:28px; border-radius:6px; display:flex; align-items:center; justify-content:center;">
+                <span style="color:white; font-weight:bold; font-size:13px;">W</span>
+              </div>
+              <span style="font-weight:bold; font-size:16px;">WireChase</span>
+            </div>
+            <h2 style="margin:0 0 8px;">New document uploaded</h2>
+            <p style="color:#555; margin:0 0 20px;">
+              <strong>${clientName}</strong> just uploaded <strong>${label}</strong>.
+            </p>
+            <a href="${dashboardUrl}" style="display:inline-block; background:#2563eb; color:white; text-decoration:none; padding:12px 24px; border-radius:8px; font-weight:600; margin-bottom:24px;">
+              View Document →
+            </a>
+            <hr style="border:none; border-top:1px solid #eee; margin:24px 0;"/>
+            <p style="color:#bbb; font-size:12px; margin:0;">WireChase · Mortgage Document Platform</p>
+          </div>
+        `,
+      })
+    }
+  } catch (e) {
+    // Non-fatal — don't block the upload response
+    console.error('Broker notification failed:', e)
+  }
+
   return NextResponse.json({ success: true })
 }
