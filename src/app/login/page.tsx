@@ -20,28 +20,51 @@ export default function LoginPage() {
     setMessage('')
 
     if (mode === 'login') {
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) {
-        setIsError(true)
-        setMessage('Invalid email or password.')
-        setLoading(false)
-        return
-      }
-      router.push('/broker/dashboard')
-      router.refresh()
-    } else {
       try {
-        const { error } = await supabase.auth.signUp({ email, password })
-        if (error) {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        })
+        const json = await res.json()
+        if (!res.ok) {
           setIsError(true)
-          setMessage(error.message)
+          setMessage(json.error ?? 'Invalid email or password.')
           setLoading(false)
           return
         }
-        const { error: signInError } = await supabase.auth.signInWithPassword({ email, password })
-        if (signInError) {
+        router.push('/broker/dashboard')
+        router.refresh()
+      } catch (err: any) {
+        setIsError(true)
+        setMessage(`Login error: ${err?.message ?? 'Unknown error'}`)
+        setLoading(false)
+      }
+    } else {
+      try {
+        // Step 1: Create account server-side (bypasses CORS)
+        const signupRes = await fetch('/api/auth/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        })
+        const signupJson = await signupRes.json()
+        if (!signupRes.ok) {
+          setIsError(true)
+          setMessage(signupJson.error ?? 'Failed to create account.')
+          setLoading(false)
+          return
+        }
+        // Step 2: Sign in server-side to set session cookie
+        const loginRes = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        })
+        const loginJson = await loginRes.json()
+        if (!loginRes.ok) {
           setIsError(false)
-          setMessage('Account created! Check your email for a confirmation link, then sign in.')
+          setMessage('Account created! Please sign in.')
           setLoading(false)
           return
         }
@@ -49,7 +72,7 @@ export default function LoginPage() {
         router.refresh()
       } catch (err: any) {
         setIsError(true)
-        setMessage(`Signup error: ${err?.message ?? 'Unknown error. Check console.'}`)
+        setMessage(`Signup error: ${err?.message ?? 'Unknown error'}`)
         setLoading(false)
       }
     }
