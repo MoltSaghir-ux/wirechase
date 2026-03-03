@@ -4,11 +4,11 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 
-export default function OnboardPage() {
-  const [mode, setMode] = useState<'choose' | 'create' | 'join'>('choose')
+export default function OnboardPage({ searchParams }: { searchParams: { token?: string } }) {
+  const [mode, setMode] = useState<'choose' | 'create' | 'join'>(searchParams.token ? 'join' : 'choose')
   const [companyName, setCompanyName] = useState('')
   const [nmls, setNmls] = useState('')
-  const [joinToken, setJoinToken] = useState('')
+  const [joinToken, setJoinToken] = useState(searchParams.token ?? '')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [userEmail, setUserEmail] = useState('')

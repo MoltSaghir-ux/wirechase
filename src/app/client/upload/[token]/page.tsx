@@ -18,6 +18,10 @@ interface ClientData {
   full_name: string
   status: string
   document_requests: DocRequest[]
+  brokers: {
+    full_name: string
+    brokerages: { name: string; nmls: string | null } | null
+  } | null
 }
 
 export default function ClientUploadPage({ params }: { params: Promise<{ token: string }> }) {
@@ -37,7 +41,7 @@ export default function ClientUploadPage({ params }: { params: Promise<{ token: 
     }
     const { data, error } = await supabase
       .from('clients')
-      .select('id, full_name, status, document_requests (id, label, status, required, category)')
+      .select('id, full_name, status, document_requests (id, label, status, required, category), brokers (full_name, brokerages (name, nmls))')
       .eq('invite_token', token)
       .single()
 
@@ -129,22 +133,34 @@ export default function ClientUploadPage({ params }: { params: Promise<{ token: 
 
   return (
     <div className="min-h-screen bg-[#f8fafc]">
-      {/* Header */}
-      <header className="bg-[#0f172a] px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-7 h-7 bg-blue-500 rounded-lg flex items-center justify-center">
-            <span className="text-white text-xs font-bold">W</span>
-          </div>
-          <div>
-            <h1 className="text-white font-bold text-sm">WireChase</h1>
-            <p className="text-white/40 text-xs">Secure Document Portal</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-full">
-          <div className="w-1.5 h-1.5 bg-green-400 rounded-full" />
-          <span className="text-white/60 text-xs">Encrypted</span>
-        </div>
-      </header>
+      {/* Header — branded with brokerage name */}
+      {(() => {
+        const broker = client?.brokers as any
+        const brokerage = broker?.brokerages
+        const displayName = brokerage?.name ?? 'WireChase'
+        const brokerName = broker?.full_name
+        const initials = displayName.slice(0, 2).toUpperCase()
+        return (
+          <header className="bg-[#0f172a] px-6 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                <span className="text-white text-xs font-bold">{initials}</span>
+              </div>
+              <div>
+                <h1 className="text-white font-bold text-sm">{displayName}</h1>
+                <p className="text-white/40 text-xs">
+                  {brokerName ? `Your loan officer: ${brokerName}` : 'Secure Document Portal'}
+                  {brokerage?.nmls ? ` · NMLS #${brokerage.nmls}` : ''}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-full">
+              <div className="w-1.5 h-1.5 bg-green-400 rounded-full" />
+              <span className="text-white/60 text-xs">Encrypted</span>
+            </div>
+          </header>
+        )
+      })()}
 
       <main className="max-w-xl mx-auto px-4 py-8">
         {/* Greeting */}

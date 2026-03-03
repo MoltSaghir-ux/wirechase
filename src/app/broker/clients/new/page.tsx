@@ -22,6 +22,7 @@ export default function NewClientPage() {
   const [error, setError] = useState('')
   const [inviteLink, setInviteLink] = useState('')
   const [clientName, setClientName] = useState('')
+  const [templates, setTemplates] = useState<{id:string; name:string; docs:DocItem[]}[]>([])
   const router = useRouter()
   const supabase = createClient()
 
@@ -29,12 +30,23 @@ export default function NewClientPage() {
     supabase.auth.getUser().then(({ data }) => {
       if (data.user?.email) setUserEmail(data.user.email)
     })
+    // Load saved templates
+    supabase.auth.getUser().then(async ({ data }) => {
+      if (!data.user) return
+      const { data: t } = await supabase.from('doc_templates').select('id, name, docs').eq('broker_id', data.user.id)
+      if (t) setTemplates(t)
+    })
   }, [])
 
   function selectProgram(programId: string) {
     setSelectedProgram(programId)
     const program = MORTGAGE_PROGRAMS.find(p => p.id === programId)
     if (program) setDocs(program.docs.map(d => ({ ...d, enabled: true })))
+  }
+
+  function loadTemplate(template: {id:string; name:string; docs:DocItem[]}) {
+    setSelectedProgram('template:' + template.id)
+    setDocs(template.docs.map(d => ({ ...d, enabled: true })))
   }
 
   function toggleDoc(index: number) {
@@ -173,6 +185,23 @@ export default function NewClientPage() {
           {/* Program Selector */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
             <h3 className="font-semibold text-gray-800 mb-4 text-sm uppercase tracking-wide text-gray-400">Mortgage Program</h3>
+            {templates.length > 0 && (
+              <div className="mb-4">
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Your Templates</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {templates.map(t => (
+                    <button key={t.id} type="button" onClick={() => loadTemplate(t)}
+                      className={`text-left px-4 py-3 rounded-xl border text-sm transition ${
+                        selectedProgram === 'template:' + t.id ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-sm' : 'border-gray-200 hover:border-gray-300 text-gray-700 hover:bg-gray-50'
+                      }`}>
+                      <p className="font-semibold">⭐ {t.name}</p>
+                      <p className="text-xs text-gray-400 mt-0.5">{t.docs.length} documents</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Standard Programs</p>
             <div className="grid grid-cols-2 gap-2">
               {MORTGAGE_PROGRAMS.map(p => (
                 <button key={p.id} type="button" onClick={() => selectProgram(p.id)}
