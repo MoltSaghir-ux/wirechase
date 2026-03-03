@@ -97,6 +97,14 @@ export default function NewClientPage() {
     }
 
     const link = `${window.location.origin}/client/upload/${client.invite_token}`
+
+    // Send invite email
+    await fetch('/api/send-invite', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ clientId: client.id }),
+    })
+
     setInviteLink(link)
     setLoading(false)
   }
