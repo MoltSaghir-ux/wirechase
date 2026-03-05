@@ -39,9 +39,16 @@ export default function NewLoanPage() {
   const [propertyType, setPropertyType] = useState<PropertyType>('sfr')
   const [propertyUse, setPropertyUse] = useState<PropertyUse>('primary')
   const [propertyAddress, setPropertyAddress] = useState('')
+  const [propertyCounty, setPropertyCounty] = useState('')
+  const [propertyState, setPropertyState] = useState('')
+  const [propertyZip, setPropertyZip] = useState('')
   const [rateLockExpiry, setRateLockExpiry] = useState('')
   const [closingDate, setClosingDate] = useState('')
   const [titleCompany, setTitleCompany] = useState('')
+
+  // Borrower identity
+  const [borrowerDob, setBorrowerDob] = useState('')
+  const [borrowerSsnLast4, setBorrowerSsnLast4] = useState('')
 
   // Special circumstances
   const [hasGiftFunds, setHasGiftFunds] = useState(false)
@@ -87,6 +94,11 @@ export default function NewLoanPage() {
           rateLockExpiry: rateLockExpiry || null,
           closingDate: closingDate || null,
           titleCompany: titleCompany.trim() || null,
+          propertyCounty: propertyCounty.trim() || null,
+          propertyState: propertyState.trim() || null,
+          propertyZip: propertyZip.trim() || null,
+          borrowerDob: borrowerDob || null,
+          borrowerSsnLast4: borrowerSsnLast4.trim() || null,
           // Special
           hasGiftFunds,
           hasRentalIncome,
@@ -187,6 +199,20 @@ export default function NewLoanPage() {
                   placeholder="(555) 555-5555"
                   className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Date of Birth</label>
+                  <input type="date" value={borrowerDob} onChange={e => setBorrowerDob(e.target.value)}
+                    className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">SSN Last 4 <span className="text-gray-400 font-normal">(for file only)</span></label>
+                  <input type="text" value={borrowerSsnLast4} onChange={e => setBorrowerSsnLast4(e.target.value.replace(/\D/g, '').slice(0,4))}
+                    placeholder="••••" maxLength={4}
+                    className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono tracking-widest" />
+                </div>
               </div>
 
               {/* Co-borrower toggle */}
@@ -363,6 +389,27 @@ export default function NewLoanPage() {
                 <input type="text" value={titleCompany} onChange={e => setTitleCompany(e.target.value)}
                   placeholder="ABC Title & Escrow"
                   className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">County</label>
+                  <input type="text" value={propertyCounty} onChange={e => setPropertyCounty(e.target.value)}
+                    placeholder="Wayne County"
+                    className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">State</label>
+                  <input type="text" value={propertyState} onChange={e => setPropertyState(e.target.value.toUpperCase().slice(0,2))}
+                    placeholder="MI" maxLength={2}
+                    className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">ZIP Code</label>
+                  <input type="text" value={propertyZip} onChange={e => setPropertyZip(e.target.value.replace(/\D/g, '').slice(0,5))}
+                    placeholder="48201" maxLength={5}
+                    className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
               </div>
 
               {propertyType === 'condo' && (

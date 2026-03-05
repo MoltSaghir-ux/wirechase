@@ -16,6 +16,7 @@ export async function PATCH(req: NextRequest) {
     propertyType, propertyUse, propertyAddress,
     coBorrower, coBorrowerName, coBorrowerEmail, coBorrowerEmploymentType,
     fileNumber,
+    propertyCounty, propertyState, propertyZip, borrowerDob, borrowerSsnLast4,
   } = body
 
   if (!loanId) return NextResponse.json({ error: 'loanId required' }, { status: 400 })
@@ -37,6 +38,11 @@ export async function PATCH(req: NextRequest) {
       co_borrower_email: coBorrower ? coBorrowerEmail : null,
       co_borrower_employment_type: coBorrower ? coBorrowerEmploymentType : null,
       file_number: fileNumber ?? null,
+      property_county: propertyCounty ?? null,
+      property_state: propertyState ?? null,
+      property_zip: propertyZip ?? null,
+      borrower_dob: borrowerDob ?? null,
+      borrower_ssn_last4: borrowerSsnLast4 ?? null,
     })
     .eq('id', loanId)
     .select()

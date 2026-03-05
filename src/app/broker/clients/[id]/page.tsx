@@ -84,7 +84,7 @@ export default async function ClientDetailPage({ params, searchParams }: {
   // Fetch loan record
   const { data: loan } = await adminSupabase
     .from('loans')
-    .select('id, loan_type, loan_purpose, loan_amount, purchase_price, employment_type, co_borrower, co_borrower_name, co_borrower_email, co_borrower_invite_token, property_type, property_use, property_address, loan_stage, file_number, rate_lock_expiry, closing_date, title_company, lo_nmls')
+    .select('id, loan_type, loan_purpose, loan_amount, purchase_price, employment_type, co_borrower, co_borrower_name, co_borrower_email, co_borrower_invite_token, property_type, property_use, property_address, loan_stage, file_number, rate_lock_expiry, closing_date, title_company, lo_nmls, property_county, property_state, property_zip, borrower_dob, borrower_ssn_last4')
     .eq('client_id', id)
     .order('created_at', { ascending: false })
     .limit(1)
@@ -223,9 +223,37 @@ export default async function ClientDetailPage({ params, searchParams }: {
               <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 mb-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-semibold text-gray-800 text-sm">Loan Details</h3>
-                  {loan.file_number && (
-                    <span className="text-xs font-mono bg-gray-100 text-gray-500 px-2.5 py-1 rounded-lg">{loan.file_number}</span>
-                  )}
+                  <div className="flex items-center gap-2">
+                    {loan.file_number && (
+                      <span className="text-xs font-mono bg-gray-100 text-gray-500 px-2.5 py-1 rounded-lg">{loan.file_number}</span>
+                    )}
+                    <div className="relative group">
+                      <button className="text-xs bg-gray-50 border border-gray-200 text-gray-600 px-3 py-1 rounded-lg hover:bg-gray-100 transition flex items-center gap-1.5">
+                        ⬇ Export
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </button>
+                      <div className="absolute right-0 top-8 bg-white border border-gray-100 rounded-xl shadow-lg z-10 overflow-hidden hidden group-hover:block w-48">
+                        <a href={`/api/loans/export-mismo?loanId=${loan.id}`} target="_blank"
+                          className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition">
+                          <span>📄</span>
+                          <div>
+                            <p className="font-medium text-xs">MISMO 3.4 XML</p>
+                            <p className="text-[10px] text-gray-400">Rocket, UWM, most LOS</p>
+                          </div>
+                        </a>
+                        <a href={`/api/loans/export-fnm?loanId=${loan.id}`} target="_blank"
+                          className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition border-t border-gray-50">
+                          <span>📋</span>
+                          <div>
+                            <p className="font-medium text-xs">Fannie Mae 3.2</p>
+                            <p className="text-[10px] text-gray-400">DU / legacy LOS</p>
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <div className="grid grid-cols-3 gap-x-6 gap-y-3 text-sm">
                   <div>
@@ -260,6 +288,14 @@ export default async function ClientDetailPage({ params, searchParams }: {
                     <div className="col-span-3">
                       <p className="text-xs text-gray-400">Property Address</p>
                       <p className="font-semibold text-gray-800 mt-0.5">{loan.property_address}</p>
+                    </div>
+                  )}
+                  {(loan.property_state || loan.property_zip || loan.property_county) && (
+                    <div>
+                      <p className="text-xs text-gray-400">Property Location</p>
+                      <p className="font-semibold text-gray-800 mt-0.5">
+                        {[loan.property_county, loan.property_state, loan.property_zip].filter(Boolean).join(', ')}
+                      </p>
                     </div>
                   )}
                   {loan.closing_date && (
