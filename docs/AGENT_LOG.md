@@ -13,3 +13,7 @@
 - Updated ROADMAP.md with full competitor feature gap analysis
 
 ---
+
+### Frontend Engineer — Pre-Approval Letter UI
+- Built PreApprovalButton component with modal
+- Commit: ac0cf4d
