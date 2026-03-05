@@ -433,7 +433,7 @@ export default async function ClientDetailPage({ params, searchParams }: {
               return (
                 <div className="flex items-center gap-2 flex-wrap mb-4">
                   {uploadedDocIds.length > 0 && (
-                    <BulkApproveButton docIds={uploadedDocIds} onDone={() => { if (typeof window !== 'undefined') window.location.reload() }} />
+                    <BulkApproveButton docIds={uploadedDocIds} />
                   )}
                   <LOERequestButton clientId={client.id} loanId={loan?.id} />
                   <StackingOrder docs={docs.map((d: DocumentRequest) => ({ id: d.id, label: d.label, status: d.status, doc_type: (d as any).doc_type }))} />

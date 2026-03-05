@@ -1,9 +1,11 @@
 'use client'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 
-export default function BulkApproveButton({ docIds, onDone }: { docIds: string[]; onDone: () => void }) {
+export default function BulkApproveButton({ docIds }: { docIds: string[] }) {
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
+  const router = useRouter()
 
   async function handleApproveAll() {
     if (!confirm(`Approve all ${docIds.length} uploaded document(s)?`)) return
@@ -19,7 +21,7 @@ export default function BulkApproveButton({ docIds, onDone }: { docIds: string[]
     )
     setLoading(false)
     setDone(true)
-    setTimeout(() => { onDone(); setDone(false) }, 800)
+    setTimeout(() => { router.refresh(); setDone(false) }, 800)
   }
 
   return (
