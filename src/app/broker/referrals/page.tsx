@@ -15,25 +15,49 @@ export default async function ReferralsPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: broker } = await adminSupabase.from('brokers').select('brokerage_id').eq('id', user.id).single()
+  const { data: broker } = await adminSupabase.from('brokers').select('role, brokerage_id').eq('id', user.id).single()
   if (!broker?.brokerage_id) redirect('/onboard')
 
-  const { data: partners } = await adminSupabase
-    .from('referral_partners')
-    .select('*')
-    .eq('brokerage_id', broker.brokerage_id)
-    .order('full_name')
+  const isAdmin = broker.role === 'admin'
 
-  // Count loans per partner separately (avoids FK relationship cache issues)
-  const { data: loanCounts } = await adminSupabase
-    .from('loans')
-    .select('referral_partner_id')
-    .eq('clients.brokerage_id', broker.brokerage_id)
+  let partners: any[] = []
+  let loanCountMap: Record<string, number> = {}
 
-  const loanCountMap: Record<string, number> = {}
-  for (const l of loanCounts ?? []) {
-    if (l.referral_partner_id) {
-      loanCountMap[l.referral_partner_id] = (loanCountMap[l.referral_partner_id] ?? 0) + 1
+  if (isAdmin) {
+    const { data } = await adminSupabase
+      .from('referral_partners')
+      .select('*')
+      .eq('brokerage_id', broker.brokerage_id)
+      .order('full_name')
+    partners = data ?? []
+
+    const { data: loanCounts } = await adminSupabase
+      .from('loans')
+      .select('referral_partner_id, broker_id, clients(brokerage_id)')
+    for (const l of loanCounts ?? []) {
+      if (l.referral_partner_id && (l.clients as any)?.brokerage_id === broker.brokerage_id) {
+        loanCountMap[l.referral_partner_id] = (loanCountMap[l.referral_partner_id] ?? 0) + 1
+      }
+    }
+  } else {
+    const { data: myLoans } = await adminSupabase
+      .from('loans')
+      .select('referral_partner_id')
+      .eq('broker_id', user.id)
+      .not('referral_partner_id', 'is', null)
+
+    const partnerIds = [...new Set((myLoans ?? []).map((l: any) => l.referral_partner_id).filter(Boolean))]
+
+    if (partnerIds.length > 0) {
+      const { data } = await adminSupabase
+        .from('referral_partners')
+        .select('*')
+        .in('id', partnerIds)
+        .order('full_name')
+      partners = data ?? []
+      for (const l of myLoans ?? []) {
+        if (l.referral_partner_id) loanCountMap[l.referral_partner_id] = (loanCountMap[l.referral_partner_id] ?? 0) + 1
+      }
     }
   }
 
@@ -45,12 +69,14 @@ export default async function ReferralsPage() {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Referral Partners</h1>
-              <p className="text-sm text-gray-400 mt-0.5">Realtors, builders, and other partners who refer loans to you.</p>
+              <p className="text-sm text-gray-400 mt-0.5">{isAdmin ? 'Realtors, builders, and other partners who refer loans to your brokerage.' : 'Partners associated with your submitted loans.'}</p>
             </div>
-            <Link href="/broker/referrals/new"
-              className="bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-blue-700 transition">
-              + Add Partner
-            </Link>
+            {isAdmin && (
+              <Link href="/broker/referrals/new"
+                className="bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-blue-700 transition">
+                + Add Partner
+              </Link>
+            )}
           </div>
 
           {(!partners || partners.length === 0) ? (

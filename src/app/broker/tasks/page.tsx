@@ -17,16 +17,24 @@ export default async function TasksPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: broker } = await adminSupabase.from('brokers').select('brokerage_id').eq('id', user.id).single()
+  const { data: broker } = await adminSupabase.from('brokers').select('role, brokerage_id').eq('id', user.id).single()
   if (!broker?.brokerage_id) redirect('/onboard')
 
-  const { data: tasks } = await adminSupabase
+  const isAdmin = broker.role === 'admin'
+
+  let tasksQuery = adminSupabase
     .from('loan_tasks')
     .select('*, clients(full_name, id)')
     .eq('brokerage_id', broker.brokerage_id)
     .neq('status', 'done')
     .neq('status', 'cancelled')
     .order('due_date', { ascending: true, nullsFirst: false })
+
+  if (!isAdmin) {
+    tasksQuery = tasksQuery.or(`created_by_user_id.eq.${user.id},assigned_to_user_id.eq.${user.id}`)
+  }
+
+  const { data: tasks } = await tasksQuery
 
   const now = new Date()
 
@@ -38,7 +46,7 @@ export default async function TasksPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Team Tasks</h1>
-          <p className="text-sm text-gray-400 mt-0.5">All open tasks across your pipeline.</p>
+          <p className="text-sm text-gray-400 mt-0.5">{isAdmin ? 'All open tasks across your brokerage pipeline.' : 'Your assigned and created tasks.'}</p>
         </div>
         <span className="text-sm text-gray-400">{tasks?.length ?? 0} open</span>
       </div>

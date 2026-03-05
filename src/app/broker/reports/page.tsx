@@ -35,8 +35,10 @@ export default async function ReportsPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: broker } = await adminSupabase.from('brokers').select('brokerage_id').eq('id', user.id).single()
+  const { data: broker } = await adminSupabase.from('brokers').select('role, brokerage_id').eq('id', user.id).single()
   if (!broker?.brokerage_id) redirect('/onboard')
+
+  const isAdmin = broker.role === 'admin'
 
   // Fetch loans for this brokerage directly
   const { data: clients } = await adminSupabase
@@ -46,12 +48,15 @@ export default async function ReportsPage() {
 
   const clientIds = (clients ?? []).map((c: any) => c.id)
 
+  const loansQuery = adminSupabase
+    .from('loans')
+    .select('id, loan_stage, loan_amount, purchase_price, loan_type, created_at, closing_date, broker_id')
+    .order('created_at', { ascending: true })
+
   const { data: loansRaw } = clientIds.length > 0
-    ? await adminSupabase
-        .from('loans')
-        .select('id, loan_stage, loan_amount, purchase_price, loan_type, created_at, closing_date')
-        .in('client_id', clientIds)
-        .order('created_at', { ascending: true })
+    ? await (isAdmin
+        ? loansQuery.in('client_id', clientIds)
+        : loansQuery.in('client_id', clientIds).eq('broker_id', user.id))
     : { data: [] }
 
   const brokerageLoans = loansRaw ?? []
@@ -103,9 +108,16 @@ export default async function ReportsPage() {
       <Nav email={user.email ?? ''} />
       <main className="flex-1 overflow-auto">
     <div className="max-w-5xl mx-auto px-6 py-8 space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Reports &amp; Analytics</h1>
-        <p className="text-sm text-gray-400 mt-0.5">Pipeline performance and loan volume overview.</p>
+      <div className="flex items-start justify-between">
+        <div>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold text-gray-900">Reports &amp; Analytics</h1>
+            <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${isAdmin ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'}`}>
+              {isAdmin ? 'Brokerage View' : 'My Pipeline'}
+            </span>
+          </div>
+          <p className="text-sm text-gray-400 mt-0.5">{isAdmin ? 'Full brokerage pipeline overview.' : 'Your personal pipeline performance.'}</p>
+        </div>
       </div>
 
       {/* Stat cards */}
