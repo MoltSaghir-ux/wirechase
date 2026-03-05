@@ -36,13 +36,13 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
   const { data: client } = isAdmin
     ? await adminSupabase
         .from('clients')
-        .select('id, full_name, email, status, invite_token, created_at, broker_id, document_requests (id, label, status, required, category, notes)')
+        .select('id, full_name, email, phone, status, invite_token, created_at, broker_id, document_requests (id, label, status, required, category, notes)')
         .eq('id', id)
         .eq('brokerage_id', broker.brokerage_id)  // ← cannot see other brokerages
         .single()
     : await supabase
         .from('clients')
-        .select('id, full_name, email, status, invite_token, created_at, broker_id, document_requests (id, label, status, required, category, notes)')
+        .select('id, full_name, email, phone, status, invite_token, created_at, broker_id, document_requests (id, label, status, required, category, notes)')
         .eq('id', id)
         .eq('broker_id', user.id)
         .single()
@@ -108,7 +108,15 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
               </div>
               <div>
                 <h2 className="text-xl font-bold text-gray-900">{client.full_name}</h2>
-                <p className="text-gray-400 text-sm">{client.email}</p>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <p className="text-gray-400 text-sm">{client.email}</p>
+                  {client.phone && (
+                    <p className="text-gray-400 text-sm flex items-center gap-1">
+                      <span className="text-gray-300">·</span>
+                      <a href={`tel:${client.phone}`} className="hover:text-blue-500 transition">{client.phone}</a>
+                    </p>
+                  )}
+                </div>
                 <p className="text-gray-300 text-xs mt-0.5">
                   Added {new Date(client.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                 </p>

@@ -6,6 +6,7 @@ import Nav from '@/components/ui/Nav'
 import Link from 'next/link'
 import { LOAN_TYPE_LABELS, LOAN_PURPOSE_LABELS, EMPLOYMENT_TYPE_LABELS, PROPERTY_TYPE_LABELS, PROPERTY_USE_LABELS } from '@/lib/loan-doc-engine'
 import type { LoanType, LoanPurpose, EmploymentType, PropertyType, PropertyUse } from '@/lib/loan-doc-engine'
+import AddressAutocomplete from '@/components/ui/AddressAutocomplete'
 
 // We get the broker email from the page — but since this is a client component
 // we fetch it via a small server prop trick
@@ -331,9 +332,12 @@ export default function NewLoanPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Property Address <span className="text-gray-400 font-normal">(if known)</span></label>
-                <input type="text" value={propertyAddress} onChange={e => setPropertyAddress(e.target.value)}
+                <AddressAutocomplete
+                  value={propertyAddress}
+                  onChange={setPropertyAddress}
                   placeholder="123 Main St, Detroit, MI 48201"
-                  className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                  className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
               </div>
 
               {propertyType === 'condo' && (
