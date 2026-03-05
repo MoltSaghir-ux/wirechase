@@ -6,6 +6,7 @@ import { Suspense } from 'react'
 import DashboardSearch from '@/components/ui/DashboardSearch'
 import PipelineView from '@/components/ui/PipelineView'
 import type { ClientStatus, DocStatus } from '@/lib/types'
+import type { ReactNode } from 'react'
 
 type DashboardClient = {
   id: string; full_name: string; email: string; status: ClientStatus
@@ -109,12 +110,12 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
     (!q || c.full_name.toLowerCase().includes(q.toLowerCase()))
   )
 
-  const stats = [
-    { label: 'Active Files', value: total, icon: '📂', color: 'text-blue-600 bg-blue-50', filter: null },
+  const stats: { label: string; value: number; icon: ReactNode; color: string; filter: string | null }[] = [
+    { label: 'Active Files', value: total, icon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 0 0-1.883 2.542l.857 6a2.25 2.25 0 0 0 2.227 1.932H19.05a2.25 2.25 0 0 0 2.227-1.932l.857-6a2.25 2.25 0 0 0-1.883-2.542m-16.5 0V6A2.25 2.25 0 0 1 6 3.75h3.879a1.5 1.5 0 0 1 1.06.44l2.122 2.12a1.5 1.5 0 0 0 1.06.44H18A2.25 2.25 0 0 1 20.25 9v.776" /></svg>, color: 'text-blue-600 bg-blue-50', filter: null },
     { label: 'Pending Docs', value: pending, icon: '⏳', color: 'text-yellow-600 bg-yellow-50', filter: 'pending' },
-    { label: 'In Progress', value: inProgress, icon: '🔄', color: 'text-purple-600 bg-purple-50', filter: 'in_progress' },
+    { label: 'In Progress', value: inProgress, icon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" /></svg>, color: 'text-purple-600 bg-purple-50', filter: 'in_progress' },
     { label: 'Complete', value: complete, icon: '✓', color: 'text-green-600 bg-green-50', filter: 'complete' },
-    { label: 'Open Conditions', value: totalOpenConditions, icon: '⚠️', color: 'text-red-600 bg-red-50', filter: null },
+    { label: 'Open Conditions', value: totalOpenConditions, icon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" /></svg>, color: 'text-red-600 bg-red-50', filter: null },
   ]
 
   return (
@@ -203,7 +204,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
             {clients.length === 0 ? (
               <div className="py-24 text-center">
                 <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl flex items-center justify-center mx-auto mb-5">
-                  <span className="text-3xl">📁</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-blue-500"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 0 0-1.883 2.542l.857 6a2.25 2.25 0 0 0 2.227 1.932H19.05a2.25 2.25 0 0 0 2.227-1.932l.857-6a2.25 2.25 0 0 0-1.883-2.542m-16.5 0V6A2.25 2.25 0 0 1 6 3.75h3.879a1.5 1.5 0 0 1 1.06.44l2.122 2.12a1.5 1.5 0 0 0 1.06.44H18A2.25 2.25 0 0 1 20.25 9v.776" /></svg>
                 </div>
                 <h3 className="text-gray-700 font-semibold text-lg mb-1">No loan files yet</h3>
                 <p className="text-gray-400 text-sm mb-5">Submit your first loan to get started</p>
@@ -287,7 +288,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
             ) : (
               <div className="py-20 text-center">
                 <div className="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">🔍</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-gray-400"><path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 15.803a7.5 7.5 0 0 0 10.607 0Z" /></svg>
                 </div>
                 <p className="text-gray-500 font-medium">No {filter ? filter.replace('_', ' ') : ''} clients{q ? ` matching "${q}"` : ''}</p>
                 {(filter || q) && <Link href="/broker/dashboard" className="text-blue-600 text-sm font-medium hover:underline mt-2 inline-block">View all clients</Link>}

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
+import Logo from '@/components/ui/Logo'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -80,18 +81,13 @@ export default function LoginPage() {
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
 
       {/* Left: Branding panel */}
-      <div className="hidden lg:flex flex-col justify-between bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 p-12 text-white">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur">
-            <span className="text-white font-bold text-lg">W</span>
-          </div>
-          <span className="text-2xl font-bold">WireChase</span>
-        </div>
+      <div className="hidden lg:flex flex-col justify-between bg-[#0f2240] p-12 text-white">
+        <Logo size="lg" />
 
         <div className="space-y-8">
           <div>
             <h1 className="text-4xl font-black leading-tight mb-4">Sign in to WireChase</h1>
-            <p className="text-blue-200 text-lg">The modern mortgage broker platform — pipeline, communication, and AI in one place.</p>
+            <p className="text-white/70 text-lg">The modern mortgage broker platform — pipeline, communication, and AI in one place.</p>
           </div>
 
           <div className="space-y-4">
@@ -146,11 +142,9 @@ export default function LoginPage() {
         <div className="w-full max-w-sm">
 
           {/* Mobile logo */}
-          <div className="flex items-center gap-2.5 mb-8 lg:hidden">
-            <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center">
-              <span className="text-white font-bold">W</span>
-            </div>
-            <span className="text-gray-900 font-bold text-lg">WireChase</span>
+          <div className="mb-8 lg:hidden">
+            <Logo size="md" />
+            <div className="mt-3 h-0.5 w-12 rounded-full bg-[#c9a84c]" />
           </div>
 
           <h2 className="text-2xl font-bold text-gray-900 mb-1">
@@ -202,7 +196,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 text-white rounded-xl py-3 text-sm font-semibold hover:bg-blue-700 disabled:opacity-50 transition shadow-sm"
+              className="w-full bg-[#0f2240] text-white rounded-xl py-3 text-sm font-semibold hover:bg-[#1a3560] disabled:opacity-50 transition shadow-sm"
             >
               {loading ? 'Please wait…' : mode === 'login' ? 'Sign In →' : 'Create Account →'}
             </button>
@@ -212,7 +206,7 @@ export default function LoginPage() {
             {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
             <button
               onClick={() => { setMode(mode === 'login' ? 'signup' : 'login'); setMessage('') }}
-              className="text-blue-600 font-semibold hover:underline"
+              className="text-[#c9a84c] font-semibold hover:underline"
             >
               {mode === 'login' ? 'Sign up free' : 'Sign in'}
             </button>

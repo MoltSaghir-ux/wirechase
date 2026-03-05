@@ -22,7 +22,7 @@ export default function ResendEmailButton({ clientId }: { clientId: string }) {
       disabled={status === 'sending'}
       className="text-sm bg-blue-50 text-blue-600 border border-blue-200 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition disabled:opacity-50"
     >
-      {status === 'idle' && '📧 Resend Invite Email'}
+      {status === 'idle' && 'Resend Invite Email'}
       {status === 'sending' && 'Sending...'}
       {status === 'sent' && '✓ Email Sent!'}
       {status === 'error' && '✗ Failed — Try Again'}

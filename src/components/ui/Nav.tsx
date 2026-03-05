@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import NotificationBell from '@/components/ui/NotificationBell'
+import Logo from '@/components/ui/Logo'
 
 const navLinks = [
   { href: '/broker/dashboard', label: 'Dashboard', icon: (
@@ -73,12 +74,9 @@ export default function Nav({ email }: { email: string }) {
   return (
     <>
       {/* Mobile top bar */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-[#0f172a] border-b border-white/10 px-4 py-3 flex items-center justify-between">
-        <Link href="/broker/dashboard" className="flex items-center gap-2">
-          <div className="w-7 h-7 bg-blue-500 rounded-lg flex items-center justify-center">
-            <span className="text-white text-xs font-bold">W</span>
-          </div>
-          <span className="text-white font-bold text-sm">WireChase</span>
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-[#0f2240] border-b border-white/10 px-4 py-3 flex items-center justify-between">
+        <Link href="/broker/dashboard">
+          <Logo size="sm" className="text-white [&_span]:!text-white" />
         </Link>
         <button
           onClick={() => setMobileOpen(v => !v)}
@@ -102,7 +100,7 @@ export default function Nav({ email }: { email: string }) {
         <div className="lg:hidden fixed inset-0 z-30" onClick={() => setMobileOpen(false)}>
           <div className="absolute inset-0 bg-black/40" />
           <div
-            className="absolute top-[52px] left-0 bottom-0 w-64 bg-[#0f172a] overflow-y-auto"
+            className="absolute top-[52px] left-0 bottom-0 w-64 bg-[#0f2240] overflow-y-auto"
             onClick={e => e.stopPropagation()}
           >
             <nav className="px-3 py-4 space-y-0.5">
@@ -116,7 +114,7 @@ export default function Nav({ email }: { email: string }) {
                     onClick={() => setMobileOpen(false)}
                     className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition ${
                       active
-                        ? 'bg-blue-600 text-white shadow-sm shadow-blue-900'
+                        ? 'bg-[#c9a84c] text-[#0f2240] shadow-sm shadow-black/20'
                         : 'text-white/55 hover:text-white hover:bg-white/8'
                     }`}
                   >
@@ -128,7 +126,7 @@ export default function Nav({ email }: { email: string }) {
             </nav>
             <div className="px-4 py-4 border-t border-white/10">
               <div className="flex items-center gap-3 px-1">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
+                <div className="w-8 h-8 bg-[#c9a84c] rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
                   <span className="text-white text-xs font-bold">{initials}</span>
                 </div>
                 <div className="flex-1 min-w-0">
@@ -151,16 +149,11 @@ export default function Nav({ email }: { email: string }) {
       )}
 
       {/* Desktop sidebar */}
-      <aside className="hidden lg:flex w-60 min-h-screen bg-[#0f172a] flex-col sticky top-0 h-screen">
+      <aside className="hidden lg:flex w-60 min-h-screen bg-[#0f2240] flex-col sticky top-0 h-screen">
         {/* Logo */}
-        <Link href="/broker/dashboard" className="px-6 py-5 border-b border-white/10 flex items-center gap-2.5 hover:opacity-80 transition">
-          <div className="w-7 h-7 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
-            <span className="text-white text-xs font-bold">W</span>
-          </div>
-          <div>
-            <h1 className="text-white font-bold text-sm leading-none">WireChase</h1>
-            <p className="text-white/40 text-xs mt-0.5">Broker Portal</p>
-          </div>
+        <Link href="/broker/dashboard" className="px-6 py-5 border-b border-white/10 flex flex-col gap-1 hover:opacity-80 transition">
+          <Logo size="md" />
+          <p className="text-white/40 text-xs mt-0.5 pl-[44px]">Broker Portal</p>
         </Link>
 
         {/* Nav */}
@@ -174,7 +167,7 @@ export default function Nav({ email }: { email: string }) {
                 href={link.href}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition ${
                   active
-                    ? 'bg-blue-600 text-white shadow-sm shadow-blue-900'
+                    ? 'bg-[#c9a84c] text-[#0f2240] shadow-sm shadow-black/20'
                     : 'text-white/55 hover:text-white hover:bg-white/8'
                 }`}
               >
@@ -188,7 +181,7 @@ export default function Nav({ email }: { email: string }) {
         {/* User */}
         <div className="px-4 py-4 border-t border-white/10">
           <div className="flex items-center gap-3 px-1">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
+            <div className="w-8 h-8 bg-[#c9a84c] rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
               <span className="text-white text-xs font-bold">{initials}</span>
             </div>
             <div className="flex-1 min-w-0">

@@ -20,7 +20,7 @@ export default function DashboardSearch({ defaultValue = '' }: { defaultValue?: 
 
   return (
     <div className="relative">
-      <span className="absolute left-3 top-2.5 text-gray-400 text-sm">🔍</span>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 absolute left-3 top-2.5 text-gray-400"><path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 15.803a7.5 7.5 0 0 0 10.607 0Z" /></svg>
       <input
         type="text"
         value={value}

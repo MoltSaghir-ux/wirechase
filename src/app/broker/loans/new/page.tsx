@@ -498,7 +498,7 @@ export default function NewLoanPage() {
                     </svg>
                     Generating Checklist...
                   </>
-                ) : '🚀 Submit Loan & Generate Checklist'}
+                ) : 'Submit Loan & Generate Checklist'}
               </button>
             )}
           </div>

@@ -10,6 +10,11 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-brand-navy: #0f2240;
+  --color-brand-navy-light: #1a3560;
+  --color-brand-gold: #c9a84c;
+  --color-brand-gold-dark: #a8893a;
+  --color-brand-gold-light: #fdf6e3;
 }
 
 @media (prefers-color-scheme: dark) {
