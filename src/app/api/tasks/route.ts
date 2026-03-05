@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
   const loanId = searchParams.get('loanId')
   if (!loanId) return NextResponse.json({ error: 'loanId required' }, { status: 400 })
 
-  const { data: broker } = await adminSupabase.from('brokers').select('brokerage_id').eq('user_id', user.id).single()
+  const { data: broker } = await adminSupabase.from('brokers').select('brokerage_id').eq('id', user.id).single()
   if (!broker?.brokerage_id) return NextResponse.json([])
 
   const { data } = await adminSupabase
@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return new NextResponse('Unauthorized', { status: 401 })
 
-  const { data: broker } = await adminSupabase.from('brokers').select('brokerage_id, full_name').eq('user_id', user.id).single()
+  const { data: broker } = await adminSupabase.from('brokers').select('brokerage_id, full_name').eq('id', user.id).single()
   if (!broker?.brokerage_id) return new NextResponse('Forbidden', { status: 403 })
 
   const body = await req.json()

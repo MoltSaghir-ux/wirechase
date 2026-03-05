@@ -4,7 +4,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from '@/lib/sup
 const adminSupabase = createAdminSupabaseClient()
 
 async function getAuthedBroker(user_id: string) {
-  const { data } = await adminSupabase.from('brokers').select('brokerage_id, role').eq('user_id', user_id).single()
+  const { data } = await adminSupabase.from('brokers').select('brokerage_id, role').eq('id', user_id).single()
   return data
 }
 

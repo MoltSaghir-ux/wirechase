@@ -11,7 +11,7 @@ export async function PATCH(req: NextRequest) {
   const { loanId, referralPartnerId, referralNotes } = await req.json()
   if (!loanId) return NextResponse.json({ error: 'loanId required' }, { status: 400 })
 
-  const { data: broker } = await adminSupabase.from('brokers').select('brokerage_id').eq('user_id', user.id).single()
+  const { data: broker } = await adminSupabase.from('brokers').select('brokerage_id').eq('id', user.id).single()
   if (!broker?.brokerage_id) return new NextResponse('Forbidden', { status: 403 })
 
   const { data: loan } = await adminSupabase.from('loans').select('client_id, clients(brokerage_id)').eq('id', loanId).single()

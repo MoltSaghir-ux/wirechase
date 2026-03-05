@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return new NextResponse('Unauthorized', { status: 401 })
 
-  const { data: broker } = await adminSupabase.from('brokers').select('brokerage_id').eq('user_id', user.id).single()
+  const { data: broker } = await adminSupabase.from('brokers').select('brokerage_id').eq('id', user.id).single()
   if (!broker?.brokerage_id) return NextResponse.json({})
 
   // Fetch all loans for this brokerage with their clients

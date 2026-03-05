@@ -17,7 +17,7 @@ export default async function TasksPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  const { data: broker } = await adminSupabase.from('brokers').select('brokerage_id').eq('user_id', user.id).single()
+  const { data: broker } = await adminSupabase.from('brokers').select('brokerage_id').eq('id', user.id).single()
   if (!broker?.brokerage_id) redirect('/onboard')
 
   const { data: tasks } = await adminSupabase
@@ -45,7 +45,9 @@ export default async function TasksPage() {
 
       {(!tasks || tasks.length === 0) ? (
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-12 text-center">
-          <div className="text-4xl mb-3">✅</div>
+          <div className="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center mb-3 mx-auto">
+            <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          </div>
           <h3 className="font-semibold text-gray-700 text-lg mb-1">All caught up!</h3>
           <p className="text-gray-400 text-sm">No open tasks across your pipeline.</p>
         </div>
