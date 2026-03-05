@@ -14,7 +14,7 @@ export default async function TeamPage() {
 
   const { data: broker } = await adminSupabase
     .from('brokers')
-    .select('role, brokerage_id, full_name, lo_nmls, brokerages (id, name, nmls)')
+    .select('role, brokerage_id, full_name, nmls, brokerages (id, name, nmls)')
     .eq('id', user.id)
     .single()
 
@@ -34,7 +34,7 @@ export default async function TeamPage() {
   if (!isAdmin) {
     const currentBroker = {
       full_name: broker.full_name as string | null,
-      lo_nmls: broker.lo_nmls as string | null,
+      lo_nmls: broker.nmls as string | null,
     }
 
     return (
