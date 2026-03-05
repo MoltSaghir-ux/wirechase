@@ -8,6 +8,25 @@ const adminSupabase = createAdminSupabaseClient()
 const ALLOWED_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp']
 const MAX_SIZE = 10 * 1024 * 1024 // 10MB
 
+async function validateFileMagicBytes(file: File): Promise<boolean> {
+  const buffer = new Uint8Array(await file.slice(0, 12).arrayBuffer())
+  const hex = Array.from(buffer).map(b => b.toString(16).padStart(2, '0')).join('')
+
+  if (file.type === 'application/pdf') {
+    return hex.startsWith('255044462d') // %PDF-
+  }
+  if (file.type === 'image/jpeg') {
+    return hex.startsWith('ffd8ff') // JPEG SOI
+  }
+  if (file.type === 'image/png') {
+    return hex.startsWith('89504e47') // PNG
+  }
+  if (file.type === 'image/webp') {
+    return hex.slice(8, 16) === '57454250' // WEBP
+  }
+  return false
+}
+
 export async function POST(req: NextRequest) {
   const formData = await req.formData()
   const token = formData.get('token') as string
@@ -24,6 +43,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid token' }, { status: 403 })
   }
 
+  // Validate UUID format for docRequestId
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(docRequestId)) {
+    return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
+  }
+
   // Validate file type
   if (!ALLOWED_TYPES.includes(file.type)) {
     return NextResponse.json({ error: 'Only PDF, JPG, PNG, WEBP allowed' }, { status: 400 })
@@ -32,6 +56,12 @@ export async function POST(req: NextRequest) {
   // Validate file size
   if (file.size > MAX_SIZE) {
     return NextResponse.json({ error: 'File must be under 10MB' }, { status: 400 })
+  }
+
+  // Validate magic bytes — ensure file content matches declared MIME type
+  const magicValid = await validateFileMagicBytes(file)
+  if (!magicValid) {
+    return NextResponse.json({ error: 'File content does not match declared type' }, { status: 400 })
   }
 
   // Verify token → get client
@@ -43,6 +73,26 @@ export async function POST(req: NextRequest) {
 
   if (!client) {
     return NextResponse.json({ error: 'Invalid invite link' }, { status: 403 })
+  }
+
+  // Rate limit: max 20 uploads per client in the last hour
+  const { data: clientDocRequests } = await adminSupabase
+    .from('document_requests')
+    .select('id')
+    .eq('client_id', client.id)
+
+  const clientDocRequestIds = clientDocRequests?.map(d => d.id) ?? []
+
+  if (clientDocRequestIds.length > 0) {
+    const { data: recentUploads } = await adminSupabase
+      .from('documents')
+      .select('id')
+      .in('document_request_id', clientDocRequestIds)
+      .gte('created_at', new Date(Date.now() - 60 * 60 * 1000).toISOString())
+
+    if ((recentUploads?.length ?? 0) >= 20) {
+      return NextResponse.json({ error: 'Too many uploads. Please wait before trying again.' }, { status: 429 })
+    }
   }
 
   // Verify doc request belongs to this client
@@ -73,10 +123,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Upload failed' }, { status: 500 })
   }
 
+  // Sanitize filename before storing
+  const safeName = file.name.replace(/[^a-zA-Z0-9.\-_ ]/g, '_').slice(0, 200)
+
   // Save document record
   await adminSupabase.from('documents').insert({
     document_request_id: docRequestId,
-    file_name: file.name.slice(0, 200),
+    file_name: safeName,
     file_path: filePath,
     file_size: file.size,
   })

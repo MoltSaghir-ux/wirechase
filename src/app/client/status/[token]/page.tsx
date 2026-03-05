@@ -5,13 +5,13 @@ import Link from 'next/link'
 const adminSupabase = createAdminSupabaseClient()
 
 const STAGES = [
-  { key: 'application', label: 'Application Received', icon: '📝', desc: 'Your application has been received and is being prepared.' },
-  { key: 'processing', label: 'Processing', icon: '📂', desc: 'Your loan is being processed and documents are being reviewed.' },
-  { key: 'submitted_uw', label: 'Submitted to Underwriting', icon: '📋', desc: 'Your loan package has been submitted to the underwriter for review.' },
-  { key: 'conditional_approval', label: 'Conditional Approval', icon: '✅', desc: 'Underwriting has conditionally approved your loan. A few items may still be needed.' },
-  { key: 'clear_to_close', label: 'Clear to Close', icon: '🎉', desc: 'Your loan has been cleared! Closing is being scheduled.' },
-  { key: 'closing', label: 'Closing', icon: '📅', desc: 'Your closing is scheduled. Review all documents carefully before signing.' },
-  { key: 'funded', label: 'Funded', icon: '🏠', desc: 'Congratulations! Your loan has been funded.' },
+  { key: 'application', label: 'Application Received', desc: 'Your application has been received and is being prepared.' },
+  { key: 'processing', label: 'Processing', desc: 'Your loan is being processed and documents are being reviewed.' },
+  { key: 'submitted_uw', label: 'Submitted to Underwriting', desc: 'Your loan package has been submitted to the underwriter for review.' },
+  { key: 'conditional_approval', label: 'Conditional Approval', desc: 'Underwriting has conditionally approved your loan. A few items may still be needed.' },
+  { key: 'clear_to_close', label: 'Clear to Close', desc: 'Your loan has been cleared! Closing is being scheduled.' },
+  { key: 'closing', label: 'Closing', desc: 'Your closing is scheduled. Review all documents carefully before signing.' },
+  { key: 'funded', label: 'Funded', desc: 'Congratulations! Your loan has been funded.' },
 ]
 
 export default async function BorrowerStatusPage({ params }: { params: Promise<{ token: string }> }) {
@@ -52,18 +52,18 @@ export default async function BorrowerStatusPage({ params }: { params: Promise<{
   const isDenied = loan?.loan_stage === 'denied'
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+    <div className="min-h-screen bg-[#f8fafc]">
       {/* Header */}
       <div className="bg-white border-b border-gray-100 shadow-sm">
         <div className="max-w-2xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">W</span>
+            <div className="w-8 h-8 bg-[#0f2240] rounded-lg flex items-center justify-center">
+              <span className="text-[#c9a84c] font-bold text-sm">W</span>
             </div>
             <span className="font-bold text-gray-900">WireChase</span>
           </div>
           <Link href={`/client/upload/${token}`}
-            className="text-xs bg-blue-600 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-blue-700 transition">
+            className="text-xs bg-[#c9a84c] hover:bg-[#a8893a] text-[#0f2240] px-3 py-1.5 rounded-lg font-semibold transition">
             Upload Documents →
           </Link>
         </div>
@@ -72,12 +72,12 @@ export default async function BorrowerStatusPage({ params }: { params: Promise<{
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-5">
         {/* Welcome card */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-          <h1 className="text-xl font-bold text-gray-900">Hi, {client.full_name.split(' ')[0]}! 👋</h1>
+          <h1 className="text-xl font-bold text-gray-900">Hi, {client.full_name.split(' ')[0]}!</h1>
           <p className="text-gray-400 text-sm mt-0.5">Here&apos;s the current status of your loan application.</p>
 
           {loan && (
             <div className="mt-4 flex items-center gap-3 flex-wrap">
-              <span className="text-xs bg-blue-50 text-blue-700 font-semibold px-2.5 py-1 rounded-full">
+              <span className="text-xs bg-[#fdf6e3] text-[#0f2240] font-semibold px-2.5 py-1 rounded-full">
                 {LOAN_TYPE_LABELS[loan.loan_type] ?? loan.loan_type}
               </span>
               <span className="text-xs bg-gray-100 text-gray-600 font-semibold px-2.5 py-1 rounded-full">
@@ -108,20 +108,20 @@ export default async function BorrowerStatusPage({ params }: { params: Promise<{
                 const isComplete = i < currentStageIdx
                 const isCurrent = i === currentStageIdx
                 return (
-                  <div key={stage.key} className={`flex items-start gap-3 p-3 rounded-xl transition ${isCurrent ? 'bg-blue-600/5 border border-blue-200 shadow-sm' : ''}`}>
+                  <div key={stage.key} className={`flex items-start gap-3 p-3 rounded-xl transition ${isCurrent ? 'bg-[#fdf6e3] border border-[#c9a84c]/30 shadow-sm' : ''}`}>
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold ${
                       isComplete ? 'bg-green-500 text-white' :
-                      isCurrent ? 'bg-blue-700 text-white shadow-lg shadow-blue-200' :
+                      isCurrent ? 'bg-[#0f2240] text-white shadow-lg shadow-[#0f2240]/20' :
                       'bg-gray-100 text-gray-400'
                     }`}>
-                      {isComplete ? '✓' : isCurrent ? stage.icon : <span className="text-xs">{i + 1}</span>}
+                      {isComplete ? '✓' : <span className="text-xs">{i + 1}</span>}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className={`text-sm font-semibold ${isCurrent ? 'text-blue-700' : isComplete ? 'text-gray-600' : 'text-gray-400'}`}>
+                      <p className={`text-sm font-semibold ${isCurrent ? 'text-[#0f2240]' : isComplete ? 'text-gray-600' : 'text-gray-400'}`}>
                         {stage.label}
-                        {isCurrent && <span className="ml-2 text-[10px] bg-blue-600 text-white px-1.5 py-0.5 rounded-full font-bold">Current</span>}
+                        {isCurrent && <span className="ml-2 text-[10px] bg-[#c9a84c] text-[#0f2240] px-1.5 py-0.5 rounded-full font-bold">Current</span>}
                       </p>
-                      {isCurrent && <p className="text-xs text-blue-600 mt-0.5">{stage.desc}</p>}
+                      {isCurrent && <p className="text-xs text-[#0f2240]/70 mt-0.5">{stage.desc}</p>}
                     </div>
                   </div>
                 )
@@ -149,10 +149,10 @@ export default async function BorrowerStatusPage({ params }: { params: Promise<{
           <div className="mb-4">
             <div className="flex justify-between text-xs text-gray-400 mb-1.5">
               <span>{uploadedDocs} of {totalDocs} submitted</span>
-              <span className="font-semibold text-blue-600">{pct}%</span>
+              <span className="font-semibold text-[#0f2240]">{pct}%</span>
             </div>
             <div className="w-full bg-gray-100 rounded-full h-2">
-              <div className="bg-blue-500 h-2 rounded-full transition-all" style={{ width: `${pct}%` }} />
+              <div className="bg-[#c9a84c] h-2 rounded-full transition-all" style={{ width: `${pct}%` }} />
             </div>
           </div>
 
@@ -173,11 +173,11 @@ export default async function BorrowerStatusPage({ params }: { params: Promise<{
 
           {uploadedNotApproved.length > 0 && (
             <div className="mb-4">
-              <p className="text-xs font-semibold text-blue-500 uppercase tracking-wide mb-2">Under Review</p>
+              <p className="text-xs font-semibold text-[#0f2240] uppercase tracking-wide mb-2">Under Review</p>
               <div className="space-y-1.5">
                 {uploadedNotApproved.map((doc) => (
                   <div key={doc.id} className="flex items-center gap-2 text-sm text-gray-600">
-                    <span className="w-1.5 h-1.5 rounded-full bg-blue-400 flex-shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#c9a84c] flex-shrink-0" />
                     {doc.label}
                   </div>
                 ))}
@@ -187,15 +187,15 @@ export default async function BorrowerStatusPage({ params }: { params: Promise<{
 
           {missingDocs.length > 0 && (
             <Link href={`/client/upload/${token}`}
-              className="mt-3 block w-full text-center bg-blue-600 text-white py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-700 transition">
+              className="mt-3 block w-full text-center bg-[#0f2240] text-white py-2.5 rounded-xl text-sm font-semibold hover:bg-[#1a3560] transition">
               Upload Missing Documents →
             </Link>
           )}
 
           {missingDocs.length === 0 && loan?.loan_stage === 'funded' && approvedDocs === totalDocs && totalDocs > 0 ? (
             <div className="text-center py-6">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <span className="text-3xl">🏠</span>
+              <div className="w-16 h-16 bg-[#c9a84c]/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-[#c9a84c]"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
               </div>
               <p className="text-green-700 font-bold text-lg">Congratulations!</p>
               <p className="text-green-600 font-semibold text-sm mt-0.5">Your loan has been funded.</p>
@@ -203,7 +203,7 @@ export default async function BorrowerStatusPage({ params }: { params: Promise<{
             </div>
           ) : missingDocs.length === 0 ? (
             <div className="text-center py-3">
-              <p className="text-green-600 font-semibold text-sm">✓ All documents submitted!</p>
+              <p className="text-green-600 font-semibold text-sm">All documents submitted!</p>
               <p className="text-gray-400 text-xs mt-0.5">We&apos;ll notify you if anything else is needed.</p>
             </div>
           ) : null}
