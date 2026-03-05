@@ -9,6 +9,7 @@ import DocReview from '@/components/ui/DocReview'
 import ClientNotes from '@/components/ui/ClientNotes'
 import ActivityLog from '@/components/ui/ActivityLog'
 import LoanStageTracker from '@/components/ui/LoanStageTracker'
+import LoanConditions from '@/components/ui/LoanConditions'
 import type { DocumentRequest, ActivityEntry } from '@/lib/types'
 import { LOAN_TYPE_LABELS, LOAN_PURPOSE_LABELS, EMPLOYMENT_TYPE_LABELS, PROPERTY_TYPE_LABELS } from '@/lib/loan-doc-engine'
 
@@ -178,6 +179,10 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
             currentStage={(loan.loan_stage ?? 'processing') as any}
             isDenied={loan.loan_stage === 'denied'}
           />
+        )}
+
+        {loan && (
+          <LoanConditions loanId={loan.id} clientId={client.id} />
         )}
 
         {/* Loan Summary Card */}
