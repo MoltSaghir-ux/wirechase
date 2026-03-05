@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
+import NotificationBell from '@/components/ui/NotificationBell'
 
 const navLinks = [
   { href: '/broker/dashboard', label: 'Dashboard', icon: (
@@ -96,6 +97,7 @@ export default function Nav({ email }: { email: string }) {
           <div className="flex-1 min-w-0">
             <p className="text-white/60 text-xs truncate">{email}</p>
           </div>
+          <NotificationBell />
           <button
             onClick={handleLogout}
             title="Sign out"
