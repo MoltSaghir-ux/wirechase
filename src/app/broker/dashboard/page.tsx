@@ -78,7 +78,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
               </span>
             </p>
           </div>
-          <Link href="/broker/clients/new" className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-700 transition shadow-sm">
+          <Link href="/broker/loans/new" className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-700 transition shadow-sm">
             <span className="text-base leading-none">+</span> Add Client
           </Link>
         </div>
@@ -175,7 +175,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                 <span className="text-2xl">📁</span>
               </div>
               <p className="text-gray-500 font-medium">No {filter ? filter.replace('_', ' ') : ''} clients</p>
-              {!filter && <Link href="/broker/clients/new" className="text-blue-600 text-sm font-medium hover:underline mt-2 inline-block">Add your first client →</Link>}
+              {!filter && <Link href="/broker/loans/new" className="text-blue-600 text-sm font-medium hover:underline mt-2 inline-block">Add your first client →</Link>}
               {filter && <Link href="/broker/dashboard" className="text-blue-600 text-sm font-medium hover:underline mt-2 inline-block">View all clients</Link>}
             </div>
           )}
