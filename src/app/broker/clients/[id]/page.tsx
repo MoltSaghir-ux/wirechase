@@ -11,6 +11,7 @@ import ActivityLog from '@/components/ui/ActivityLog'
 import LoanStageTracker from '@/components/ui/LoanStageTracker'
 import LoanConditions from '@/components/ui/LoanConditions'
 import ExportDropdown from '@/components/ui/ExportDropdown'
+import ReferralPartnerPanel from '@/components/ui/ReferralPartnerPanel'
 import PreApprovalButton from '@/components/ui/PreApprovalButton'
 import type { DocumentRequest, ActivityEntry } from '@/lib/types'
 import { LOAN_TYPE_LABELS, LOAN_PURPOSE_LABELS, EMPLOYMENT_TYPE_LABELS, PROPERTY_TYPE_LABELS } from '@/lib/loan-doc-engine'
@@ -94,7 +95,7 @@ export default async function ClientDetailPage({ params, searchParams }: {
   // Fetch loan record
   const { data: loan } = await adminSupabase
     .from('loans')
-    .select('id, loan_type, loan_purpose, loan_amount, purchase_price, employment_type, co_borrower, co_borrower_name, co_borrower_email, co_borrower_invite_token, property_type, property_use, property_address, loan_stage, file_number, rate_lock_expiry, closing_date, title_company, lo_nmls, property_county, property_state, property_zip, borrower_dob, borrower_ssn_last4')
+    .select('id, loan_type, loan_purpose, loan_amount, purchase_price, employment_type, co_borrower, co_borrower_name, co_borrower_email, co_borrower_invite_token, property_type, property_use, property_address, loan_stage, file_number, rate_lock_expiry, closing_date, title_company, lo_nmls, property_county, property_state, property_zip, borrower_dob, borrower_ssn_last4, referral_partner_id, referral_notes, referral_partners(id, full_name)')
     .eq('client_id', id)
     .order('created_at', { ascending: false })
     .limit(1)
