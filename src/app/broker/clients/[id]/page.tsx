@@ -99,14 +99,25 @@ export default async function ClientDetailPage({ params, searchParams }: {
     filesByDocId[f.document_request_id].push(f)
   }
 
-  // Fetch loan record
+  // Fetch loan record — split referral join into separate query to avoid schema cache errors
   const { data: loan } = await adminSupabase
     .from('loans')
-    .select('id, loan_type, loan_purpose, loan_amount, purchase_price, employment_type, co_borrower, co_borrower_name, co_borrower_email, co_borrower_invite_token, property_type, property_use, property_address, loan_stage, file_number, rate_lock_expiry, closing_date, title_company, lo_nmls, property_county, property_state, property_zip, borrower_dob, borrower_ssn_last4, referral_partner_id, referral_notes, referral_partners(id, full_name)')
+    .select('id, loan_type, loan_purpose, loan_amount, purchase_price, employment_type, co_borrower, co_borrower_name, co_borrower_email, co_borrower_invite_token, property_type, property_use, property_address, loan_stage, file_number, rate_lock_expiry, closing_date, title_company, lo_nmls, property_county, property_state, property_zip, borrower_dob, borrower_ssn_last4, referral_partner_id, referral_notes')
     .eq('client_id', id)
     .order('created_at', { ascending: false })
     .limit(1)
     .maybeSingle()
+
+  // Fetch referral partner name separately to avoid Supabase schema cache join issues
+  let referralPartnerName: string | null = null
+  if (loan?.referral_partner_id) {
+    const { data: rp } = await adminSupabase
+      .from('referral_partners')
+      .select('full_name')
+      .eq('id', loan.referral_partner_id)
+      .single()
+    referralPartnerName = rp?.full_name ?? null
+  }
 
   // Fetch activity log
   const { data: activities } = await adminSupabase
@@ -370,7 +381,7 @@ export default async function ClientDetailPage({ params, searchParams }: {
                   <ReferralPartnerPanel
                     loanId={loan.id}
                     currentPartnerId={(loan as any).referral_partner_id ?? null}
-                    currentPartnerName={(loan as any).referral_partners?.full_name ?? null}
+                    currentPartnerName={referralPartnerName}
                     referralNotes={(loan as any).referral_notes ?? null}
                   />
                 </div>
