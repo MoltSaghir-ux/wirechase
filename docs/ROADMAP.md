@@ -4,119 +4,101 @@
 ---
 
 ## 🎯 Vision
-A two-layer platform for mortgage brokers:
-- **Layer 1 (Portal)** — Premium mortgage CRM. Loan officers submit loans, borrowers upload docs, processors track the pipeline. Must be excellent as a standalone product *before* any AI is added.
-- **Layer 2 (AI Processor)** — Autonomous agents that work a loan file end-to-end: verify docs, submit to lender portals, scrape conditions, clear them with clients via call/text/email, assist with e-signing. Goal: replace or drastically reduce the need for human processors.
+A premium mortgage CRM (think Salesforce/Arrive for mortgage brokers) with built-in AI processing.
+Monthly subscription SaaS. Goal: replace or drastically reduce the need for human processors.
 
 **Target lender portals:** Rocket Pro TPO, UWM (United Wholesale Mortgage)
-**Voice/comms stack (planned):** Vapi.ai (voice AI), Twilio (SMS), Resend (email — already live)
-**Monetization:** Monthly subscription SaaS (~$49–$100/mo per broker or team)
+**Voice/comms stack (planned):** Vapi.ai (voice AI), Twilio (SMS), Resend (email — live)
+**Monetization:** Monthly subscription (~$49–$100/mo per broker or team)
 
 ---
 
 ## ✅ Phase 1A — Core Portal — COMPLETE
-
-| Feature | Status |
-|---|---|
-| Broker auth (login / signup / onboarding) | ✅ |
-| Team management (invite LOs, admin/LO roles) | ✅ |
-| Loan intake form (4-step: borrower → loan → property → special circumstances) | ✅ |
-| Dynamic document checklist generation | ✅ |
-| Client upload portal (token-based, no account needed) | ✅ |
-| Co-borrower upload portal (separate token/link) | ✅ |
-| Email invite to borrower on submission (Resend) | ✅ |
-| Broker dashboard (client list, status filter) | ✅ |
-| Client detail page (docs, progress, status) | ✅ |
-| Loan stage tracker (Application → Funded, clickable) | ✅ |
-| Loan summary card on client detail | ✅ |
-| File number / reference number | ✅ |
-| Phone number collected + displayed | ✅ |
-| Activity log per client | ✅ |
-| Client notes | ✅ |
-| Doc approve / reject + in-browser viewer | ✅ |
-| Add document requests manually | ✅ |
-| Archived loans view | ✅ |
+Auth, onboarding, loan intake form, dynamic doc checklist, client upload portal, co-borrower portal,
+email invites, dashboard, client detail page, stage tracker, file numbers, activity log, notes,
+doc approve/reject/viewer, archive, team management.
 
 ---
 
 ## ✅ Phase 1B — Processor Tools — COMPLETE
-
-| Feature | Status |
-|---|---|
-| Search by borrower name (dashboard) | ✅ |
-| Pipeline / kanban view (grouped by loan stage) | ✅ |
-| List ↔ Pipeline view toggle | ✅ |
-| Stale doc timer ("Requested 14 days ago — follow up!") | ✅ |
-| Document expiration tracking (pay stubs 30d, bank stmts 60d, etc.) | ✅ |
-| UW Conditions UI (add, track, clear — full workflow) | ✅ |
-| Address autocomplete on loan intake (Nominatim/OSM) | ✅ |
+Search, pipeline/kanban view, stale doc timer, doc expiration tracking, UW Conditions UI,
+address autocomplete.
 
 ---
 
-## ✅ Phase 1C — Portal Completion — IN PROGRESS
+## ✅ Phase 1C — Portal Completion — COMPLETE
+Edit loan details, client detail tabs (Overview/Docs/Conditions/Notes), closing date, rate lock expiry
+(red warning ≤7 days), title company, dashboard condition counts + stage pills, notification bell,
+daily cron emails (rate lock, stale conditions, deadlines), document metadata (type/date range/borrower),
+MISMO 3.4 XML export, Fannie Mae 3.2 export, property county/state/zip, borrower DOB/SSN last4.
 
-### Done today (2026-03-05)
-| Feature | Status |
-|---|---|
-| Edit loan details after submission (type, amount, purpose, employment, property, co-borrower) | ✅ |
-| Client detail page reorganized into tabs (Overview / Documents / Conditions / Notes & Activity) | ✅ |
-| Closing date field on loan | ✅ |
-| Rate lock expiry field (turns red ⚠️ within 7 days) | ✅ |
-| Title company field | ✅ |
-| Dashboard: open conditions count stat card | ✅ |
-| Dashboard: loan stage pill on every client row | ✅ |
-| Dashboard: open conditions badge on list rows + pipeline cards | ✅ |
-| Dashboard: premium empty state | ✅ |
+---
 
-### Still To Build
-| Feature | Priority | Notes |
+## 🔨 Phase 1D — Broker Workflow Features — IN PROGRESS
+
+### 🔴 High Priority (building now)
+| Feature | Notes | Status |
 |---|---|---|
-| **Notification system** | 🔴 High | Email/in-app alerts: doc uploaded, doc expiring soon, condition 14+ days stale, rate lock expiring |
-| **Bulk doc approve** | 🟡 Medium | Select all uploaded → approve in one click |
-| **LOE request button** | 🟡 Medium | One click to request a Letter of Explanation from borrower |
-| **Stacking order / submission packet** | 🟡 Medium | Arrange docs in correct UW order, export as single PDF |
-| **Loan schema audit vs Rocket/UWM** | 🔴 High | Ensure we capture every field both portals need (NMLS, APN, title info, etc.) |
-| **Document metadata** | 🔴 High | Store doc type, date range, which borrower it belongs to — critical for AI verification |
-| **E-sign tracking fields** | 🟡 Medium | Docs sent for signing, signed date, which docs are outstanding |
-| **Mobile responsiveness** | 🟡 Medium | At minimum client upload page + pipeline view |
-| **Stripe billing** | 🔴 High (before launch) | $49–$100/mo per broker |
-| **Error monitoring** | 🟡 Medium | Sentry or similar before any real users |
-| **Google Maps address autocomplete** | 🟢 Low | Replace Nominatim — needs API key from Mohamed |
+| **Pre-approval letter generator** | One-click generate a pre-approval PDF/letter from loan data. Broker downloads and sends to client/realtor. | 🔨 Building |
+| **Borrower-facing status page** | Borrower logs in via their token and sees loan stage, which docs are pending/approved, what's still needed. Major trust-builder. | 🔨 Building |
+| **Milestone email automations** | Auto-email borrower (and optionally broker) when loan stage changes. "Your loan has moved to Conditional Approval" etc. | 🔨 Building |
+
+### 🟡 Medium Priority
+| Feature | Notes | Status |
+|---|---|---|
+| **Referral partner tracking** | Track which realtor/agent referred each loan. Partner gets milestone update emails. Critical for broker relationships. | ❌ Todo |
+| **Task assignment** | Assign specific tasks/todos to team members. "Follow up on bank statements — assigned to John." | ❌ Todo |
+| **Reporting & analytics** | Dashboard with: loan volume by month, avg time to close, close rate, docs per loan, team performance. | ❌ Todo |
+| **Two-way SMS** | Twilio SMS to/from borrowers for doc reminders, condition updates. | ❌ Todo |
+| **Pre-approval letter templates** | Multiple letter formats (full approval, conditional, pre-qual). Custom branding. | ❌ Todo |
+| **Bulk doc approve** | Select all uploaded docs → approve in one click. | ❌ Todo |
+| **LOE request button** | One click to request Letter of Explanation from borrower for a specific item. | ❌ Todo |
+| **Stacking order / submission packet** | Arrange docs in correct UW order, export as single PDF. | ❌ Todo |
+
+### 🟢 Nice to Have
+| Feature | Notes | Status |
+|---|---|---|
+| **Rate quote / GFE worksheet** | Basic rate quote builder, Good Faith Estimate worksheet. | ❌ Todo |
+| **Credit pull integration** | Connect to Experian/Equifax/TransUnion soft pull APIs. | ❌ Todo |
+| **Built-in e-sign** | Actual document signing (DocuSign/HelloSign integration or native). | ❌ Todo |
+| **Mobile app / PWA** | At minimum a PWA so brokers can check pipeline on phone. | ❌ Todo |
+| **Google Maps address autocomplete** | Replace Nominatim — needs API key. | ❌ Todo |
+| **Stripe billing** | $49–$100/mo per broker. Implement before launch. | ❌ Todo |
 
 ---
 
 ## ⏳ Phase 2 — AI Processor — FUTURE
-*Do not start until Phase 1C is solid.*
+*Do not start until Phase 1D is solid.*
 
 ### 2A — Document Intelligence
 | Feature | Notes |
 |---|---|
 | Doc verification AI | Confirm docs match request (right type, date range, borrower name) |
 | Missing info detection | Flag incomplete docs (e.g. bank statement missing pages) |
-| Data extraction | Pull income from pay stub, balance from bank statement, etc. |
+| Data extraction | Pull income from pay stub, balance from bank statement |
 
 ### 2B — Lender Portal Integration
 | Feature | Notes |
 |---|---|
-| Rocket Pro TPO submission | Playwright automation: log in, fill loan, upload doc package |
+| Rocket Pro TPO submission | Playwright automation: log in, fill loan data, upload doc package |
 | UWM submission | Same for UWM portal |
-| Conditions scraper | After UW decision, AI reads conditions from portal → imports to WireChase |
+| Conditions scraper | After UW decision, AI reads conditions → imports to WireChase |
 | Cleared condition submission | AI submits cleared items back to lender portal |
 
 ### 2C — Client & Underwriter Communication
 | Feature | Notes |
 |---|---|
 | Outbound client calls (voice AI) | Vapi.ai — call client for missing docs/conditions, sounds human |
-| Inbound client calls | Client calls in, AI answers loan status questions |
-| SMS to clients | Twilio — reminders for missing docs, condition requests |
-| Underwriter calls | AI calls UW contact for context on conditions |
+| Inbound client calls | Client calls in, AI answers questions about loan status |
+| SMS to clients | Twilio — doc reminders, condition requests |
+| Underwriter calls | AI calls UW for context on conditions |
 | Email drafting | AI drafts/sends professional emails to clients + UW |
 
 ### 2D — E-Sign Assistance
 | Feature | Notes |
 |---|---|
-| E-sign doc tracking | Track which docs are out for signature and status |
-| Walk-through calls | AI calls client when signing package sent, walks them through each doc |
+| E-sign doc tracking | Track which docs are out for signature |
+| Walk-through calls | AI calls client when signing package sent, walks through each doc |
 | Follow-up automation | Call/text/email until signed |
 
 ---
@@ -125,11 +107,12 @@ A two-layer platform for mortgage brokers:
 | Item | Notes |
 |---|---|
 | Row-level security audit | Ensure no data leaks between brokerages |
-| Rate lock / deadline cron jobs | Scaffolded at `/api/cron/deadline-reminders` — needs wiring |
-| Swap Nominatim → Google Maps Places | Needs API key |
+| Rate lock / deadline cron wiring | Scaffolded — needs Vercel cron config in vercel.json |
+| Error monitoring | Sentry before any real users |
+| Mobile responsiveness | Portal currently desktop-only |
 
 ---
 
-## 📐 Current Sprint
-**Phase:** 1C — Portal Completion
-**Next up:** Notification system → Document metadata → Loan schema audit vs Rocket/UWM → Stripe billing
+## 📐 Current Sprint — Phase 1D High Priority
+**Active:** Pre-approval letter generator + Borrower status page + Milestone email automations
+**Next:** Referral partner tracking → Task assignment → Reporting & analytics
