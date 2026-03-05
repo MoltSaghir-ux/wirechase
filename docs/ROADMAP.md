@@ -34,41 +34,67 @@ MISMO 3.4 XML export, Fannie Mae 3.2 export, property county/state/zip, borrower
 
 ---
 
-## 🔨 Phase 1D — Broker Workflow Features — IN PROGRESS
+## ✅ Phase 1D — Broker Workflow Features — COMPLETE
 
-### 🔴 High Priority (building now)
+### High Priority — DONE
 | Feature | Notes | Status |
 |---|---|---|
-| **Pre-approval letter generator** | One-click generate a pre-approval PDF/letter from loan data. Broker downloads and sends to client/realtor. | 🔨 Building |
-| **Borrower-facing status page** | Borrower logs in via their token and sees loan stage, which docs are pending/approved, what's still needed. Major trust-builder. | 🔨 Building |
-| **Milestone email automations** | Auto-email borrower (and optionally broker) when loan stage changes. "Your loan has moved to Conditional Approval" etc. | 🔨 Building |
+| **Pre-approval letter generator** | POST `/api/loans/pre-approval` — styled HTML letter, downloadable | ✅ Done |
+| **Borrower-facing status page** | `/client/status/[token]` — loan pipeline, doc checklist, no login needed | ✅ Done |
+| **Milestone email automations** | Auto-fires Resend email on stage change (processing → funded) | ✅ Done |
 
-### 🟡 Medium Priority
+### Medium Priority — DONE
 | Feature | Notes | Status |
 |---|---|---|
-| **Referral partner tracking** | Track which realtor/agent referred each loan. Partner gets milestone update emails. Critical for broker relationships. | ❌ Todo |
-| **Task assignment** | Assign specific tasks/todos to team members. "Follow up on bank statements — assigned to John." | ❌ Todo |
-| **Reporting & analytics** | Dashboard with: loan volume by month, avg time to close, close rate, docs per loan, team performance. | ❌ Todo |
-| **Two-way SMS** | Twilio SMS to/from borrowers for doc reminders, condition updates. | ❌ Todo |
-| **Pre-approval letter templates** | Multiple letter formats (full approval, conditional, pre-qual). Custom branding. | ❌ Todo |
-| **Bulk doc approve** | Select all uploaded docs → approve in one click. | ❌ Todo |
-| **LOE request button** | One click to request Letter of Explanation from borrower for a specific item. | ❌ Todo |
-| **Stacking order / submission packet** | Arrange docs in correct UW order, export as single PDF. | ❌ Todo |
+| **Referral partner tracking** | `referral_partners` table, panel on Overview tab, `/broker/referrals` management page | ✅ Done |
+| **Task assignment** | `loan_tasks` table, `LoanTasks` component on Notes tab, `/broker/tasks` team overview | ✅ Done |
+| **Reporting & analytics** | `/broker/reports` — monthly volume chart, stage/type breakdown, avg close time | ✅ Done |
+| **Bulk doc approve** | "Approve All" button in docs tab action bar | ✅ Done |
+| **LOE request button** | Inline form + Resend email to borrower + doc request created | ✅ Done |
+| **Stacking order / submission packet** | Numbered UW-order panel with clipboard copy | ✅ Done |
+| **Two-way SMS** | Twilio — needs credentials | ⏳ Deferred |
+| **Pre-approval letter templates** | Multiple formats, custom branding | ⏳ Deferred |
 
-### 🟢 Nice to Have
+### Security & Polish — DONE
 | Feature | Notes | Status |
 |---|---|---|
-| **Rate quote / GFE worksheet** | Basic rate quote builder, Good Faith Estimate worksheet. | ❌ Todo |
-| **Credit pull integration** | Connect to Experian/Equifax/TransUnion soft pull APIs. | ❌ Todo |
-| **Built-in e-sign** | Actual document signing (DocuSign/HelloSign integration or native). | ❌ Todo |
-| **Mobile app / PWA** | At minimum a PWA so brokers can check pipeline on phone. | ❌ Todo |
-| **Google Maps address autocomplete** | Replace Nominatim — needs API key. | ❌ Todo |
-| **Stripe billing** | $49–$100/mo per broker. Implement before launch. | ❌ Todo |
+| **API ownership checks** | All export/conditions/doc-metadata routes hardened | ✅ Done |
+| **Cron secret hardening** | Bearer header + empty-secret guard on all cron routes | ✅ Done |
+| **Input validation** | UUID + email validation on onboarding routes | ✅ Done |
+| **UI/UX premium polish** | Gradient stat cards, colored badges, tab bar, pulse bell, celebration state | ✅ Done |
+
+---
+
+## 🔨 Phase 1E — Launch Readiness — NEXT
+
+### 🔴 Must-Have Before Launch
+| Feature | Notes | Status |
+|---|---|---|
+| **Stripe billing** | $49–$100/mo per broker/team. Gate features behind subscription. | ❌ Todo |
+| **Vercel cron config** | Add `vercel.json` with cron schedules for deadline-reminders + digest routes | ❌ Todo |
+| **Error monitoring (Sentry)** | Install before any real users touch the app | ❌ Todo |
+| **Mobile responsiveness** | At minimum: client upload portal, pipeline view, client detail | ❌ Todo |
+| **Onboarding flow polish** | Smooth first-run experience for new brokers signing up | ❌ Todo |
+
+### 🟡 Nice to Have Before Launch
+| Feature | Notes | Status |
+|---|---|---|
+| **Rate quote / GFE worksheet** | Basic rate quote builder, Good Faith Estimate worksheet | ❌ Todo |
+| **Google Maps address autocomplete** | Replace Nominatim — needs API key from Mohamed | ❌ Todo |
+| **Pre-approval letter templates** | Multiple formats (full, conditional, pre-qual), custom branding | ❌ Todo |
+| **Two-way SMS** | Twilio — doc reminders, condition updates | ❌ Todo |
+
+### 🟢 Post-Launch
+| Feature | Notes | Status |
+|---|---|---|
+| **Credit pull integration** | Experian/Equifax/TransUnion soft pull APIs | ❌ Todo |
+| **Built-in e-sign** | DocuSign/HelloSign integration or native | ❌ Todo |
+| **Mobile app / PWA** | Full PWA or React Native | ❌ Todo |
 
 ---
 
 ## ⏳ Phase 2 — AI Processor — FUTURE
-*Do not start until Phase 1D is solid.*
+*Do not start until Phase 1E is solid and billing is live.*
 
 ### 2A — Document Intelligence
 | Feature | Notes |
@@ -104,15 +130,14 @@ MISMO 3.4 XML export, Fannie Mae 3.2 export, property county/state/zip, borrower
 ---
 
 ## 🏗️ Technical Debt (Ongoing)
-| Item | Notes |
-|---|---|
-| Row-level security audit | Ensure no data leaks between brokerages |
-| Rate lock / deadline cron wiring | Scaffolded — needs Vercel cron config in vercel.json |
-| Error monitoring | Sentry before any real users |
-| Mobile responsiveness | Portal currently desktop-only |
+| Item | Notes | Status |
+|---|---|---|
+| Vercel cron config | `vercel.json` needs cron schedule entries | ❌ Todo |
+| Error monitoring | Sentry before any real users | ❌ Todo |
+| Mobile responsiveness | Portal currently desktop-only | ❌ Todo |
+| RLS audit | Row-level security — verify no cross-brokerage data leaks | ✅ Partially done (ownership checks added) |
 
 ---
 
-## 📐 Current Sprint — Phase 1D High Priority
-**Active:** Pre-approval letter generator + Borrower status page + Milestone email automations
-**Next:** Referral partner tracking → Task assignment → Reporting & analytics
+## 📐 Current Sprint — Phase 1E Launch Readiness
+**Up next:** Stripe billing → Vercel cron config → Sentry → Mobile responsiveness → Onboarding polish
