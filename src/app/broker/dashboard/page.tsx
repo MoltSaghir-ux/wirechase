@@ -151,7 +151,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
               >
                 ⊞
               </Link>
-              <Link href="/broker/loans/new" className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-700 transition shadow-sm">
+              <Link href="/broker/loans/new" className="flex items-center gap-2 bg-[#0f2240] text-white px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-[#1a3560] transition shadow-sm">
                 <span className="text-base leading-none">+</span> Add Client
               </Link>
             </div>
@@ -208,7 +208,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                 </div>
                 <h3 className="text-gray-700 font-semibold text-lg mb-1">No loan files yet</h3>
                 <p className="text-gray-400 text-sm mb-5">Submit your first loan to get started</p>
-                <Link href="/broker/loans/new" className="inline-flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-700 transition">
+                <Link href="/broker/loans/new" className="inline-flex items-center gap-2 bg-[#0f2240] text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-[#1a3560] transition">
                   + Submit New Loan
                 </Link>
               </div>

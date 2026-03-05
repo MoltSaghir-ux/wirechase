@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
+import Logo from '@/components/ui/Logo'
 
 type Tab = 'create' | 'join'
 
@@ -122,21 +123,16 @@ export default function OnboardPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#0f2240] flex items-center justify-center p-4">
       <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
 
         {/* Left: Branding */}
         <div className="text-white space-y-8 px-4 lg:px-8">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur">
-              <span className="text-white font-bold text-lg">W</span>
-            </div>
-            <span className="text-2xl font-bold">WireChase</span>
-          </div>
+          <Logo size="lg" />
 
           <div>
             <h1 className="text-4xl font-black leading-tight mb-4">The modern mortgage broker platform</h1>
-            <p className="text-blue-200 text-lg">Manage your pipeline, automate communication, and close more loans.</p>
+            <p className="text-white/70 text-lg">Manage your pipeline, automate communication, and close more loans.</p>
           </div>
 
           <div className="space-y-4">
@@ -145,7 +141,7 @@ export default function OnboardPage() {
                 <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
                   {item.icon}
                 </div>
-                <p className="text-blue-100 text-sm leading-relaxed">{item.text}</p>
+                <p className="text-white/80 text-sm leading-relaxed">{item.text}</p>
               </div>
             ))}
           </div>
@@ -233,7 +229,7 @@ export default function OnboardPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold py-3 rounded-xl text-sm transition-colors mt-2 shadow-sm"
+                className="w-full bg-[#0f2240] hover:bg-[#1a3560] disabled:opacity-60 text-white font-semibold py-3 rounded-xl text-sm transition-colors mt-2 shadow-sm"
               >
                 {loading ? 'Setting up…' : 'Create Brokerage →'}
               </button>
@@ -264,7 +260,7 @@ export default function OnboardPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold py-3 rounded-xl text-sm transition-colors mt-2 shadow-sm"
+                className="w-full bg-[#0f2240] hover:bg-[#1a3560] disabled:opacity-60 text-white font-semibold py-3 rounded-xl text-sm transition-colors mt-2 shadow-sm"
               >
                 {loading ? 'Joining…' : 'Join Brokerage →'}
               </button>
