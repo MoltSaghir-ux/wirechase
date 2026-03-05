@@ -4,9 +4,9 @@ import { createAdminSupabaseClient } from '@/lib/supabase-server'
 const adminSupabase = createAdminSupabaseClient()
 
 export async function GET(req: NextRequest) {
-  // Verify cron secret
+  // Verify cron secret — reject if CRON_SECRET env var is not set
   const auth = req.headers.get('authorization')
-  if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!process.env.CRON_SECRET || auth !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

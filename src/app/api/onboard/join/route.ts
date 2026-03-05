@@ -9,6 +9,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
   }
 
+  // Validate userId is a proper UUID to prevent injection
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId)) {
+    return NextResponse.json({ error: 'Invalid userId' }, { status: 400 })
+  }
+
   // Look up the invite
   const { data: invite, error: iErr } = await adminSupabase
     .from('team_invites')

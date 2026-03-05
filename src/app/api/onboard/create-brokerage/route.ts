@@ -10,6 +10,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
   }
 
+  // Validate userId is a proper UUID to prevent injection
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId)) {
+    return NextResponse.json({ error: 'Invalid userId' }, { status: 400 })
+  }
+
+  // Validate email format
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return NextResponse.json({ error: 'Invalid email' }, { status: 400 })
+  }
+
   // 1. Validate invite code
   const { data: code, error: codeErr } = await adminSupabase
     .from('platform_invite_codes')
