@@ -22,9 +22,11 @@ type PipelineClient = {
 export default function PipelineView({
   clients,
   loanByClient,
+  openConditionsByClient = {},
 }: {
   clients: PipelineClient[]
   loanByClient: Record<string, { loan_stage: string; file_number: string | null }>
+  openConditionsByClient?: Record<string, number>
 }) {
   return (
     <div className="overflow-x-auto pb-4">
@@ -52,6 +54,7 @@ export default function PipelineView({
                   const pct = totalDocs ? Math.round((uploadedDocs / totalDocs) * 100) : 0
                   const daysAgo = Math.floor((Date.now() - new Date(client.created_at).getTime()) / (1000 * 60 * 60 * 24))
                   const fileNum = loanByClient[client.id]?.file_number
+                  const openConds = openConditionsByClient[client.id] ?? 0
                   return (
                     <Link key={client.id} href={`/broker/clients/${client.id}`} className="block bg-white border border-gray-100 rounded-xl p-3 hover:border-blue-200 hover:shadow-sm transition">
                       <div className="flex items-center gap-2 mb-2">
@@ -68,9 +71,16 @@ export default function PipelineView({
                       <div className="w-full bg-gray-100 rounded-full h-1 mb-1.5">
                         <div className="bg-blue-500 h-1 rounded-full" style={{ width: `${pct}%` }} />
                       </div>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between items-center">
                         <span className="text-[10px] text-gray-400">{uploadedDocs}/{totalDocs} docs</span>
-                        <span className="text-[10px] text-gray-400">{daysAgo}d ago</span>
+                        <div className="flex items-center gap-1.5">
+                          {openConds > 0 && (
+                            <span className="text-[10px] bg-red-100 text-red-600 font-bold px-1.5 py-0.5 rounded-full">
+                              {openConds} cond
+                            </span>
+                          )}
+                          <span className="text-[10px] text-gray-400">{daysAgo}d</span>
+                        </div>
                       </div>
                     </Link>
                   )
