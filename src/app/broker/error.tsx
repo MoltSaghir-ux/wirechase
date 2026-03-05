@@ -1,8 +1,13 @@
 'use client'
 import { useEffect } from 'react'
+import * as Sentry from '@sentry/nextjs'
 
 export default function BrokerError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
-  useEffect(() => { console.error('Broker page error:', error) }, [error])
+  useEffect(() => {
+    Sentry.captureException(error)
+    console.error('Broker page error:', error)
+  }, [error])
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#f8fafc]">
       <div className="bg-white rounded-2xl border border-red-100 shadow-sm p-8 max-w-md w-full text-center">
