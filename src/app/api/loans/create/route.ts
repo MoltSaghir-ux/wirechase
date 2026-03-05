@@ -29,6 +29,7 @@ export async function POST(req: NextRequest) {
     coBorrower, coBorrowerName, coBorrowerEmail, coBorrowerEmploymentType,
     propertyType, propertyUse, propertyAddress,
     hasGiftFunds, hasRentalIncome, hasBankruptcy, hasForeclosure, hasChildSupport,
+    rateLockExpiry, closingDate, titleCompany,
   } = body
 
   if (!fullName || !email || !loanType || !loanPurpose || !employmentType) {
@@ -74,6 +75,9 @@ export async function POST(req: NextRequest) {
       property_type: propertyType,
       property_use: propertyUse,
       property_address: propertyAddress ?? null,
+      rate_lock_expiry: rateLockExpiry ?? null,
+      closing_date: closingDate ?? null,
+      title_company: titleCompany ?? null,
       has_gift_funds: hasGiftFunds ?? false,
       has_rental_income: hasRentalIncome ?? false,
       has_bankruptcy: hasBankruptcy ?? false,

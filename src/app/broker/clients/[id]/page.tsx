@@ -29,8 +29,14 @@ function getDocExpiryDays(label: string): number {
 
 const adminSupabase = createAdminSupabaseClient()
 
-export default async function ClientDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ClientDetailPage({ params, searchParams }: {
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ tab?: string }>
+}) {
   const { id } = await params
+  const { tab } = await searchParams
+  const activeTab = tab ?? 'overview'
+
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
@@ -51,7 +57,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
         .from('clients')
         .select('id, full_name, email, phone, status, invite_token, created_at, broker_id, document_requests (id, label, status, required, category, notes, created_at)')
         .eq('id', id)
-        .eq('brokerage_id', broker.brokerage_id)  // ← cannot see other brokerages
+        .eq('brokerage_id', broker.brokerage_id)
         .single()
     : await supabase
         .from('clients')
@@ -78,7 +84,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
   // Fetch loan record
   const { data: loan } = await adminSupabase
     .from('loans')
-    .select('id, loan_type, loan_purpose, loan_amount, purchase_price, employment_type, co_borrower, co_borrower_name, co_borrower_email, co_borrower_invite_token, property_type, property_use, property_address, loan_stage, file_number')
+    .select('id, loan_type, loan_purpose, loan_amount, purchase_price, employment_type, co_borrower, co_borrower_name, co_borrower_email, co_borrower_invite_token, property_type, property_use, property_address, loan_stage, file_number, rate_lock_expiry, closing_date, title_company, lo_nmls')
     .eq('client_id', id)
     .order('created_at', { ascending: false })
     .limit(1)
@@ -172,201 +178,275 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
           </div>
         </div>
 
-        {/* Loan Stage Tracker */}
-        {loan && (
-          <LoanStageTracker
-            loanId={loan.id}
-            currentStage={(loan.loan_stage ?? 'processing') as any}
-            isDenied={loan.loan_stage === 'denied'}
-          />
-        )}
+        {/* Tab nav */}
+        <div className="flex items-center gap-1 mb-5 bg-white rounded-2xl border border-gray-100 shadow-sm p-1.5">
+          {[
+            { key: 'overview', label: 'Overview', icon: '📋', badge: null },
+            { key: 'documents', label: 'Documents', icon: '📄', badge: docs.length - uploaded > 0 ? docs.length - uploaded : null },
+            { key: 'conditions', label: 'Conditions', icon: '⚠️', badge: null },
+            { key: 'notes', label: 'Notes & Activity', icon: '💬', badge: null },
+          ].map(t => (
+            <Link
+              key={t.key}
+              href={`/broker/clients/${client.id}?tab=${t.key}`}
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition flex-1 justify-center ${
+                activeTab === t.key
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+              }`}
+            >
+              <span>{t.icon}</span>
+              <span>{t.label}</span>
+              {t.badge && t.badge > 0 && (
+                <span className={`text-xs font-bold px-1.5 py-0.5 rounded-full ${activeTab === t.key ? 'bg-white/20 text-white' : 'bg-red-100 text-red-600'}`}>
+                  {t.badge}
+                </span>
+              )}
+            </Link>
+          ))}
+        </div>
 
-        {loan && (
-          <LoanConditions loanId={loan.id} clientId={client.id} />
-        )}
+        {/* Overview Tab */}
+        {activeTab === 'overview' && (
+          <>
+            {/* Loan Stage Tracker */}
+            {loan && (
+              <LoanStageTracker
+                loanId={loan.id}
+                currentStage={(loan.loan_stage ?? 'processing') as any}
+                isDenied={loan.loan_stage === 'denied'}
+              />
+            )}
 
-        {/* Loan Summary Card */}
-        {loan && (
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-gray-800 text-sm">Loan Details</h3>
-              {loan.file_number && (
-                <span className="text-xs font-mono bg-gray-100 text-gray-500 px-2.5 py-1 rounded-lg">{loan.file_number}</span>
-              )}
-            </div>
-            <div className="grid grid-cols-3 gap-x-6 gap-y-3 text-sm">
-              <div>
-                <p className="text-xs text-gray-400">Loan Type</p>
-                <p className="font-semibold text-gray-800 mt-0.5">{LOAN_TYPE_LABELS[loan.loan_type as keyof typeof LOAN_TYPE_LABELS] ?? loan.loan_type}</p>
-              </div>
-              <div>
-                <p className="text-xs text-gray-400">Purpose</p>
-                <p className="font-semibold text-gray-800 mt-0.5">{LOAN_PURPOSE_LABELS[loan.loan_purpose as keyof typeof LOAN_PURPOSE_LABELS] ?? loan.loan_purpose}</p>
-              </div>
-              <div>
-                <p className="text-xs text-gray-400">Employment</p>
-                <p className="font-semibold text-gray-800 mt-0.5">{EMPLOYMENT_TYPE_LABELS[loan.employment_type as keyof typeof EMPLOYMENT_TYPE_LABELS] ?? loan.employment_type}</p>
-              </div>
-              {loan.purchase_price && (
-                <div>
-                  <p className="text-xs text-gray-400">{loan.loan_purpose === 'purchase' ? 'Purchase Price' : 'Home Value'}</p>
-                  <p className="font-semibold text-gray-800 mt-0.5">${Number(loan.purchase_price).toLocaleString()}</p>
-                </div>
-              )}
-              {loan.loan_amount && (
-                <div>
-                  <p className="text-xs text-gray-400">Loan Amount</p>
-                  <p className="font-semibold text-gray-800 mt-0.5">${Number(loan.loan_amount).toLocaleString()}</p>
-                </div>
-              )}
-              <div>
-                <p className="text-xs text-gray-400">Property Type</p>
-                <p className="font-semibold text-gray-800 mt-0.5">{PROPERTY_TYPE_LABELS[loan.property_type as keyof typeof PROPERTY_TYPE_LABELS] ?? loan.property_type}</p>
-              </div>
-              {loan.property_address && (
-                <div className="col-span-3">
-                  <p className="text-xs text-gray-400">Property Address</p>
-                  <p className="font-semibold text-gray-800 mt-0.5">{loan.property_address}</p>
-                </div>
-              )}
-            </div>
-
-            {/* Co-borrower section */}
-            {loan.co_borrower && loan.co_borrower_name && (
-              <div className="mt-4 pt-4 border-t border-gray-100">
-                <p className="text-xs text-gray-400 mb-2">Co-Borrower</p>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-7 h-7 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <span className="text-purple-600 text-xs font-bold">
-                        {loan.co_borrower_name.split(' ').map((n: string) => n[0]).join('').slice(0,2).toUpperCase()}
-                      </span>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-800">{loan.co_borrower_name}</p>
-                      <p className="text-xs text-gray-400">{loan.co_borrower_email}</p>
-                    </div>
-                  </div>
-                  {loan.co_borrower_invite_token && (
-                    <a
-                      href={`/coborrower/upload/${loan.co_borrower_invite_token}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-xs text-blue-600 hover:underline font-medium"
-                    >
-                      Co-Borrower Portal →
-                    </a>
+            {/* Loan Summary Card */}
+            {loan && (
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 mb-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold text-gray-800 text-sm">Loan Details</h3>
+                  {loan.file_number && (
+                    <span className="text-xs font-mono bg-gray-100 text-gray-500 px-2.5 py-1 rounded-lg">{loan.file_number}</span>
                   )}
                 </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Documents */}
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="font-semibold text-gray-800">Document Checklist</h3>
-          <AddDocDropdown clientId={client.id} existingLabels={existingLabels} />
-        </div>
-
-        <div className="space-y-4">
-          {categories.map((cat: string) => {
-            const catDocs = docs.filter((d: DocumentRequest) => (d.category ?? 'Documents') === cat)
-            const catUploaded = catDocs.filter((d: DocumentRequest) => d.status !== 'missing').length
-            return (
-              <div key={cat} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-                <div className="px-6 py-3.5 border-b border-gray-100 flex items-center justify-between">
-                  <h3 className="font-semibold text-gray-700 text-sm">{cat}</h3>
-                  <span className="text-xs text-gray-400">{catUploaded}/{catDocs.length}</span>
+                <div className="grid grid-cols-3 gap-x-6 gap-y-3 text-sm">
+                  <div>
+                    <p className="text-xs text-gray-400">Loan Type</p>
+                    <p className="font-semibold text-gray-800 mt-0.5">{LOAN_TYPE_LABELS[loan.loan_type as keyof typeof LOAN_TYPE_LABELS] ?? loan.loan_type}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400">Purpose</p>
+                    <p className="font-semibold text-gray-800 mt-0.5">{LOAN_PURPOSE_LABELS[loan.loan_purpose as keyof typeof LOAN_PURPOSE_LABELS] ?? loan.loan_purpose}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400">Employment</p>
+                    <p className="font-semibold text-gray-800 mt-0.5">{EMPLOYMENT_TYPE_LABELS[loan.employment_type as keyof typeof EMPLOYMENT_TYPE_LABELS] ?? loan.employment_type}</p>
+                  </div>
+                  {loan.purchase_price && (
+                    <div>
+                      <p className="text-xs text-gray-400">{loan.loan_purpose === 'purchase' ? 'Purchase Price' : 'Home Value'}</p>
+                      <p className="font-semibold text-gray-800 mt-0.5">${Number(loan.purchase_price).toLocaleString()}</p>
+                    </div>
+                  )}
+                  {loan.loan_amount && (
+                    <div>
+                      <p className="text-xs text-gray-400">Loan Amount</p>
+                      <p className="font-semibold text-gray-800 mt-0.5">${Number(loan.loan_amount).toLocaleString()}</p>
+                    </div>
+                  )}
+                  <div>
+                    <p className="text-xs text-gray-400">Property Type</p>
+                    <p className="font-semibold text-gray-800 mt-0.5">{PROPERTY_TYPE_LABELS[loan.property_type as keyof typeof PROPERTY_TYPE_LABELS] ?? loan.property_type}</p>
+                  </div>
+                  {loan.property_address && (
+                    <div className="col-span-3">
+                      <p className="text-xs text-gray-400">Property Address</p>
+                      <p className="font-semibold text-gray-800 mt-0.5">{loan.property_address}</p>
+                    </div>
+                  )}
+                  {loan.closing_date && (
+                    <div>
+                      <p className="text-xs text-gray-400">Closing Date</p>
+                      <p className="font-semibold text-gray-800 mt-0.5">
+                        {new Date(loan.closing_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      </p>
+                    </div>
+                  )}
+                  {loan.rate_lock_expiry && (
+                    <div>
+                      <p className="text-xs text-gray-400">Rate Lock Expiry</p>
+                      <p className={`font-semibold mt-0.5 ${
+                        new Date(loan.rate_lock_expiry) < new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+                          ? 'text-red-600' : 'text-gray-800'
+                      }`}>
+                        {new Date(loan.rate_lock_expiry).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                        {new Date(loan.rate_lock_expiry) < new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) && ' ⚠️'}
+                      </p>
+                    </div>
+                  )}
+                  {loan.title_company && (
+                    <div>
+                      <p className="text-xs text-gray-400">Title Company</p>
+                      <p className="font-semibold text-gray-800 mt-0.5">{loan.title_company}</p>
+                    </div>
+                  )}
                 </div>
-                <div className="divide-y divide-gray-50">
-                  {catDocs.map((doc: DocumentRequest) => {
-                    const files = filesByDocId[doc.id] ?? []
-                    return (
-                      <div key={doc.id} className="px-6 py-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                              doc.status === 'approved' ? 'bg-green-400' :
-                              doc.status === 'uploaded' ? 'bg-blue-400' :
-                              doc.status === 'rejected' ? 'bg-red-400' : 'bg-gray-200'
-                            }`} />
-                            <div>
-                              <p className="text-sm text-gray-800">{doc.label}</p>
-                              {doc.required && <p className="text-xs text-red-400">Required</p>}
-                              {(doc as any).status === 'missing' && (doc as any).created_at && (() => {
-                                const days = Math.floor((Date.now() - new Date((doc as any).created_at).getTime()) / (1000 * 60 * 60 * 24))
-                                if (days === 0) return null
-                                return (
-                                  <p className={`text-xs mt-0.5 ${days >= 14 ? 'text-red-400 font-medium' : days >= 7 ? 'text-amber-500' : 'text-gray-400'}`}>
-                                    ⏱ Requested {days} day{days !== 1 ? 's' : ''} ago{days >= 14 ? ' — follow up!' : ''}
-                                  </p>
-                                )
-                              })()}
-                            </div>
-                          </div>
-                          <span className={`text-xs px-2.5 py-1 rounded-full font-medium capitalize ${
-                            doc.status === 'approved' ? 'bg-green-100 text-green-700' :
-                            doc.status === 'uploaded' ? 'bg-blue-100 text-blue-700' :
-                            doc.status === 'rejected' ? 'bg-red-100 text-red-700' :
-                            'bg-gray-100 text-gray-400'
-                          }`}>
-                            {doc.status}
+
+                {/* Co-borrower section */}
+                {loan.co_borrower && loan.co_borrower_name && (
+                  <div className="mt-4 pt-4 border-t border-gray-100">
+                    <p className="text-xs text-gray-400 mb-2">Co-Borrower</p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-7 h-7 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                          <span className="text-purple-600 text-xs font-bold">
+                            {loan.co_borrower_name.split(' ').map((n: string) => n[0]).join('').slice(0,2).toUpperCase()}
                           </span>
                         </div>
+                        <div>
+                          <p className="text-sm font-medium text-gray-800">{loan.co_borrower_name}</p>
+                          <p className="text-xs text-gray-400">{loan.co_borrower_email}</p>
+                        </div>
+                      </div>
+                      {loan.co_borrower_invite_token && (
+                        <a
+                          href={`/coborrower/upload/${loan.co_borrower_invite_token}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-xs text-blue-600 hover:underline font-medium"
+                        >
+                          Co-Borrower Portal →
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </>
+        )}
 
-                        {files.length > 0 && (
-                          <div className="mt-3 ml-5 space-y-2">
-                            {files.map((file: DisplayDocument) => (
-                              <div key={file.id} className="bg-gray-50 rounded-xl px-3 py-2.5 border border-gray-100">
-                                <div className="flex items-center justify-between">
-                                  <div className="flex items-center gap-2 min-w-0">
-                                    <span className="text-base">📄</span>
-                                    <div className="min-w-0">
-                                      <p className="text-xs font-medium text-gray-700 truncate">{file.file_name}</p>
-                                      <p className="text-xs text-gray-400">
-                                        {file.file_size ? `${(file.file_size / 1024).toFixed(0)} KB · ` : ''}
-                                        {new Date(file.uploaded_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+        {/* Documents Tab */}
+        {activeTab === 'documents' && (
+          <>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-semibold text-gray-800">Document Checklist</h3>
+              <AddDocDropdown clientId={client.id} existingLabels={existingLabels} />
+            </div>
+
+            <div className="space-y-4">
+              {categories.map((cat: string) => {
+                const catDocs = docs.filter((d: DocumentRequest) => (d.category ?? 'Documents') === cat)
+                const catUploaded = catDocs.filter((d: DocumentRequest) => d.status !== 'missing').length
+                return (
+                  <div key={cat} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                    <div className="px-6 py-3.5 border-b border-gray-100 flex items-center justify-between">
+                      <h3 className="font-semibold text-gray-700 text-sm">{cat}</h3>
+                      <span className="text-xs text-gray-400">{catUploaded}/{catDocs.length}</span>
+                    </div>
+                    <div className="divide-y divide-gray-50">
+                      {catDocs.map((doc: DocumentRequest) => {
+                        const files = filesByDocId[doc.id] ?? []
+                        return (
+                          <div key={doc.id} className="px-6 py-4">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-3">
+                                <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                                  doc.status === 'approved' ? 'bg-green-400' :
+                                  doc.status === 'uploaded' ? 'bg-blue-400' :
+                                  doc.status === 'rejected' ? 'bg-red-400' : 'bg-gray-200'
+                                }`} />
+                                <div>
+                                  <p className="text-sm text-gray-800">{doc.label}</p>
+                                  {doc.required && <p className="text-xs text-red-400">Required</p>}
+                                  {(doc as any).status === 'missing' && (doc as any).created_at && (() => {
+                                    const days = Math.floor((Date.now() - new Date((doc as any).created_at).getTime()) / (1000 * 60 * 60 * 24))
+                                    if (days === 0) return null
+                                    return (
+                                      <p className={`text-xs mt-0.5 ${days >= 14 ? 'text-red-400 font-medium' : days >= 7 ? 'text-amber-500' : 'text-gray-400'}`}>
+                                        ⏱ Requested {days} day{days !== 1 ? 's' : ''} ago{days >= 14 ? ' — follow up!' : ''}
                                       </p>
-                                      {(() => {
-                                        if (doc.status !== 'approved' && doc.status !== 'uploaded') return null
-                                        const expiryDays = getDocExpiryDays(doc.label)
-                                        const uploadedAt = new Date(file.uploaded_at)
-                                        const expiresAt = new Date(uploadedAt.getTime() + expiryDays * 24 * 60 * 60 * 1000)
-                                        const daysLeft = Math.ceil((expiresAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24))
-                                        if (daysLeft > 30) return null
-                                        if (daysLeft <= 0) return (
-                                          <p className="text-xs text-red-500 font-semibold mt-0.5">⚠️ Expired — request new</p>
-                                        )
-                                        return (
-                                          <p className={`text-xs mt-0.5 font-medium ${daysLeft <= 7 ? 'text-red-400' : 'text-amber-500'}`}>
-                                            ⏰ Expires in {daysLeft}d
-                                          </p>
-                                        )
-                                      })()}
-                                    </div>
-                                  </div>
-                                  <DocViewer docId={file.id} fileName={file.file_name} />
+                                    )
+                                  })()}
                                 </div>
                               </div>
-                            ))}
-                          </div>
-                        )}
-                        <DocReview docRequestId={doc.id} currentStatus={doc.status} />
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            )
-          })}
-        </div>
+                              <span className={`text-xs px-2.5 py-1 rounded-full font-medium capitalize ${
+                                doc.status === 'approved' ? 'bg-green-100 text-green-700' :
+                                doc.status === 'uploaded' ? 'bg-blue-100 text-blue-700' :
+                                doc.status === 'rejected' ? 'bg-red-100 text-red-700' :
+                                'bg-gray-100 text-gray-400'
+                              }`}>
+                                {doc.status}
+                              </span>
+                            </div>
 
-        {/* Notes + Activity side by side */}
-        <div className="grid grid-cols-2 gap-4 mt-4">
-          <ClientNotes clientId={client.id} />
-          <ActivityLog activities={activities ?? []} />
-        </div>
+                            {files.length > 0 && (
+                              <div className="mt-3 ml-5 space-y-2">
+                                {files.map((file: DisplayDocument) => (
+                                  <div key={file.id} className="bg-gray-50 rounded-xl px-3 py-2.5 border border-gray-100">
+                                    <div className="flex items-center justify-between">
+                                      <div className="flex items-center gap-2 min-w-0">
+                                        <span className="text-base">📄</span>
+                                        <div className="min-w-0">
+                                          <p className="text-xs font-medium text-gray-700 truncate">{file.file_name}</p>
+                                          <p className="text-xs text-gray-400">
+                                            {file.file_size ? `${(file.file_size / 1024).toFixed(0)} KB · ` : ''}
+                                            {new Date(file.uploaded_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                          </p>
+                                          {(() => {
+                                            if (doc.status !== 'approved' && doc.status !== 'uploaded') return null
+                                            const expiryDays = getDocExpiryDays(doc.label)
+                                            const uploadedAt = new Date(file.uploaded_at)
+                                            const expiresAt = new Date(uploadedAt.getTime() + expiryDays * 24 * 60 * 60 * 1000)
+                                            const daysLeft = Math.ceil((expiresAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+                                            if (daysLeft > 30) return null
+                                            if (daysLeft <= 0) return (
+                                              <p className="text-xs text-red-500 font-semibold mt-0.5">⚠️ Expired — request new</p>
+                                            )
+                                            return (
+                                              <p className={`text-xs mt-0.5 font-medium ${daysLeft <= 7 ? 'text-red-400' : 'text-amber-500'}`}>
+                                                ⏰ Expires in {daysLeft}d
+                                              </p>
+                                            )
+                                          })()}
+                                        </div>
+                                      </div>
+                                      <DocViewer docId={file.id} fileName={file.file_name} />
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                            <DocReview docRequestId={doc.id} currentStatus={doc.status} />
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </>
+        )}
+
+        {/* Conditions Tab */}
+        {activeTab === 'conditions' && (
+          <>
+            {loan ? (
+              <LoanConditions loanId={loan.id} clientId={client.id} />
+            ) : (
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 text-center">
+                <p className="text-gray-400 text-sm">No loan on file yet</p>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Notes & Activity Tab */}
+        {activeTab === 'notes' && (
+          <div className="grid grid-cols-2 gap-4">
+            <ClientNotes clientId={client.id} />
+            <ActivityLog activities={activities ?? []} />
+          </div>
+        )}
       </main>
     </div>
   )

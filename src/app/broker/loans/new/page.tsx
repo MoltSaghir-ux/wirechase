@@ -39,6 +39,9 @@ export default function NewLoanPage() {
   const [propertyType, setPropertyType] = useState<PropertyType>('sfr')
   const [propertyUse, setPropertyUse] = useState<PropertyUse>('primary')
   const [propertyAddress, setPropertyAddress] = useState('')
+  const [rateLockExpiry, setRateLockExpiry] = useState('')
+  const [closingDate, setClosingDate] = useState('')
+  const [titleCompany, setTitleCompany] = useState('')
 
   // Special circumstances
   const [hasGiftFunds, setHasGiftFunds] = useState(false)
@@ -81,6 +84,9 @@ export default function NewLoanPage() {
           propertyType,
           propertyUse,
           propertyAddress: propertyAddress.trim(),
+          rateLockExpiry: rateLockExpiry || null,
+          closingDate: closingDate || null,
+          titleCompany: titleCompany.trim() || null,
           // Special
           hasGiftFunds,
           hasRentalIncome,
@@ -338,6 +344,25 @@ export default function NewLoanPage() {
                   placeholder="123 Main St, Detroit, MI 48201"
                   className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Closing Date <span className="text-gray-400 font-normal">(if known)</span></label>
+                  <input type="date" value={closingDate} onChange={e => setClosingDate(e.target.value)}
+                    className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Rate Lock Expiry <span className="text-gray-400 font-normal">(if known)</span></label>
+                  <input type="date" value={rateLockExpiry} onChange={e => setRateLockExpiry(e.target.value)}
+                    className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Title Company <span className="text-gray-400 font-normal">(if known)</span></label>
+                <input type="text" value={titleCompany} onChange={e => setTitleCompany(e.target.value)}
+                  placeholder="ABC Title & Escrow"
+                  className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
               </div>
 
               {propertyType === 'condo' && (
