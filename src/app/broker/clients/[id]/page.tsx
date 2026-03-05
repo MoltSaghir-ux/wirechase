@@ -14,6 +14,18 @@ import { LOAN_TYPE_LABELS, LOAN_PURPOSE_LABELS, EMPLOYMENT_TYPE_LABELS, PROPERTY
 
 type DisplayDocument = { id: string; file_name: string; file_size: number | null; uploaded_at: string; document_request_id: string }
 
+function getDocExpiryDays(label: string): number {
+  const l = label.toLowerCase()
+  if (l.includes('pay stub') || l.includes('paystub')) return 30
+  if (l.includes('bank statement')) return 60
+  if (l.includes('w-2') || l.includes('w2')) return 365
+  if (l.includes('tax return') || l.includes('1040')) return 365
+  if (l.includes('profit') || l.includes('loss') || l.includes('p&l')) return 60
+  if (l.includes('voe') || l.includes('verification of employment')) return 90
+  if (l.includes('credit')) return 120
+  return 90 // default
+}
+
 const adminSupabase = createAdminSupabaseClient()
 
 export default async function ClientDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -36,13 +48,13 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
   const { data: client } = isAdmin
     ? await adminSupabase
         .from('clients')
-        .select('id, full_name, email, phone, status, invite_token, created_at, broker_id, document_requests (id, label, status, required, category, notes)')
+        .select('id, full_name, email, phone, status, invite_token, created_at, broker_id, document_requests (id, label, status, required, category, notes, created_at)')
         .eq('id', id)
         .eq('brokerage_id', broker.brokerage_id)  // ← cannot see other brokerages
         .single()
     : await supabase
         .from('clients')
-        .select('id, full_name, email, phone, status, invite_token, created_at, broker_id, document_requests (id, label, status, required, category, notes)')
+        .select('id, full_name, email, phone, status, invite_token, created_at, broker_id, document_requests (id, label, status, required, category, notes, created_at)')
         .eq('id', id)
         .eq('broker_id', user.id)
         .single()
@@ -277,6 +289,15 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                             <div>
                               <p className="text-sm text-gray-800">{doc.label}</p>
                               {doc.required && <p className="text-xs text-red-400">Required</p>}
+                              {(doc as any).status === 'missing' && (doc as any).created_at && (() => {
+                                const days = Math.floor((Date.now() - new Date((doc as any).created_at).getTime()) / (1000 * 60 * 60 * 24))
+                                if (days === 0) return null
+                                return (
+                                  <p className={`text-xs mt-0.5 ${days >= 14 ? 'text-red-400 font-medium' : days >= 7 ? 'text-amber-500' : 'text-gray-400'}`}>
+                                    ⏱ Requested {days} day{days !== 1 ? 's' : ''} ago{days >= 14 ? ' — follow up!' : ''}
+                                  </p>
+                                )
+                              })()}
                             </div>
                           </div>
                           <span className={`text-xs px-2.5 py-1 rounded-full font-medium capitalize ${
@@ -302,6 +323,22 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                                         {file.file_size ? `${(file.file_size / 1024).toFixed(0)} KB · ` : ''}
                                         {new Date(file.uploaded_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                                       </p>
+                                      {(() => {
+                                        if (doc.status !== 'approved' && doc.status !== 'uploaded') return null
+                                        const expiryDays = getDocExpiryDays(doc.label)
+                                        const uploadedAt = new Date(file.uploaded_at)
+                                        const expiresAt = new Date(uploadedAt.getTime() + expiryDays * 24 * 60 * 60 * 1000)
+                                        const daysLeft = Math.ceil((expiresAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+                                        if (daysLeft > 30) return null
+                                        if (daysLeft <= 0) return (
+                                          <p className="text-xs text-red-500 font-semibold mt-0.5">⚠️ Expired — request new</p>
+                                        )
+                                        return (
+                                          <p className={`text-xs mt-0.5 font-medium ${daysLeft <= 7 ? 'text-red-400' : 'text-amber-500'}`}>
+                                            ⏰ Expires in {daysLeft}d
+                                          </p>
+                                        )
+                                      })()}
                                     </div>
                                   </div>
                                   <DocViewer docId={file.id} fileName={file.file_name} />
