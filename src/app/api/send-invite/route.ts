@@ -30,37 +30,43 @@ export async function POST(req: NextRequest) {
   // Once a domain is verified at resend.com/domains, remove this override.
   const toEmail = process.env.NODE_ENV === 'production' ? client.email : (process.env.RESEND_TEST_EMAIL ?? client.email)
 
-  const { error } = await resend.emails.send({
-    from: 'WireChase <onboarding@resend.dev>',
-    to: toEmail,
-    subject: 'Documents needed for your mortgage application',
-    html: `
-      <div style="font-family: sans-serif; max-width: 560px; margin: 0 auto; padding: 32px 24px; color: #111;">
-        <h2 style="margin: 0 0 8px;">Hi ${client.full_name},</h2>
-        <p style="color: #555; margin: 0 0 24px;">
-          Your mortgage broker (<strong>${brokerEmail}</strong>) has requested documents
-          for your mortgage application. Please upload them using the secure link below.
-        </p>
+  let sendError: unknown = null
+  try {
+    const { error } = await resend.emails.send({
+      from: 'WireChase <onboarding@resend.dev>',
+      to: toEmail,
+      subject: 'Documents needed for your mortgage application',
+      html: `
+        <div style="font-family: sans-serif; max-width: 560px; margin: 0 auto; padding: 32px 24px; color: #111;">
+          <h2 style="margin: 0 0 8px;">Hi ${client.full_name},</h2>
+          <p style="color: #555; margin: 0 0 24px;">
+            Your mortgage broker (<strong>${brokerEmail}</strong>) has requested documents
+            for your mortgage application. Please upload them using the secure link below.
+          </p>
 
-        <a href="${inviteLink}"
-           style="display: inline-block; background: #2563eb; color: white; text-decoration: none;
-                  padding: 12px 24px; border-radius: 8px; font-weight: 600; margin-bottom: 24px;">
-          Upload My Documents →
-        </a>
+          <a href="${inviteLink}"
+             style="display: inline-block; background: #0f2240; color: white; text-decoration: none;
+                    padding: 12px 24px; border-radius: 8px; font-weight: 600; margin-bottom: 24px;">
+            Upload My Documents →
+          </a>
 
-        <p style="color: #888; font-size: 13px; margin: 0;">
-          This link is unique to you. Do not share it with anyone else.<br/>
-          If you have questions, reply directly to your broker.
-        </p>
+          <p style="color: #888; font-size: 13px; margin: 0;">
+            This link is unique to you. Do not share it with anyone else.<br/>
+            If you have questions, reply directly to your broker.
+          </p>
 
-        <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
-        <p style="color: #bbb; font-size: 12px; margin: 0;">Powered by WireChase</p>
-      </div>
-    `,
-  })
+          <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
+          <p style="color: #bbb; font-size: 12px; margin: 0;">Powered by WireChase</p>
+        </div>
+      `,
+    })
+    if (error) sendError = error
+  } catch (err) {
+    sendError = err
+  }
 
-  if (error) {
-    console.error('Resend error:', error)
+  if (sendError) {
+    console.error('Resend error:', sendError)
     return NextResponse.json({ error: 'Failed to send email' }, { status: 500 })
   }
 
