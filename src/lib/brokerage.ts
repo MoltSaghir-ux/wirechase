@@ -1,9 +1,6 @@
-import { createClient } from '@supabase/supabase-js'
+import { createAdminSupabaseClient } from '@/lib/supabase-server'
 
-const adminSupabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+const adminSupabase = createAdminSupabaseClient()
 
 // Get broker's brokerage and role — null if not set up yet
 export async function getBrokerContext(userId: string) {

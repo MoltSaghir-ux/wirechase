@@ -1,13 +1,16 @@
-import { createServerSupabaseClient } from '@/lib/supabase-server'
-import { createClient } from '@supabase/supabase-js'
+import { createServerSupabaseClient, createAdminSupabaseClient } from '@/lib/supabase-server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import Nav from '@/components/ui/Nav'
+import type { ClientStatus, DocStatus } from '@/lib/types'
 
-const adminSupabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+type DashboardClient = {
+  id: string; full_name: string; email: string; status: ClientStatus
+  created_at: string; broker_id: string
+  document_requests?: { id: string; status: DocStatus }[]
+}
+
+const adminSupabase = createAdminSupabaseClient()
 
 export default async function DashboardPage({ searchParams }: { searchParams: Promise<{ filter?: string }> }) {
   const { filter } = await searchParams
@@ -122,9 +125,9 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                 <span className="col-span-2">Status</span>
               </div>
 
-              {filtered.map((client: any) => {
+              {filtered.map((client: DashboardClient) => {
                 const totalDocs = client.document_requests?.length ?? 0
-                const uploadedDocs = client.document_requests?.filter((d: any) => d.status !== 'missing').length ?? 0
+                const uploadedDocs = client.document_requests?.filter((d: { status: DocStatus }) => d.status !== 'missing').length ?? 0
                 const pct = totalDocs ? Math.round((uploadedDocs / totalDocs) * 100) : 0
 
                 return (

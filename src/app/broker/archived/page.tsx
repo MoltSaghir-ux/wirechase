@@ -1,13 +1,12 @@
-import { createServerSupabaseClient } from '@/lib/supabase-server'
-import { createClient } from '@supabase/supabase-js'
+import { createServerSupabaseClient, createAdminSupabaseClient } from '@/lib/supabase-server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import Nav from '@/components/ui/Nav'
+import type { ClientStatus } from '@/lib/types'
 
-const adminSupabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+type ArchivedClient = { id: string; full_name: string; email: string; created_at: string; status?: ClientStatus }
+
+const adminSupabase = createAdminSupabaseClient()
 
 export default async function ArchivedPage() {
   const supabase = await createServerSupabaseClient()
@@ -51,7 +50,7 @@ export default async function ArchivedPage() {
 
         {clients && clients.length > 0 ? (
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm divide-y divide-gray-50">
-            {clients.map((client: any) => (
+            {clients.map((client: ArchivedClient) => (
               <div key={client.id} className="flex items-center justify-between px-6 py-4">
                 <div>
                   <p className="font-medium text-gray-700">{client.full_name}</p>

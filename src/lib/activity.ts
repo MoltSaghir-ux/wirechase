@@ -1,9 +1,6 @@
-import { createClient } from '@supabase/supabase-js'
+import { createAdminSupabaseClient } from '@/lib/supabase-server'
 
-const adminSupabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+const adminSupabase = createAdminSupabaseClient()
 
 export async function logActivity(clientId: string, event: string, detail?: string) {
   try {

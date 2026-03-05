@@ -2,12 +2,10 @@ import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { redirect } from 'next/navigation'
 import Nav from '@/components/ui/Nav'
 import TeamManager from '@/components/ui/TeamManager'
-import { createClient } from '@supabase/supabase-js'
+import type { Broker, TeamInvite } from '@/lib/types'
+import { createAdminSupabaseClient } from '@/lib/supabase-server'
 
-const adminSupabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+const adminSupabase = createAdminSupabaseClient()
 
 export default async function TeamPage() {
   const supabase = await createServerSupabaseClient()
@@ -23,7 +21,7 @@ export default async function TeamPage() {
   if (!broker?.brokerage_id) redirect('/onboard')
   if (broker.role !== 'admin') redirect('/broker/dashboard')
 
-  const brokerage = broker.brokerages as any
+  const brokerage = broker.brokerages as unknown as { id: string; name: string; nmls: string | null }
 
   // Get all team members
   const { data: members } = await adminSupabase
@@ -53,7 +51,7 @@ export default async function TeamPage() {
           brokerageId={broker.brokerage_id}
           currentUserId={user.id}
           members={members ?? []}
-          invites={(invites ?? []).filter((i: any) => !i.accepted_at)}
+          invites={(invites ?? []).filter((i: TeamInvite) => !i.accepted_at)}
         />
       </main>
     </div>

@@ -1,5 +1,4 @@
-import { createServerSupabaseClient } from '@/lib/supabase-server'
-import { createClient } from '@supabase/supabase-js'
+import { createServerSupabaseClient, createAdminSupabaseClient } from '@/lib/supabase-server'
 import { redirect, notFound } from 'next/navigation'
 import Nav from '@/components/ui/Nav'
 import Link from 'next/link'
@@ -9,11 +8,11 @@ import DocViewer from '@/components/ui/DocViewer'
 import DocReview from '@/components/ui/DocReview'
 import ClientNotes from '@/components/ui/ClientNotes'
 import ActivityLog from '@/components/ui/ActivityLog'
+import type { DocumentRequest, ActivityEntry } from '@/lib/types'
 
-const adminSupabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+type DisplayDocument = { id: string; file_name: string; file_size: number | null; uploaded_at: string; document_request_id: string }
+
+const adminSupabase = createAdminSupabaseClient()
 
 export default async function ClientDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -49,13 +48,13 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
   if (!client) notFound()
 
   // Fetch uploaded documents via admin client (bypasses RLS gap on documents table)
-  const docIds = client.document_requests.map((d: any) => d.id)
+  const docIds = client.document_requests.map((d: DocumentRequest) => d.id)
   const { data: allFiles } = docIds.length > 0
     ? await adminSupabase.from('documents').select('id, file_name, file_size, uploaded_at, document_request_id').in('document_request_id', docIds)
     : { data: [] }
 
   // Group files by document_request_id
-  const filesByDocId: Record<string, any[]> = {}
+  const filesByDocId: Record<string, DisplayDocument[]> = {}
   for (const f of allFiles ?? []) {
     if (!filesByDocId[f.document_request_id]) filesByDocId[f.document_request_id] = []
     filesByDocId[f.document_request_id].push(f)
@@ -72,9 +71,9 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
   const inviteLink = `${process.env.NEXT_PUBLIC_APP_URL}/client/upload/${client.invite_token}`
   const docs = client.document_requests ?? []
   const categories = [...new Set(docs.map((d: any) => d.category ?? 'Documents'))]
-  const uploaded = docs.filter((d: any) => d.status !== 'missing').length
+  const uploaded = docs.filter((d: DocumentRequest) => d.status !== 'missing').length
   const pct = docs.length ? Math.round((uploaded / docs.length) * 100) : 0
-  const existingLabels = docs.map((d: any) => d.label)
+  const existingLabels = docs.map((d: DocumentRequest) => d.label)
 
   return (
     <div className="flex min-h-screen bg-[#f8fafc]">
@@ -148,9 +147,9 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
         </div>
 
         <div className="space-y-4">
-          {categories.map((cat: any) => {
-            const catDocs = docs.filter((d: any) => (d.category ?? 'Documents') === cat)
-            const catUploaded = catDocs.filter((d: any) => d.status !== 'missing').length
+          {categories.map((cat: string) => {
+            const catDocs = docs.filter((d: DocumentRequest) => (d.category ?? 'Documents') === cat)
+            const catUploaded = catDocs.filter((d: DocumentRequest) => d.status !== 'missing').length
             return (
               <div key={cat} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div className="px-6 py-3.5 border-b border-gray-100 flex items-center justify-between">
@@ -158,7 +157,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                   <span className="text-xs text-gray-400">{catUploaded}/{catDocs.length}</span>
                 </div>
                 <div className="divide-y divide-gray-50">
-                  {catDocs.map((doc: any) => {
+                  {catDocs.map((doc: DocumentRequest) => {
                     const files = filesByDocId[doc.id] ?? []
                     return (
                       <div key={doc.id} className="px-6 py-4">
@@ -186,7 +185,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
 
                         {files.length > 0 && (
                           <div className="mt-3 ml-5 space-y-2">
-                            {files.map((file: any) => (
+                            {files.map((file: DisplayDocument) => (
                               <div key={file.id} className="bg-gray-50 rounded-xl px-3 py-2.5 border border-gray-100">
                                 <div className="flex items-center justify-between">
                                   <div className="flex items-center gap-2 min-w-0">
