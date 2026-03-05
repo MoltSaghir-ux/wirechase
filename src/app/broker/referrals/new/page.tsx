@@ -44,7 +44,7 @@ export default function NewReferralPartnerPage() {
       <main className="flex-1">
         <div className="max-w-xl mx-auto px-6 py-8">
           <div className="mb-6">
-            <h1 className="text-2xl font-bold text-gray-900">Add Referral Partner</h1>
+            <h1 className="text-2xl font-bold text-[#0f2240]">Add Referral Partner</h1>
             <p className="text-sm text-gray-400 mt-0.5">Add a realtor, builder, or other partner who refers loans to you.</p>
           </div>
 

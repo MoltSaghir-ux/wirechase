@@ -46,7 +46,7 @@ export default async function ArchivedPage() {
           <span className="text-gray-700">Archived</span>
         </div>
 
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Archived Clients</h2>
+        <h2 className="text-2xl font-bold text-[#0f2240] mb-6">Archived Clients</h2>
 
         {clients && clients.length > 0 ? (
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm divide-y divide-gray-50">
@@ -58,7 +58,7 @@ export default async function ArchivedPage() {
                 </div>
                 <Link
                   href={`/broker/clients/${client.id}/edit`}
-                  className="text-sm text-blue-600 hover:underline"
+                  className="text-sm font-semibold text-[#0f2240] hover:text-[#c9a84c] transition"
                 >
                   Restore / Edit
                 </Link>
@@ -67,7 +67,13 @@ export default async function ArchivedPage() {
           </div>
         ) : (
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm py-16 text-center">
-            <p className="text-gray-400 text-sm">No archived clients</p>
+            <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center mb-3 mx-auto">
+              <svg className="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 8h14M5 8a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v0a2 2 0 01-2 2M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8" />
+              </svg>
+            </div>
+            <p className="text-gray-500 font-medium text-sm">No archived clients</p>
+            <p className="text-gray-300 text-xs mt-1">Archived clients will appear here</p>
           </div>
         )}
       </main>

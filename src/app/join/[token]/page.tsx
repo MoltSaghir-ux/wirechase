@@ -107,7 +107,7 @@ export default function JoinPage({ params }: { params: Promise<{ token: string }
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-4">
-            <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center">
+            <div className="w-9 h-9 bg-[#0f2240] rounded-xl flex items-center justify-center">
               <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
               </svg>
@@ -115,8 +115,8 @@ export default function JoinPage({ params }: { params: Promise<{ token: string }
             <span className="text-xl font-bold text-white">WireChase</span>
           </div>
           {inviteInfo && (
-            <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl px-4 py-3 text-sm">
-              <p className="text-blue-300">You've been invited to join</p>
+            <div className="bg-[#c9a84c]/10 border border-[#c9a84c]/20 rounded-xl px-4 py-3 text-sm">
+              <p className="text-[#c9a84c]">You've been invited to join</p>
               <p className="text-white font-bold text-base mt-0.5">{inviteInfo.brokerageName}</p>
               <p className="text-slate-400 text-xs mt-0.5">as {inviteInfo.role === 'admin' ? 'an Admin' : 'a Loan Officer'}</p>
             </div>
@@ -138,26 +138,26 @@ export default function JoinPage({ params }: { params: Promise<{ token: string }
                 <div>
                   <label className="block text-xs font-medium text-slate-400 mb-1.5">Your Full Name</label>
                   <input value={fullName} onChange={e => setFullName(e.target.value)} required placeholder="Jane Smith"
-                    className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2.5 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2.5 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#c9a84c]" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-400 mb-1.5">Email</label>
                   <input value={email} onChange={e => setEmail(e.target.value)} required type="email" placeholder="you@example.com"
-                    className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2.5 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2.5 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#c9a84c]" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-400 mb-1.5">Password</label>
                   <input value={password} onChange={e => setPassword(e.target.value)} required type="password" placeholder="Choose a strong password"
-                    className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2.5 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2.5 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#c9a84c]" />
                 </div>
                 <button type="submit" disabled={loading}
-                  className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold py-2.5 rounded-lg text-sm transition-colors">
+                  className="w-full bg-[#c9a84c] hover:bg-[#a8893a] disabled:opacity-60 text-[#0f2240] font-semibold py-2.5 rounded-lg text-sm transition-colors">
                   {loading ? 'Joining…' : 'Create Account & Join →'}
                 </button>
               </form>
               <p className="text-center text-xs text-slate-500 mt-4">
                 Already have an account?{' '}
-                <button onClick={() => setStep('join')} className="text-blue-400 hover:underline">Sign in instead</button>
+                <button onClick={() => setStep('join')} className="text-[#c9a84c] hover:underline">Sign in instead</button>
               </p>
             </>
           ) : (
@@ -168,10 +168,10 @@ export default function JoinPage({ params }: { params: Promise<{ token: string }
                 <div>
                   <label className="block text-xs font-medium text-slate-400 mb-1.5">Your Full Name</label>
                   <input value={fullName} onChange={e => setFullName(e.target.value)} required placeholder="Jane Smith"
-                    className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2.5 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2.5 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#c9a84c]" />
                 </div>
                 <button type="submit" disabled={loading}
-                  className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold py-2.5 rounded-lg text-sm transition-colors">
+                  className="w-full bg-[#c9a84c] hover:bg-[#a8893a] disabled:opacity-60 text-[#0f2240] font-semibold py-2.5 rounded-lg text-sm transition-colors">
                   {loading ? 'Joining…' : 'Accept & Go to Dashboard →'}
                 </button>
               </form>

@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createAdminSupabaseClient } from '@/lib/supabase-server'
+import { createAdminSupabaseClient, createServerSupabaseClient } from '@/lib/supabase-server'
 
 const adminSupabase = createAdminSupabaseClient()
 
 export async function POST(req: NextRequest) {
+  // Verify the session matches the userId being used
+  // SECURITY: Don't trust userId from body — verify via session
+  const supabase = await createServerSupabaseClient()
+  const { data: { user: sessionUser } } = await supabase.auth.getUser()
+  if (!sessionUser) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
   const { userId, email, fullName, brokerageName, brokerageNmls, inviteCode } = await req.json()
 
   if (!userId || !email || !fullName || !brokerageName || !inviteCode) {
@@ -13,6 +19,11 @@ export async function POST(req: NextRequest) {
   // Validate userId is a proper UUID to prevent injection
   if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId)) {
     return NextResponse.json({ error: 'Invalid userId' }, { status: 400 })
+  }
+
+  // Enforce: can only create brokerage for yourself
+  if (sessionUser.id !== userId) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
   // Validate email format
@@ -37,7 +48,7 @@ export async function POST(req: NextRequest) {
     .select()
     .single()
 
-  if (bErr) return NextResponse.json({ error: bErr.message }, { status: 500 })
+  if (bErr) return NextResponse.json({ error: 'Failed to create brokerage' }, { status: 500 })
 
   // 3. Upsert broker as admin
   const { error: pErr } = await adminSupabase.from('brokers').upsert({
@@ -48,7 +59,7 @@ export async function POST(req: NextRequest) {
     role: 'admin',
   })
 
-  if (pErr) return NextResponse.json({ error: pErr.message }, { status: 500 })
+  if (pErr) return NextResponse.json({ error: 'Failed to set up broker profile' }, { status: 500 })
 
   // 4. Mark invite code used
   await adminSupabase

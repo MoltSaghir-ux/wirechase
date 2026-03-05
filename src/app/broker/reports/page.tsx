@@ -111,7 +111,7 @@ export default async function ReportsPage() {
       <div className="flex items-start justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-gray-900">Reports &amp; Analytics</h1>
+            <h1 className="text-2xl font-bold text-[#0f2240]">Reports &amp; Analytics</h1>
             <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${isAdmin ? 'bg-blue-100 text-[#0f2240]' : 'bg-purple-100 text-purple-700'}`}>
               {isAdmin ? 'Brokerage View' : 'My Pipeline'}
             </span>
@@ -125,7 +125,7 @@ export default async function ReportsPage() {
         {stats.map(s => (
           <div key={s.label} className={`bg-gradient-to-br ${s.accent} border ${s.border} rounded-2xl p-4 shadow-sm hover:-translate-y-0.5 transition-transform`}>
             <p className="text-xs text-gray-400 font-medium">{s.label}</p>
-            <p className="text-2xl font-bold text-gray-900 mt-1">{s.value}</p>
+            <p className="text-2xl font-bold text-[#0f2240] mt-1">{s.value}</p>
             <p className="text-[10px] text-gray-400 mt-0.5">{s.sub}</p>
           </div>
         ))}

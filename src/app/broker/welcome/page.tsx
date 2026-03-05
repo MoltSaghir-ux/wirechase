@@ -37,14 +37,14 @@ export default async function WelcomePage() {
         <div className="max-w-2xl mx-auto px-6 py-12">
 
           {/* Header */}
-          <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-8 text-white mb-6 shadow-lg shadow-blue-200">
+          <div className="bg-gradient-to-br from-[#0f2240] to-[#1a3560] rounded-3xl p-8 text-white mb-6 shadow-lg shadow-[#0f2240]/20">
             <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center mb-4 backdrop-blur">
               <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
               </svg>
             </div>
             <h1 className="text-3xl font-black mb-2">Welcome to WireChase, {firstName}!</h1>
-            <p className="text-blue-100 text-lg">{brokerageName} is all set up. Let&apos;s get you started.</p>
+            <p className="text-white/70 text-lg">{brokerageName} is all set up. Let&apos;s get you started.</p>
           </div>
 
           {/* Checklist card */}
@@ -54,7 +54,7 @@ export default async function WelcomePage() {
               <span className="text-xs text-gray-400">{doneCount} of {steps.length} complete</span>
             </div>
             <div className="w-full bg-gray-100 rounded-full h-1.5 mb-6">
-              <div className="bg-[#fdf6e3]0 h-1.5 rounded-full transition-all" style={{ width: `${pct}%` }} />
+              <div className="bg-[#c9a84c] h-1.5 rounded-full transition-all" style={{ width: `${pct}%` }} />
             </div>
             <div className="space-y-3">
               {steps.map((step, i) => (
@@ -93,7 +93,7 @@ export default async function WelcomePage() {
 
           <Link
             href="/broker/dashboard"
-            className="block w-full text-center bg-[#0f2240] text-white font-bold py-3.5 rounded-2xl hover:bg-[#1a3560] transition shadow-sm shadow-blue-200"
+            className="block w-full text-center bg-[#c9a84c] text-[#0f2240] font-bold py-3.5 rounded-2xl hover:bg-[#a8893a] transition shadow-sm"
           >
             Go to Dashboard →
           </Link>

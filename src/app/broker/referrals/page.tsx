@@ -68,7 +68,7 @@ export default async function ReferralsPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
           <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Referral Partners</h1>
+              <h1 className="text-2xl font-bold text-[#0f2240]">Referral Partners</h1>
               <p className="text-sm text-gray-400 mt-0.5">{isAdmin ? 'Realtors, builders, and other partners who refer loans to your brokerage.' : 'Partners associated with your submitted loans.'}</p>
             </div>
             {isAdmin && (
@@ -113,7 +113,7 @@ export default async function ReferralsPage() {
                     </div>
                   </div>
                   <div className="text-right hidden sm:block">
-                    <p className="text-2xl font-bold text-gray-900">{loanCountMap[p.id] ?? 0}</p>
+                    <p className="text-2xl font-bold text-[#0f2240]">{loanCountMap[p.id] ?? 0}</p>
                     <p className="text-xs text-gray-400">loans referred</p>
                   </div>
                 </div>

@@ -90,7 +90,7 @@ export default function ProfilePage() {
     <div className="flex min-h-screen bg-[#f8fafc]">
       <Nav email={userEmail} />
       <main className="flex-1 px-8 py-8 max-w-2xl">
-        <h2 className="text-2xl font-bold text-gray-900 mb-1">Profile & Settings</h2>
+        <h2 className="text-2xl font-bold text-[#0f2240] mb-1">Profile & Settings</h2>
         <p className="text-gray-400 text-sm mb-7">Your info appears on client portals and emails.</p>
 
         <form onSubmit={handleSave} className="space-y-5">

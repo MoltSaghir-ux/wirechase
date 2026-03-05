@@ -45,7 +45,7 @@ export default async function TasksPage() {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
       <div className="flex items-center justify-between mb-6 flex-wrap gap-2">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Team Tasks</h1>
+          <h1 className="text-2xl font-bold text-[#0f2240]">Team Tasks</h1>
           <p className="text-sm text-gray-400 mt-0.5">{isAdmin ? 'All open tasks across your brokerage pipeline.' : 'Your assigned and created tasks.'}</p>
         </div>
         <span className="text-sm text-gray-400">{tasks?.length ?? 0} open</span>

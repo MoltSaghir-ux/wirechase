@@ -4,6 +4,9 @@ import { createAdminSupabaseClient } from '@/lib/supabase-server'
 const adminSupabase = createAdminSupabaseClient()
 
 // Twilio sends form-encoded POST
+// SECURITY TODO: Add Twilio request signature validation using X-Twilio-Signature header
+// and the twilio.validateRequest() helper to prevent spoofed inbound webhooks.
+// See: https://www.twilio.com/docs/usage/webhooks/webhooks-security
 export async function POST(req: NextRequest) {
   const formData = await req.formData()
   const from = formData.get('From') as string // sender phone number
