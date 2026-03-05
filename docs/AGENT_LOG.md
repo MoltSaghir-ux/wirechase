@@ -17,3 +17,5 @@
 ### Frontend Engineer — Pre-Approval Letter UI
 - Built PreApprovalButton component with modal
 - Commit: ac0cf4d
+
+- **Backend Engineer** | Pre-approval letter HTML generator API (`/api/loans/pre-approval`) + milestone email automations on stage change (`/api/loans/update-stage`) | commit `f66c77f`
