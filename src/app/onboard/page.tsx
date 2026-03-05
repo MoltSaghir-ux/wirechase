@@ -31,7 +31,6 @@ export default function OnboardPage() {
       if (!data.user) { router.push('/login'); return }
       setUserEmail(data.user.email ?? '')
       setUserId(data.user.id)
-      // If already onboarded, go to dashboard
       supabase
         .from('brokers')
         .select('brokerage_id')
@@ -62,7 +61,7 @@ export default function OnboardPage() {
       })
       const json = await res.json()
       if (!res.ok) throw new Error(json.error || 'Something went wrong')
-      router.push('/broker/dashboard')
+      router.push('/broker/welcome')
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -95,51 +94,94 @@ export default function OnboardPage() {
     }
   }
 
+  const valueProps = [
+    {
+      text: 'Full pipeline management — from application to funded',
+      icon: (
+        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
+        </svg>
+      ),
+    },
+    {
+      text: 'Automated borrower updates and document collection',
+      icon: (
+        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+        </svg>
+      ),
+    },
+    {
+      text: 'AI-powered processing coming soon',
+      icon: (
+        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z" />
+        </svg>
+      ),
+    },
+  ]
+
   return (
-    <div className="min-h-screen bg-[#0f172a] flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 mb-2">
-            <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center">
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-              </svg>
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 flex items-center justify-center p-4">
+      <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+
+        {/* Left: Branding */}
+        <div className="text-white space-y-8 px-4 lg:px-8">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur">
+              <span className="text-white font-bold text-lg">W</span>
             </div>
-            <span className="text-xl font-bold text-white">WireChase</span>
+            <span className="text-2xl font-bold">WireChase</span>
           </div>
-          <h1 className="text-2xl font-bold text-white mt-4">Set up your workspace</h1>
-          <p className="text-slate-400 text-sm mt-1">You're almost in. Choose how to get started.</p>
+
+          <div>
+            <h1 className="text-4xl font-black leading-tight mb-4">The modern mortgage broker platform</h1>
+            <p className="text-blue-200 text-lg">Manage your pipeline, automate communication, and close more loans.</p>
+          </div>
+
+          <div className="space-y-4">
+            {valueProps.map((item, i) => (
+              <div key={i} className="flex items-start gap-3">
+                <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                  {item.icon}
+                </div>
+                <p className="text-blue-100 text-sm leading-relaxed">{item.text}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
-        {/* Tabs */}
-        <div className="flex bg-slate-800 rounded-xl p-1 mb-6">
-          <button
-            onClick={() => setTab('create')}
-            className={`flex-1 py-2.5 text-sm font-medium rounded-lg transition-all ${
-              tab === 'create'
-                ? 'bg-white text-slate-900 shadow'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            Create a Brokerage
-          </button>
-          <button
-            onClick={() => setTab('join')}
-            className={`flex-1 py-2.5 text-sm font-medium rounded-lg transition-all ${
-              tab === 'join'
-                ? 'bg-white text-slate-900 shadow'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            Join a Brokerage
-          </button>
-        </div>
+        {/* Right: Form card */}
+        <div className="bg-white rounded-3xl shadow-2xl p-8">
+          <h2 className="text-xl font-bold text-gray-900 mb-1">Set up your workspace</h2>
+          <p className="text-gray-400 text-sm mb-6">You&apos;re almost in. Choose how to get started.</p>
 
-        {/* Card */}
-        <div className="bg-slate-800 rounded-2xl p-6 border border-slate-700">
+          {/* Tabs */}
+          <div className="flex bg-gray-100 rounded-xl p-1 mb-6">
+            <button
+              onClick={() => setTab('create')}
+              className={`flex-1 py-2.5 text-sm font-medium rounded-lg transition-all ${
+                tab === 'create'
+                  ? 'bg-white text-gray-900 shadow'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              Create Brokerage
+            </button>
+            <button
+              onClick={() => setTab('join')}
+              className={`flex-1 py-2.5 text-sm font-medium rounded-lg transition-all ${
+                tab === 'join'
+                  ? 'bg-white text-gray-900 shadow'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              Join a Team
+            </button>
+          </div>
+
           {error && (
-            <div className="mb-4 bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg px-4 py-3">
+            <div className="mb-4 bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl px-4 py-3">
               {error}
             </div>
           )}
@@ -147,49 +189,51 @@ export default function OnboardPage() {
           {tab === 'create' ? (
             <form onSubmit={handleCreate} className="space-y-4">
               <div>
-                <label className="block text-xs font-medium text-slate-400 mb-1.5">Your Full Name</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Your Full Name</label>
                 <input
                   value={yourName}
                   onChange={e => setYourName(e.target.value)}
                   required
                   placeholder="Jane Smith"
-                  className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2.5 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm placeholder:text-gray-400"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-400 mb-1.5">Brokerage Name</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Brokerage Name</label>
                 <input
                   value={brokerageName}
                   onChange={e => setBrokerageName(e.target.value)}
                   required
                   placeholder="Smith Lending Group"
-                  className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2.5 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm placeholder:text-gray-400"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-400 mb-1.5">Brokerage NMLS # <span className="text-slate-500">(optional)</span></label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Brokerage NMLS # <span className="text-gray-400 font-normal">(optional)</span>
+                </label>
                 <input
                   value={brokerageNmls}
                   onChange={e => setBrokerageNmls(e.target.value)}
                   placeholder="123456"
-                  className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2.5 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm placeholder:text-gray-400"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-400 mb-1.5">Platform Invite Code</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Platform Invite Code</label>
                 <input
                   value={inviteCode}
                   onChange={e => setInviteCode(e.target.value)}
                   required
                   placeholder="WIRE-XXXX"
-                  className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2.5 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono tracking-widest uppercase"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm placeholder:text-gray-400 font-mono tracking-widest uppercase"
                 />
-                <p className="text-xs text-slate-500 mt-1.5">Need a code? Contact WireChase to get access.</p>
+                <p className="text-xs text-gray-400 mt-1.5">Need a code? Contact WireChase to get access.</p>
               </div>
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold py-2.5 rounded-lg text-sm transition-colors mt-2"
+                className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold py-3 rounded-xl text-sm transition-colors mt-2 shadow-sm"
               >
                 {loading ? 'Setting up…' : 'Create Brokerage →'}
               </button>
@@ -197,43 +241,47 @@ export default function OnboardPage() {
           ) : (
             <form onSubmit={handleJoin} className="space-y-4">
               <div>
-                <label className="block text-xs font-medium text-slate-400 mb-1.5">Your Full Name</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Your Full Name</label>
                 <input
                   value={joinName}
                   onChange={e => setJoinName(e.target.value)}
                   required
                   placeholder="Jane Smith"
-                  className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2.5 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm placeholder:text-gray-400"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-400 mb-1.5">Team Invite Token</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Team Invite Token</label>
                 <input
                   value={joinToken}
                   onChange={e => setJoinToken(e.target.value)}
                   required
                   placeholder="Paste your invite token here"
-                  className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2.5 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm placeholder:text-gray-400 font-mono"
                 />
-                <p className="text-xs text-slate-500 mt-1.5">Get this token from your brokerage admin.</p>
+                <p className="text-xs text-gray-400 mt-1.5">Get this token from your brokerage admin.</p>
               </div>
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold py-2.5 rounded-lg text-sm transition-colors mt-2"
+                className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold py-3 rounded-xl text-sm transition-colors mt-2 shadow-sm"
               >
                 {loading ? 'Joining…' : 'Join Brokerage →'}
               </button>
             </form>
           )}
+
+          <p className="text-center text-xs text-gray-400 mt-6">
+            Signed in as {userEmail} ·{' '}
+            <button
+              onClick={() => supabase.auth.signOut().then(() => router.push('/login'))}
+              className="underline hover:text-gray-600"
+            >
+              Sign out
+            </button>
+          </p>
         </div>
 
-        <p className="text-center text-xs text-slate-500 mt-4">
-          Signed in as {userEmail} ·{' '}
-          <button onClick={() => supabase.auth.signOut().then(() => router.push('/login'))} className="underline hover:text-slate-300">
-            Sign out
-          </button>
-        </p>
       </div>
     </div>
   )

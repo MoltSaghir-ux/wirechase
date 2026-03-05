@@ -3,6 +3,8 @@ import { redirect, notFound } from 'next/navigation'
 import Nav from '@/components/ui/Nav'
 import Link from 'next/link'
 import ResendEmailButton from '@/components/ui/ResendEmailButton'
+import SMSButton from '@/components/ui/SMSButton'
+import { isTwilioConfigured } from '@/lib/twilio'
 import AddDocDropdown from '@/components/ui/AddDocDropdown'
 import DocViewer from '@/components/ui/DocViewer'
 import DocReview from '@/components/ui/DocReview'
@@ -203,6 +205,12 @@ export default async function ClientDetailPage({ params, searchParams }: {
           <div className="mt-5 pt-5 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center gap-3">
             <code className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs text-gray-500 truncate min-w-0">{inviteLink}</code>
             <ResendEmailButton clientId={client.id} />
+            <SMSButton
+              clientId={client.id}
+              clientName={client.full_name}
+              clientPhone={client.phone}
+              twilioConfigured={isTwilioConfigured()}
+            />
           </div>
 
           {/* Status page link */}
