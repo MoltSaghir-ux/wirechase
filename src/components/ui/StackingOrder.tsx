@@ -49,7 +49,7 @@ export default function StackingOrder({ docs }: { docs: Doc[] }) {
         onClick={() => setOpen(true)}
         className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-purple-50 text-purple-700 border border-purple-200 hover:bg-purple-100 transition"
       >
-        📋 Stacking Order ({approvedDocs.length} approved)
+        Stacking Order ({approvedDocs.length} approved)
       </button>
     )
   }
@@ -94,7 +94,7 @@ export default function StackingOrder({ docs }: { docs: Doc[] }) {
           }}
           className="mt-2 text-xs text-purple-600 hover:text-purple-800 font-medium"
         >
-          📋 Copy list to clipboard
+          Copy list to clipboard
         </button>
       </div>
     </div>

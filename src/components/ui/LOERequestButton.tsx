@@ -27,7 +27,7 @@ export default function LOERequestButton({ clientId, loanId }: { clientId: strin
         onClick={() => setOpen(true)}
         className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100 transition"
       >
-        📝 Request LOE
+        Request LOE
       </button>
     )
   }

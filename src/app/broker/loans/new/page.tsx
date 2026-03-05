@@ -323,7 +323,7 @@ export default function NewLoanPage() {
                     placeholder="3.5"
                     className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
                   {parseFloat(yearsEmployed) > 0 && parseFloat(yearsEmployed) < 2 && (
-                    <p className="text-xs text-amber-600 mt-1">⚠️ Less than 2 years — extra employment history docs will be required</p>
+                    <p className="text-xs text-amber-600 mt-1">Less than 2 years — extra employment history docs will be required</p>
                   )}
                 </div>
               )}
@@ -358,7 +358,7 @@ export default function NewLoanPage() {
                   ))}
                 </div>
                 {propertyUse === 'investment' && (
-                  <p className="text-xs text-amber-600 mt-1.5">⚠️ Investment properties require additional reserves documentation</p>
+                  <p className="text-xs text-amber-600 mt-1.5">Investment properties require additional reserves documentation</p>
                 )}
               </div>
 
@@ -414,13 +414,13 @@ export default function NewLoanPage() {
 
               {propertyType === 'condo' && (
                 <div className="bg-blue-50 rounded-xl p-4">
-                  <p className="text-sm text-blue-700 font-medium">📋 Condo Note</p>
+                  <p className="text-sm text-blue-700 font-medium">Condo Note</p>
                   <p className="text-xs text-blue-600 mt-1">Condo loans require HOA documentation and a condo questionnaire. WireChase will automatically add these to the checklist.</p>
                 </div>
               )}
               {propertyType === 'manufactured' && (
                 <div className="bg-amber-50 rounded-xl p-4">
-                  <p className="text-sm text-amber-700 font-medium">⚠️ Manufactured Home</p>
+                  <p className="text-sm text-amber-700 font-medium">Manufactured Home</p>
                   <p className="text-xs text-amber-600 mt-1">FHA and VA have specific requirements for manufactured homes. Verify the property meets HUD standards.</p>
                 </div>
               )}
@@ -454,7 +454,7 @@ export default function NewLoanPage() {
 
               {/* Preview count */}
               <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 mt-2">
-                <p className="text-sm font-medium text-gray-700">📋 Document Checklist Preview</p>
+                <p className="text-sm font-medium text-gray-700">Document Checklist Preview</p>
                 <p className="text-xs text-gray-400 mt-1">
                   Based on: <strong>{LOAN_TYPE_LABELS[loanType]}</strong> · <strong>{LOAN_PURPOSE_LABELS[loanPurpose]}</strong> · <strong>{EMPLOYMENT_TYPE_LABELS[employmentType]}</strong>
                   {coBorrower ? ` + Co-Borrower (${EMPLOYMENT_TYPE_LABELS[coBorrowerEmploymentType]})` : ''}

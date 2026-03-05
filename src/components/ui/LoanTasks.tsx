@@ -176,7 +176,11 @@ export default function LoanTasks({ loanId, clientId }: { loanId: string; client
         <p className="text-xs text-gray-400">Loading tasks…</p>
       ) : tasks.length === 0 ? (
         <div className="text-center py-6">
-          <p className="text-3xl mb-2">✅</p>
+          <div className="flex justify-center mb-2 text-gray-300">
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
           <p className="text-sm text-gray-400">No tasks yet. Add one to get started.</p>
         </div>
       ) : (
@@ -197,11 +201,19 @@ export default function LoanTasks({ loanId, clientId }: { loanId: string; client
                 {task.description && <p className="text-xs text-gray-400 mt-0.5">{task.description}</p>}
                 <div className="flex items-center gap-2 mt-1 flex-wrap">
                   {task.assigned_to_name && (
-                    <span className="text-xs text-gray-400">👤 {task.assigned_to_name}</span>
+                    <span className="text-xs text-gray-400 flex items-center gap-1">
+                      <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                      </svg>
+                      {task.assigned_to_name}
+                    </span>
                   )}
                   {task.due_date && (
-                    <span className={`text-xs ${dueDateColor(task.due_date, task.status)}`}>
-                      📅 {new Date(task.due_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                    <span className={`text-xs flex items-center gap-1 ${dueDateColor(task.due_date, task.status)}`}>
+                      <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                      </svg>
+                      {new Date(task.due_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                     </span>
                   )}
                 </div>
