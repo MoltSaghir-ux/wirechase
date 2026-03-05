@@ -171,7 +171,7 @@ export async function POST(req: NextRequest) {
           </p>
 
           <div style="background:#f0f9ff; border:1px solid #bae6fd; border-radius:12px; padding:16px 20px; margin-bottom:24px;">
-            <p style="margin:0; font-size:13px; color:#0369a1; font-weight:600;">📋 What we need from you:</p>
+            <p style="margin:0; font-size:13px; color:#0369a1; font-weight:600;">What we need from you:</p>
             <p style="margin:4px 0 0; font-size:13px; color:#0284c7;">${summary}</p>
           </div>
 

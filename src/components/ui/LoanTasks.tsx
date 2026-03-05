@@ -20,7 +20,7 @@ type TeamMember = {
 const PRIORITY_CONFIG: Record<string, { label: string; color: string }> = {
   urgent: { label: 'Urgent', color: 'bg-red-100 text-red-700' },
   high:   { label: 'High',   color: 'bg-amber-100 text-amber-700' },
-  normal: { label: 'Normal', color: 'bg-blue-100 text-blue-700' },
+  normal: { label: 'Normal', color: 'bg-blue-100 text-[#0f2240]' },
   low:    { label: 'Low',    color: 'bg-gray-100 text-gray-500' },
 }
 
@@ -108,10 +108,10 @@ export default function LoanTasks({ loanId, clientId }: { loanId: string; client
         <div className="flex items-center gap-2">
           <h3 className="text-sm font-semibold text-gray-700">Tasks</h3>
           {open.length > 0 && (
-            <span className="text-xs bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded-full">{open.length} open</span>
+            <span className="text-xs bg-blue-100 text-[#0f2240] font-bold px-2 py-0.5 rounded-full">{open.length} open</span>
           )}
         </div>
-        <button onClick={() => setAdding(v => !v)} className="text-xs text-blue-600 hover:text-blue-700 font-medium">
+        <button onClick={() => setAdding(v => !v)} className="text-xs text-[#0f2240] hover:text-[#c9a84c] font-medium">
           {adding ? 'Cancel' : '+ Add Task'}
         </button>
       </div>
@@ -122,20 +122,20 @@ export default function LoanTasks({ loanId, clientId }: { loanId: string; client
             placeholder="Task title *"
             value={title}
             onChange={e => setTitle(e.target.value)}
-            className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]"
           />
           <textarea
             placeholder="Description (optional)"
             value={description}
             onChange={e => setDescription(e.target.value)}
             rows={2}
-            className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c] resize-none"
           />
           <div className="grid grid-cols-2 gap-2">
             <select
               value={assignedId}
               onChange={e => setAssignedId(e.target.value)}
-              className="border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]"
             >
               <option value="">Assign to…</option>
               {team.map((m: TeamMember) => (
@@ -145,7 +145,7 @@ export default function LoanTasks({ loanId, clientId }: { loanId: string; client
             <select
               value={priority}
               onChange={e => setPriority(e.target.value)}
-              className="border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]"
             >
               <option value="low">Low</option>
               <option value="normal">Normal</option>
@@ -159,13 +159,13 @@ export default function LoanTasks({ loanId, clientId }: { loanId: string; client
               type="date"
               value={dueDate}
               onChange={e => setDueDate(e.target.value)}
-              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]"
             />
           </div>
           <button
             onClick={handleAdd}
             disabled={saving || !title.trim()}
-            className="w-full bg-blue-600 text-white text-sm font-semibold py-2 rounded-xl hover:bg-blue-700 transition disabled:opacity-50"
+            className="w-full bg-[#0f2240] text-white text-sm font-semibold py-2 rounded-xl hover:bg-[#1a3560] transition disabled:opacity-50"
           >
             {saving ? 'Adding…' : 'Add Task'}
           </button>

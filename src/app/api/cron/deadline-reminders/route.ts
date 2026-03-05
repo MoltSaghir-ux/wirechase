@@ -35,11 +35,11 @@ export async function GET(req: NextRequest) {
       await resend.emails.send({
         from: 'WireChase <alerts@resend.dev>',
         to: process.env.NODE_ENV === 'production' ? broker.email : (process.env.RESEND_TEST_EMAIL ?? broker.email),
-        subject: `⚠️ Rate Lock Expiring in ${daysLeft} Days — ${client.full_name}`,
+        subject: `Rate Lock Expiring in ${daysLeft} Days — ${client.full_name}`,
         html: `
           <div style="font-family:sans-serif;max-width:580px;margin:0 auto;padding:32px 24px;color:#111;">
             <div style="background:#fef3c7;border:1px solid #fbbf24;border-radius:12px;padding:16px 20px;margin-bottom:20px;">
-              <p style="margin:0;font-weight:700;color:#92400e;">⚠️ Rate Lock Expiring Soon</p>
+              <p style="margin:0;font-weight:700;color:#92400e;">Rate Lock Expiring Soon</p>
               <p style="margin:4px 0 0;color:#b45309;font-size:14px;">
                 <strong>${client.full_name}</strong>'s rate lock expires in <strong>${daysLeft} day${daysLeft !== 1 ? 's' : ''}</strong> on ${new Date(loan.rate_lock_expiry).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}.
               </p>
@@ -79,11 +79,11 @@ export async function GET(req: NextRequest) {
       await resend.emails.send({
         from: 'WireChase <alerts@resend.dev>',
         to: process.env.NODE_ENV === 'production' ? brokerEmail : (process.env.RESEND_TEST_EMAIL ?? brokerEmail),
-        subject: `📋 ${conditions.length} Stale Condition${conditions.length !== 1 ? 's' : ''} — ${clientName}`,
+        subject: `${conditions.length} Stale Condition${conditions.length !== 1 ? 's' : ''} — ${clientName}`,
         html: `
           <div style="font-family:sans-serif;max-width:580px;margin:0 auto;padding:32px 24px;color:#111;">
             <div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:12px;padding:16px 20px;margin-bottom:20px;">
-              <p style="margin:0;font-weight:700;color:#991b1b;">📋 Conditions Need Attention</p>
+              <p style="margin:0;font-weight:700;color:#991b1b;">Conditions Need Attention</p>
               <p style="margin:4px 0 0;color:#b91c1c;font-size:14px;">
                 <strong>${clientName}</strong> has ${conditions.length} open condition${conditions.length !== 1 ? 's' : ''} with no movement in 14+ days.
               </p>

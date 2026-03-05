@@ -85,7 +85,7 @@ export default function ReferralPartnerPanel({
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-sm font-semibold text-gray-700">Referral Partner</h3>
-          <button onClick={handleEdit} className="text-xs text-blue-600 hover:text-blue-700 font-medium">
+          <button onClick={handleEdit} className="text-xs text-[#0f2240] hover:text-[#c9a84c] font-medium">
             {currentPartnerName ? 'Change' : '+ Assign'}
           </button>
         </div>
@@ -111,7 +111,7 @@ export default function ReferralPartnerPanel({
         <select
           value={selectedId}
           onChange={e => setSelectedId(e.target.value)}
-          className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]"
         >
           <option value="">— None —</option>
           {partners.map(p => (
@@ -122,28 +122,28 @@ export default function ReferralPartnerPanel({
         </select>
       )}
 
-      <button onClick={() => setShowAdd(v => !v)} className="text-xs text-blue-600 hover:underline">
+      <button onClick={() => setShowAdd(v => !v)} className="text-xs text-[#0f2240] hover:underline">
         {showAdd ? '— Cancel new partner' : '+ Add new partner'}
       </button>
 
       {showAdd && (
         <div className="space-y-2 bg-gray-50 rounded-xl p-3">
           <input placeholder="Full name *" value={newName} onChange={e => setNewName(e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            className="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]" />
           <input placeholder="Company" value={newCompany} onChange={e => setNewCompany(e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            className="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]" />
           <div className="grid grid-cols-2 gap-2">
             <input placeholder="Email" value={newEmail} onChange={e => setNewEmail(e.target.value)}
-              className="border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              className="border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]" />
             <input placeholder="Phone" value={newPhone} onChange={e => setNewPhone(e.target.value)}
-              className="border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              className="border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]" />
           </div>
           <select value={newType} onChange={e => setNewType(e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            className="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]">
             {Object.entries(TYPE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
           </select>
           <button onClick={handleAddPartner}
-            className="w-full bg-blue-600 text-white text-xs font-semibold py-1.5 rounded-lg hover:bg-blue-700 transition">
+            className="w-full bg-[#0f2240] text-white text-xs font-semibold py-1.5 rounded-lg hover:bg-[#1a3560] transition">
             Save Partner
           </button>
         </div>
@@ -152,12 +152,12 @@ export default function ReferralPartnerPanel({
       <div>
         <label className="text-xs text-gray-400 block mb-1">Notes (optional)</label>
         <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2}
-          className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" />
+          className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c] resize-none" />
       </div>
 
       <div className="flex gap-2">
         <button onClick={handleSave} disabled={saving}
-          className="flex-1 bg-blue-600 text-white text-sm font-semibold py-2 rounded-xl hover:bg-blue-700 transition disabled:opacity-50">
+          className="flex-1 bg-[#0f2240] text-white text-sm font-semibold py-2 rounded-xl hover:bg-[#1a3560] transition disabled:opacity-50">
           {saving ? 'Saving…' : 'Save'}
         </button>
         <button onClick={() => setEditing(false)}

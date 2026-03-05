@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
     await resend.emails.send({
       from: 'WireChase <updates@resend.dev>',
       to: process.env.NODE_ENV === 'production' ? client.email : (process.env.RESEND_TEST_EMAIL ?? client.email),
-      subject: `📝 Letter of Explanation Requested — ${topic}`,
+      subject: `Letter of Explanation Requested — ${topic}`,
       html: `
         <div style="font-family:sans-serif;max-width:580px;margin:0 auto;padding:32px 24px;color:#111;">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:28px;">

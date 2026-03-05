@@ -58,14 +58,14 @@ export default function NewReferralPartnerPage() {
               <input
                 value={fullName} onChange={e => setFullName(e.target.value)}
                 placeholder="Jane Smith"
-                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]"
               />
             </div>
 
             <div>
               <label className="text-xs font-semibold text-gray-500 block mb-1">Partner Type</label>
               <select value={partnerType} onChange={e => setPartnerType(e.target.value)}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]">
                 {Object.entries(TYPE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
               </select>
             </div>
@@ -75,7 +75,7 @@ export default function NewReferralPartnerPage() {
               <input
                 value={company} onChange={e => setCompany(e.target.value)}
                 placeholder="Keller Williams"
-                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]"
               />
             </div>
 
@@ -85,7 +85,7 @@ export default function NewReferralPartnerPage() {
                 <input
                   value={email} onChange={e => setEmail(e.target.value)}
                   placeholder="jane@example.com" type="email"
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]"
                 />
               </div>
               <div>
@@ -93,7 +93,7 @@ export default function NewReferralPartnerPage() {
                 <input
                   value={phone} onChange={e => setPhone(e.target.value)}
                   placeholder="(555) 000-0000" type="tel"
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]"
                 />
               </div>
             </div>
@@ -102,13 +102,13 @@ export default function NewReferralPartnerPage() {
               <label className="text-xs font-semibold text-gray-500 block mb-1">Notes</label>
               <textarea
                 value={notes} onChange={e => setNotes(e.target.value)} rows={3}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c] resize-none"
               />
             </div>
 
             <div className="flex gap-3 pt-2">
               <button type="submit" disabled={saving}
-                className="flex-1 bg-blue-600 text-white text-sm font-semibold py-2.5 rounded-xl hover:bg-blue-700 transition disabled:opacity-50">
+                className="flex-1 bg-[#0f2240] text-white text-sm font-semibold py-2.5 rounded-xl hover:bg-[#1a3560] transition disabled:opacity-50">
                 {saving ? 'Saving…' : 'Save Partner'}
               </button>
               <button type="button" onClick={() => router.push('/broker/referrals')}

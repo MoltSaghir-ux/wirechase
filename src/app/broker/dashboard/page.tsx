@@ -16,7 +16,7 @@ type DashboardClient = {
 
 const STAGE_COLORS: Record<string, string> = {
   application: 'bg-gray-100 text-gray-600',
-  processing: 'bg-blue-100 text-blue-700',
+  processing: 'bg-blue-100 text-[#0f2240]',
   submitted_uw: 'bg-purple-100 text-purple-700',
   conditional_approval: 'bg-amber-100 text-amber-700',
   clear_to_close: 'bg-emerald-100 text-emerald-700',
@@ -111,7 +111,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   )
 
   const stats: { label: string; value: number; icon: ReactNode; color: string; filter: string | null }[] = [
-    { label: 'Active Files', value: total, icon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 0 0-1.883 2.542l.857 6a2.25 2.25 0 0 0 2.227 1.932H19.05a2.25 2.25 0 0 0 2.227-1.932l.857-6a2.25 2.25 0 0 0-1.883-2.542m-16.5 0V6A2.25 2.25 0 0 1 6 3.75h3.879a1.5 1.5 0 0 1 1.06.44l2.122 2.12a1.5 1.5 0 0 0 1.06.44H18A2.25 2.25 0 0 1 20.25 9v.776" /></svg>, color: 'text-blue-600 bg-blue-50', filter: null },
+    { label: 'Active Files', value: total, icon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 0 0-1.883 2.542l.857 6a2.25 2.25 0 0 0 2.227 1.932H19.05a2.25 2.25 0 0 0 2.227-1.932l.857-6a2.25 2.25 0 0 0-1.883-2.542m-16.5 0V6A2.25 2.25 0 0 1 6 3.75h3.879a1.5 1.5 0 0 1 1.06.44l2.122 2.12a1.5 1.5 0 0 0 1.06.44H18A2.25 2.25 0 0 1 20.25 9v.776" /></svg>, color: 'text-[#0f2240] bg-[#fdf6e3]', filter: null },
     { label: 'Pending Docs', value: pending, icon: '⏳', color: 'text-yellow-600 bg-yellow-50', filter: 'pending' },
     { label: 'In Progress', value: inProgress, icon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" /></svg>, color: 'text-purple-600 bg-purple-50', filter: 'in_progress' },
     { label: 'Complete', value: complete, icon: '✓', color: 'text-green-600 bg-green-50', filter: 'complete' },
@@ -141,13 +141,13 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
             <div className="flex items-center gap-2">
               <Link
                 href={`/broker/dashboard?${new URLSearchParams({ ...(filter ? { filter } : {}), ...(q ? { q } : {}), view: 'list' }).toString()}`}
-                className={`p-2 rounded-lg border text-sm transition ${view !== 'pipeline' ? 'bg-blue-50 border-blue-200 text-blue-600' : 'border-gray-200 text-gray-400 hover:text-gray-600'}`}
+                className={`p-2 rounded-lg border text-sm transition ${view !== 'pipeline' ? 'bg-[#fdf6e3] border-blue-200 text-[#0f2240]' : 'border-gray-200 text-gray-400 hover:text-gray-600'}`}
               >
                 ☰
               </Link>
               <Link
                 href={`/broker/dashboard?${new URLSearchParams({ ...(filter ? { filter } : {}), ...(q ? { q } : {}), view: 'pipeline' }).toString()}`}
-                className={`p-2 rounded-lg border text-sm transition ${view === 'pipeline' ? 'bg-blue-50 border-blue-200 text-blue-600' : 'border-gray-200 text-gray-400 hover:text-gray-600'}`}
+                className={`p-2 rounded-lg border text-sm transition ${view === 'pipeline' ? 'bg-[#fdf6e3] border-blue-200 text-[#0f2240]' : 'border-gray-200 text-gray-400 hover:text-gray-600'}`}
               >
                 ⊞
               </Link>
@@ -234,7 +234,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                   const openConds = openConditionsByClient[client.id] ?? 0
 
                   return (
-                    <Link key={client.id} href={`/broker/clients/${client.id}`} className="flex flex-col md:grid md:grid-cols-12 md:items-center px-4 md:px-6 py-4 hover:bg-blue-50/30 transition gap-2 md:gap-0">
+                    <Link key={client.id} href={`/broker/clients/${client.id}`} className="flex flex-col md:grid md:grid-cols-12 md:items-center px-4 md:px-6 py-4 hover:bg-[#fdf6e3]/30 transition gap-2 md:gap-0">
                       <div className="md:col-span-4 flex items-center gap-3">
                         <div className="w-9 h-9 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
                           <span className="text-white text-xs font-bold">
@@ -258,7 +258,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
 
                         <div className="flex-1 md:col-span-3 md:pr-6">
                           <div className="w-full bg-gray-100 rounded-full h-1.5">
-                            <div className="bg-blue-500 h-1.5 rounded-full" style={{ width: `${pct}%` }} />
+                            <div className="bg-[#fdf6e3]0 h-1.5 rounded-full" style={{ width: `${pct}%` }} />
                           </div>
                           <p className="text-xs text-gray-400 mt-1">{pct}%</p>
                         </div>
@@ -274,7 +274,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                         <div className="md:col-span-2 hidden md:block">
                           <span className={`inline-flex text-xs px-2.5 py-1 rounded-full font-medium capitalize ${
                             client.status === 'complete' ? 'bg-green-100 text-green-700' :
-                            client.status === 'in_progress' ? 'bg-blue-100 text-blue-700' :
+                            client.status === 'in_progress' ? 'bg-blue-100 text-[#0f2240]' :
                             'bg-gray-100 text-gray-500'
                           }`}>
                             {client.status.replace('_', ' ')}
@@ -291,7 +291,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-gray-400"><path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 15.803a7.5 7.5 0 0 0 10.607 0Z" /></svg>
                 </div>
                 <p className="text-gray-500 font-medium">No {filter ? filter.replace('_', ' ') : ''} clients{q ? ` matching "${q}"` : ''}</p>
-                {(filter || q) && <Link href="/broker/dashboard" className="text-blue-600 text-sm font-medium hover:underline mt-2 inline-block">View all clients</Link>}
+                {(filter || q) && <Link href="/broker/dashboard" className="text-[#0f2240] text-sm font-medium hover:underline mt-2 inline-block">View all clients</Link>}
               </div>
             )}
           </div>

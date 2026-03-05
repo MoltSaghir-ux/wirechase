@@ -150,7 +150,7 @@ export default function NewClientPage() {
             <div className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-3 text-xs text-gray-500 break-all mb-4 text-left">{inviteLink}</div>
             <button
               onClick={() => navigator.clipboard.writeText(inviteLink)}
-              className="w-full bg-blue-600 text-white rounded-xl py-2.5 text-sm font-semibold hover:bg-blue-700 transition mb-3"
+              className="w-full bg-[#0f2240] text-white rounded-xl py-2.5 text-sm font-semibold hover:bg-[#1a3560] transition mb-3"
             >
               Copy Link
             </button>
@@ -182,13 +182,13 @@ export default function NewClientPage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Full Name</label>
                 <input type="text" value={fullName} onChange={e => setFullName(e.target.value)} required maxLength={100}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#c9a84c] focus:bg-white"
                   placeholder="Jane Smith" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
                 <input type="email" value={email} onChange={e => setEmail(e.target.value)} required maxLength={200}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#c9a84c] focus:bg-white"
                   placeholder="jane@example.com" />
               </div>
             </div>
@@ -204,7 +204,7 @@ export default function NewClientPage() {
                   {templates.map(t => (
                     <button key={t.id} type="button" onClick={() => loadTemplate(t)}
                       className={`text-left px-4 py-3 rounded-xl border text-sm transition ${
-                        selectedProgram === 'template:' + t.id ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-sm' : 'border-gray-200 hover:border-gray-300 text-gray-700 hover:bg-gray-50'
+                        selectedProgram === 'template:' + t.id ? 'border-[#c9a84c] bg-[#fdf6e3] text-[#0f2240] shadow-sm' : 'border-gray-200 hover:border-gray-300 text-gray-700 hover:bg-gray-50'
                       }`}>
                       <p className="font-semibold">⭐ {t.name}</p>
                       <p className="text-xs text-gray-400 mt-0.5">{t.docs.length} documents</p>
@@ -218,7 +218,7 @@ export default function NewClientPage() {
               {MORTGAGE_PROGRAMS.map(p => (
                 <button key={p.id} type="button" onClick={() => selectProgram(p.id)}
                   className={`text-left px-4 py-3 rounded-xl border text-sm transition ${
-                    selectedProgram === p.id ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-sm' : 'border-gray-200 hover:border-gray-300 text-gray-700 hover:bg-gray-50'
+                    selectedProgram === p.id ? 'border-[#c9a84c] bg-[#fdf6e3] text-[#0f2240] shadow-sm' : 'border-gray-200 hover:border-gray-300 text-gray-700 hover:bg-gray-50'
                   }`}>
                   <p className="font-semibold">{p.name}</p>
                   <p className="text-xs text-gray-400 mt-0.5 leading-tight">{p.description}</p>
@@ -238,7 +238,7 @@ export default function NewClientPage() {
               {/* Add doc dropdown */}
               <div className="relative">
                 <button type="button" onClick={() => setShowDropdown(!showDropdown)}
-                  className="flex items-center gap-1.5 text-sm text-blue-600 border border-blue-200 bg-blue-50 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition">
+                  className="flex items-center gap-1.5 text-sm text-[#0f2240] border border-blue-200 bg-[#fdf6e3] px-3 py-1.5 rounded-lg hover:bg-blue-100 transition">
                   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
                   Add Document
                 </button>
@@ -247,7 +247,7 @@ export default function NewClientPage() {
                     <div className="p-3 border-b border-gray-100">
                       <input autoFocus type="text" value={search} onChange={e => setSearch(e.target.value)}
                         placeholder="Search or type custom doc..."
-                        className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50" />
+                        className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#c9a84c] bg-gray-50" />
                     </div>
                     <div className="max-h-60 overflow-y-auto">
                       {filteredPresets.map((p, i) => (
@@ -259,7 +259,7 @@ export default function NewClientPage() {
                       ))}
                       {search.trim() && !filteredPresets.find(p => p.label.toLowerCase() === search.toLowerCase()) && (
                         <button type="button" onClick={addCustomDoc}
-                          className="w-full text-left px-4 py-3 text-sm text-blue-600 hover:bg-blue-50 border-t border-gray-100">
+                          className="w-full text-left px-4 py-3 text-sm text-[#0f2240] hover:bg-[#fdf6e3] border-t border-gray-100">
                           + Add "{search.trim()}" as custom document
                         </button>
                       )}
@@ -303,7 +303,7 @@ export default function NewClientPage() {
           {error && <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3">{error}</p>}
 
           <button type="submit" disabled={loading}
-            className="w-full bg-blue-600 text-white rounded-xl py-3 text-sm font-semibold hover:bg-blue-700 disabled:opacity-40 transition shadow-sm">
+            className="w-full bg-[#0f2240] text-white rounded-xl py-3 text-sm font-semibold hover:bg-[#1a3560] disabled:opacity-40 transition shadow-sm">
             {loading ? 'Creating & Sending...' : 'Create Client & Send Invite'}
           </button>
         </form>

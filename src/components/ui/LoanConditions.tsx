@@ -23,7 +23,7 @@ type Condition = {
 const CATEGORIES = ['Income', 'Assets', 'Property', 'Credit', 'Insurance', 'Title', 'Other']
 
 const CATEGORY_COLORS: Record<string, string> = {
-  Income:    'bg-blue-100 text-blue-700',
+  Income:    'bg-blue-100 text-[#0f2240]',
   Assets:    'bg-purple-100 text-purple-700',
   Property:  'bg-orange-100 text-orange-700',
   Credit:    'bg-red-100 text-red-700',
@@ -34,7 +34,7 @@ const CATEGORY_COLORS: Record<string, string> = {
 
 const STATUS_CONFIG: Record<ConditionStatus, { label: string; color: string; dot: string; next: ConditionStatus | null; nextLabel: string | null }> = {
   open:      { label: 'Open',      color: 'bg-gray-100 text-gray-600',     dot: 'bg-gray-400',   next: 'requested', nextLabel: 'Request from Client' },
-  requested: { label: 'Requested', color: 'bg-blue-100 text-blue-700',     dot: 'bg-blue-500',   next: 'received',  nextLabel: 'Mark Received' },
+  requested: { label: 'Requested', color: 'bg-blue-100 text-[#0f2240]',     dot: 'bg-[#fdf6e3]0',   next: 'received',  nextLabel: 'Mark Received' },
   received:  { label: 'Received',  color: 'bg-amber-100 text-amber-700',   dot: 'bg-amber-500',  next: 'submitted', nextLabel: 'Mark Submitted' },
   submitted: { label: 'Submitted', color: 'bg-purple-100 text-purple-700', dot: 'bg-purple-500', next: 'cleared',   nextLabel: 'Mark Cleared' },
   cleared:   { label: 'Cleared',   color: 'bg-green-100 text-green-700',   dot: 'bg-green-500',  next: null,        nextLabel: null },
@@ -153,7 +153,7 @@ export default function LoanConditions({ loanId, clientId }: { loanId: string; c
         </div>
         <button
           onClick={() => setShowAdd(!showAdd)}
-          className="text-xs bg-blue-600 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-blue-700 transition"
+          className="text-xs bg-[#0f2240] text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-[#1a3560] transition"
         >
           + Add Condition
         </button>
@@ -161,20 +161,20 @@ export default function LoanConditions({ loanId, clientId }: { loanId: string; c
 
       {/* Add form */}
       {showAdd && (
-        <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 mb-4 space-y-3">
-          <h4 className="text-sm font-semibold text-blue-800">New Condition</h4>
+        <div className="bg-[#fdf6e3] border border-blue-100 rounded-xl p-4 mb-4 space-y-3">
+          <h4 className="text-sm font-semibold text-[#0f2240]">New Condition</h4>
           <textarea
             value={newText}
             onChange={e => setNewText(e.target.value)}
             placeholder="e.g. Provide most recent 60-day bank statements for all accounts showing down payment funds"
             rows={3}
-            className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white resize-none"
+            className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c] bg-white resize-none"
           />
           <div className="flex items-center gap-3">
             <select
               value={newCategory}
               onChange={e => setNewCategory(e.target.value)}
-              className="border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+              className="border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c] bg-white"
             >
               {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
@@ -183,7 +183,7 @@ export default function LoanConditions({ loanId, clientId }: { loanId: string; c
               value={newNotes}
               onChange={e => setNewNotes(e.target.value)}
               placeholder="Internal notes (optional)"
-              className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+              className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c] bg-white"
             />
           </div>
           <div className="flex gap-2 justify-end">
@@ -191,7 +191,7 @@ export default function LoanConditions({ loanId, clientId }: { loanId: string; c
             <button
               onClick={addCondition}
               disabled={adding || !newText.trim()}
-              className="text-sm bg-blue-600 text-white px-4 py-1.5 rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-50"
+              className="text-sm bg-[#0f2240] text-white px-4 py-1.5 rounded-lg font-semibold hover:bg-[#1a3560] transition disabled:opacity-50"
             >
               {adding ? 'Adding…' : 'Add Condition'}
             </button>
@@ -296,7 +296,7 @@ export default function LoanConditions({ loanId, clientId }: { loanId: string; c
                   {cfg.next && (
                     <button
                       onClick={() => updateStatus(c.id, cfg.next!)}
-                      className="text-xs bg-blue-600 text-white px-2.5 py-1 rounded-lg font-medium hover:bg-blue-700 transition whitespace-nowrap"
+                      className="text-xs bg-[#0f2240] text-white px-2.5 py-1 rounded-lg font-medium hover:bg-[#1a3560] transition whitespace-nowrap"
                     >
                       {cfg.nextLabel}
                     </button>
@@ -347,7 +347,7 @@ function NoteEditor({ initial, onSave, onCancel }: { initial: string; onSave: (v
         value={val}
         onChange={e => setVal(e.target.value)}
         rows={2}
-        className="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+        className="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#c9a84c] resize-none"
         autoFocus
       />
       <div className="flex gap-1.5">

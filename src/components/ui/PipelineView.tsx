@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 const PIPELINE_STAGES = [
   { key: 'application', label: 'Application', color: 'bg-gray-100 text-gray-600', dot: 'bg-gray-400' },
-  { key: 'processing', label: 'Processing', color: 'bg-blue-100 text-blue-700', dot: 'bg-blue-500' },
+  { key: 'processing', label: 'Processing', color: 'bg-blue-100 text-[#0f2240]', dot: 'bg-[#fdf6e3]0' },
   { key: 'submitted_uw', label: 'In UW', color: 'bg-purple-100 text-purple-700', dot: 'bg-purple-500' },
   { key: 'conditional_approval', label: 'Cond. Approval', color: 'bg-yellow-100 text-yellow-700', dot: 'bg-yellow-500' },
   { key: 'clear_to_close', label: 'CTC', color: 'bg-emerald-100 text-emerald-700', dot: 'bg-emerald-500' },
@@ -69,7 +69,7 @@ export default function PipelineView({
                         </div>
                       </div>
                       <div className="w-full bg-gray-100 rounded-full h-1 mb-1.5">
-                        <div className="bg-blue-500 h-1 rounded-full" style={{ width: `${pct}%` }} />
+                        <div className="bg-[#fdf6e3]0 h-1 rounded-full" style={{ width: `${pct}%` }} />
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-[10px] text-gray-400">{uploadedDocs}/{totalDocs} docs</span>

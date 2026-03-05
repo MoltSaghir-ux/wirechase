@@ -14,7 +14,7 @@ export type LoanStage =
 
 const STAGES: { key: LoanStage; label: string; short: string; color: string }[] = [
   { key: 'application',          label: 'Application',          short: 'App',      color: 'bg-gray-400' },
-  { key: 'processing',           label: 'Processing',           short: 'Proc',     color: 'bg-blue-500' },
+  { key: 'processing',           label: 'Processing',           short: 'Proc',     color: 'bg-[#fdf6e3]0' },
   { key: 'submitted_uw',         label: 'Submitted to UW',      short: 'In UW',    color: 'bg-purple-500' },
   { key: 'conditional_approval', label: 'Conditional Approval', short: 'Cond. App',color: 'bg-yellow-500' },
   { key: 'clear_to_close',       label: 'Clear to Close',       short: 'CTC',      color: 'bg-emerald-500' },
@@ -95,14 +95,14 @@ export default function LoanStageTracker({
                       isCurrent
                         ? `${s.color} text-white border-transparent shadow-md scale-110`
                         : isComplete
-                        ? 'bg-blue-600 text-white border-transparent'
+                        ? 'bg-[#0f2240] text-white border-transparent'
                         : 'bg-white border-gray-200 text-gray-300 hover:border-blue-300'
                     }`}
                   >
                     {isComplete ? '✓' : i + 1}
                   </button>
                   {!isLast && (
-                    <div className={`flex-1 h-0.5 mx-0.5 ${i < currentIdx ? 'bg-blue-500' : 'bg-gray-200'}`} />
+                    <div className={`flex-1 h-0.5 mx-0.5 ${i < currentIdx ? 'bg-[#fdf6e3]0' : 'bg-gray-200'}`} />
                   )}
                 </div>
               )
@@ -116,7 +116,7 @@ export default function LoanStageTracker({
               return (
                 <div key={s.key} className="flex-1 min-w-0 text-center">
                   <p className={`text-[10px] font-medium leading-tight truncate px-0.5 ${
-                    isCurrent ? 'text-blue-600' : i < currentIdx ? 'text-gray-500' : 'text-gray-300'
+                    isCurrent ? 'text-[#0f2240]' : i < currentIdx ? 'text-gray-500' : 'text-gray-300'
                   }`}>
                     {s.short}
                   </p>

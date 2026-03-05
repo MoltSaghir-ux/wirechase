@@ -73,7 +73,7 @@ export default function DocReview(props: DocReviewProps) {
               <div>
                 <label className="block text-[10px] font-semibold text-gray-500 uppercase mb-1">Doc Type</label>
                 <select value={docType} onChange={e => setDocType(e.target.value)}
-                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white">
+                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#c9a84c] bg-white">
                   <option value="">— Select —</option>
                   {DOC_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                 </select>
@@ -81,7 +81,7 @@ export default function DocReview(props: DocReviewProps) {
               <div>
                 <label className="block text-[10px] font-semibold text-gray-500 uppercase mb-1">Borrower</label>
                 <select value={borrowerType} onChange={e => setBorrowerType(e.target.value)}
-                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white">
+                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#c9a84c] bg-white">
                   <option value="primary">Primary</option>
                   <option value="co_borrower">Co-Borrower</option>
                 </select>
@@ -91,12 +91,12 @@ export default function DocReview(props: DocReviewProps) {
               <div>
                 <label className="block text-[10px] font-semibold text-gray-500 uppercase mb-1">Period Start</label>
                 <input type="date" value={dateStart} onChange={e => setDateStart(e.target.value)}
-                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white" />
+                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#c9a84c] bg-white" />
               </div>
               <div>
                 <label className="block text-[10px] font-semibold text-gray-500 uppercase mb-1">Period End</label>
                 <input type="date" value={dateEnd} onChange={e => setDateEnd(e.target.value)}
-                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white" />
+                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#c9a84c] bg-white" />
               </div>
             </div>
             <button onClick={saveMeta} disabled={savingMeta}
@@ -128,7 +128,7 @@ export default function DocReview(props: DocReviewProps) {
               <div>
                 <label className="block text-[10px] font-semibold text-gray-500 uppercase mb-1">Doc Type</label>
                 <select value={docType} onChange={e => setDocType(e.target.value)}
-                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white">
+                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#c9a84c] bg-white">
                   <option value="">— Select —</option>
                   {DOC_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                 </select>
@@ -136,7 +136,7 @@ export default function DocReview(props: DocReviewProps) {
               <div>
                 <label className="block text-[10px] font-semibold text-gray-500 uppercase mb-1">Borrower</label>
                 <select value={borrowerType} onChange={e => setBorrowerType(e.target.value)}
-                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white">
+                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#c9a84c] bg-white">
                   <option value="primary">Primary</option>
                   <option value="co_borrower">Co-Borrower</option>
                 </select>
@@ -146,12 +146,12 @@ export default function DocReview(props: DocReviewProps) {
               <div>
                 <label className="block text-[10px] font-semibold text-gray-500 uppercase mb-1">Period Start</label>
                 <input type="date" value={dateStart} onChange={e => setDateStart(e.target.value)}
-                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white" />
+                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#c9a84c] bg-white" />
               </div>
               <div>
                 <label className="block text-[10px] font-semibold text-gray-500 uppercase mb-1">Period End</label>
                 <input type="date" value={dateEnd} onChange={e => setDateEnd(e.target.value)}
-                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white" />
+                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#c9a84c] bg-white" />
               </div>
             </div>
             <button onClick={saveMeta} disabled={savingMeta}
@@ -225,7 +225,7 @@ export default function DocReview(props: DocReviewProps) {
               <div>
                 <label className="block text-[10px] font-semibold text-gray-500 uppercase mb-1">Doc Type</label>
                 <select value={docType} onChange={e => setDocType(e.target.value)}
-                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white">
+                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#c9a84c] bg-white">
                   <option value="">— Select —</option>
                   {DOC_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                 </select>
@@ -233,7 +233,7 @@ export default function DocReview(props: DocReviewProps) {
               <div>
                 <label className="block text-[10px] font-semibold text-gray-500 uppercase mb-1">Borrower</label>
                 <select value={borrowerType} onChange={e => setBorrowerType(e.target.value)}
-                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white">
+                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#c9a84c] bg-white">
                   <option value="primary">Primary</option>
                   <option value="co_borrower">Co-Borrower</option>
                 </select>
@@ -243,12 +243,12 @@ export default function DocReview(props: DocReviewProps) {
               <div>
                 <label className="block text-[10px] font-semibold text-gray-500 uppercase mb-1">Period Start</label>
                 <input type="date" value={dateStart} onChange={e => setDateStart(e.target.value)}
-                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white" />
+                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#c9a84c] bg-white" />
               </div>
               <div>
                 <label className="block text-[10px] font-semibold text-gray-500 uppercase mb-1">Period End</label>
                 <input type="date" value={dateEnd} onChange={e => setDateEnd(e.target.value)}
-                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white" />
+                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#c9a84c] bg-white" />
               </div>
             </div>
             <button onClick={saveMeta} disabled={savingMeta}

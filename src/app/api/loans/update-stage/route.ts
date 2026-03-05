@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
     conditional_approval: 'Conditional Approval',
     clear_to_close: 'Clear to Close',
     closing: 'Closing',
-    funded: 'Funded 🎉',
+    funded: 'Funded',
     denied: 'Denied',
   }
   await logActivity(loan.client_id, 'stage_changed', `Loan stage updated: ${stageLabels[prevStage] ?? prevStage} → ${stageLabels[stage] ?? stage}`)
@@ -70,37 +70,37 @@ export async function POST(req: NextRequest) {
     if (client?.email) {
       const STAGE_MESSAGES: Record<string, { subject: string; headline: string; body: string; color: string }> = {
         processing: {
-          subject: '📂 Your Loan is Being Processed',
+          subject: 'Your Loan is Being Processed',
           headline: 'Your loan is in processing',
           body: 'Great news! Your loan application has been received and is currently being processed by our team. We will be in touch if we need any additional documents.',
           color: '#3b82f6',
         },
         submitted_uw: {
-          subject: '📋 Your Loan Has Been Submitted to Underwriting',
+          subject: 'Your Loan Has Been Submitted to Underwriting',
           headline: 'Submitted to underwriting',
           body: 'Your complete loan package has been submitted to the underwriter for review. This typically takes 3–5 business days. We will notify you as soon as we hear back.',
           color: '#8b5cf6',
         },
         conditional_approval: {
-          subject: '✅ Conditional Approval — Action May Be Required',
+          subject: 'Conditional Approval — Action May Be Required',
           headline: 'Conditional approval received',
           body: 'Congratulations! Your loan has received a conditional approval from underwriting. There may be a few items (conditions) we need from you to move forward. Your loan officer will be in touch shortly with details.',
           color: '#f59e0b',
         },
         clear_to_close: {
-          subject: '🎉 Clear to Close — You\'re Almost There!',
+          subject: 'Clear to Close — You\'re Almost There!',
           headline: 'Clear to Close!',
           body: 'Excellent news — your loan has been cleared to close by underwriting! All conditions have been satisfied. Your loan officer will be reaching out to schedule your closing date and walk you through the next steps.',
           color: '#10b981',
         },
         closing: {
-          subject: '📅 Your Closing is Scheduled',
+          subject: 'Your Closing is Scheduled',
           headline: 'Closing day is coming',
           body: 'Your loan is in the closing stage. Please review any closing documents sent to you carefully and contact your loan officer if you have any questions before signing.',
           color: '#14b8a6',
         },
         funded: {
-          subject: '🏠 Congratulations — Your Loan is Funded!',
+          subject: 'Congratulations — Your Loan is Funded!',
           headline: 'Your loan has been funded!',
           body: 'Congratulations! Your mortgage loan has been officially funded. Welcome to your new home! Thank you for choosing us for your mortgage needs.',
           color: '#16a34a',

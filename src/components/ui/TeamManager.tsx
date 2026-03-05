@@ -73,7 +73,7 @@ export default function TeamManager({ brokerageId, currentUserId, members, invit
               </div>
               <div className="flex items-center gap-3">
                 <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                  m.role === 'admin' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-500'
+                  m.role === 'admin' ? 'bg-blue-100 text-[#0f2240]' : 'bg-gray-100 text-gray-500'
                 }`}>
                   {m.role === 'admin' ? 'Admin' : 'Loan Officer'}
                 </span>
@@ -98,10 +98,10 @@ export default function TeamManager({ brokerageId, currentUserId, members, invit
             <div className="col-span-2">
               <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
                 placeholder="colleague@example.com"
-                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white" />
+                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#c9a84c] focus:bg-white" />
             </div>
             <select value={role} onChange={e => setRole(e.target.value)}
-              className="border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              className="border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#c9a84c]">
               <option value="loan_officer">Loan Officer</option>
               <option value="admin">Admin</option>
             </select>
@@ -123,7 +123,7 @@ export default function TeamManager({ brokerageId, currentUserId, members, invit
           )}
 
           <button type="submit" disabled={sending}
-            className="w-full bg-blue-600 text-white rounded-xl py-2.5 text-sm font-semibold hover:bg-blue-700 disabled:opacity-50 transition">
+            className="w-full bg-[#0f2240] text-white rounded-xl py-2.5 text-sm font-semibold hover:bg-[#1a3560] disabled:opacity-50 transition">
             {sending ? 'Creating invite...' : 'Send Invite'}
           </button>
         </form>

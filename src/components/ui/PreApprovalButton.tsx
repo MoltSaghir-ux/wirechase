@@ -30,7 +30,7 @@ export default function PreApprovalButton({
     <>
       <button
         onClick={() => setShowPreApproval(true)}
-        className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition flex items-center gap-1.5"
+        className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-[#0f2240] text-white hover:bg-[#1a3560] transition flex items-center gap-1.5"
       >
         <svg
           className="w-3.5 h-3.5"

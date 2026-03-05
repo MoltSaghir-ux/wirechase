@@ -129,7 +129,7 @@ export default async function ClientDetailPage({ params, searchParams }: {
 
       <main className="flex-1 px-4 sm:px-8 py-8 pt-[72px] lg:pt-8 max-w-4xl w-full">
         <div className="flex items-center gap-2 text-sm text-gray-400 mb-6">
-          <Link href="/broker/dashboard" className="hover:text-blue-600 transition">Dashboard</Link>
+          <Link href="/broker/dashboard" className="hover:text-[#0f2240] transition">Dashboard</Link>
           <span>/</span>
           <span className="text-gray-700 font-medium">{client.full_name}</span>
         </div>
@@ -175,7 +175,7 @@ export default async function ClientDetailPage({ params, searchParams }: {
             <div className="flex items-center gap-2">
               <span className={`text-sm px-3 py-1.5 rounded-full font-medium capitalize ${
                 client.status === 'complete' ? 'bg-green-100 text-green-700' :
-                client.status === 'in_progress' ? 'bg-blue-100 text-blue-700' :
+                client.status === 'in_progress' ? 'bg-blue-100 text-[#0f2240]' :
                 client.status === 'archived' ? 'bg-gray-100 text-gray-400' :
                 'bg-yellow-100 text-yellow-700'
               }`}>
@@ -199,7 +199,7 @@ export default async function ClientDetailPage({ params, searchParams }: {
               <span>Overall progress</span><span>{pct}%</span>
             </div>
             <div className="w-full bg-gray-100 rounded-full h-2">
-              <div className="bg-blue-500 h-2 rounded-full transition-all" style={{ width: `${pct}%` }} />
+              <div className="bg-[#fdf6e3]0 h-2 rounded-full transition-all" style={{ width: `${pct}%` }} />
             </div>
           </div>
 
@@ -246,14 +246,14 @@ export default async function ClientDetailPage({ params, searchParams }: {
               href={`/broker/clients/${client.id}?tab=${t.key}`}
               className={`flex items-center gap-1.5 px-4 py-3 text-sm transition flex-1 justify-center border-b-2 ${
                 activeTab === t.key
-                  ? 'border-blue-600 text-blue-600 font-semibold bg-blue-50/40'
+                  ? 'border-[#0f2240] text-[#0f2240] font-semibold bg-[#fdf6e3]/40'
                   : 'border-transparent text-gray-500 font-medium hover:text-gray-700 hover:bg-gray-50'
               }`}
             >
               <span>{t.icon}</span>
               <span>{t.label}</span>
               {t.badge && t.badge > 0 && (
-                <span className={`text-xs font-bold px-1.5 py-0.5 rounded-full ${activeTab === t.key ? 'bg-blue-100 text-blue-700' : 'bg-red-100 text-red-600'}`}>
+                <span className={`text-xs font-bold px-1.5 py-0.5 rounded-full ${activeTab === t.key ? 'bg-blue-100 text-[#0f2240]' : 'bg-red-100 text-red-600'}`}>
                   {t.badge}
                 </span>
               )}
@@ -396,7 +396,7 @@ export default async function ClientDetailPage({ params, searchParams }: {
                           href={`/coborrower/upload/${loan.co_borrower_invite_token}`}
                           target="_blank"
                           rel="noreferrer"
-                          className="text-xs text-blue-600 hover:underline font-medium"
+                          className="text-xs text-[#0f2240] hover:underline font-medium"
                         >
                           Co-Borrower Portal →
                         </a>
@@ -471,7 +471,7 @@ export default async function ClientDetailPage({ params, searchParams }: {
                               </div>
                               <span className={`text-xs px-2.5 py-1 rounded-full font-medium capitalize ${
                                 doc.status === 'approved' ? 'bg-green-100 text-green-700' :
-                                doc.status === 'uploaded' ? 'bg-blue-100 text-blue-700' :
+                                doc.status === 'uploaded' ? 'bg-blue-100 text-[#0f2240]' :
                                 doc.status === 'rejected' ? 'bg-red-100 text-red-700' :
                                 'bg-gray-100 text-gray-400'
                               }`}>

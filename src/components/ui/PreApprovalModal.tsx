@@ -9,8 +9,8 @@ const TEMPLATES = [
     label: 'Full Pre-Approval',
     desc: 'Strongest — borrower has been approved',
     color: '#1e40af',
-    accent: 'border-blue-500 bg-blue-50',
-    badge: 'bg-blue-100 text-blue-700',
+    accent: 'border-[#c9a84c] bg-[#fdf6e3]',
+    badge: 'bg-blue-100 text-[#0f2240]',
   },
   {
     id: 'conditional' as Template,
@@ -156,7 +156,7 @@ export default function PreApprovalModal({
                 type="number"
                 value={amount}
                 onChange={e => setAmount(e.target.value)}
-                className="w-full border border-gray-200 rounded-xl pl-7 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-200 rounded-xl pl-7 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]"
                 placeholder="450000"
               />
             </div>
@@ -168,7 +168,7 @@ export default function PreApprovalModal({
             <input
               value={address}
               onChange={e => setAddress(e.target.value)}
-              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]"
               placeholder="123 Main St, Detroit, MI 48201"
             />
           </div>
@@ -180,7 +180,7 @@ export default function PreApprovalModal({
               type="date"
               value={expiry}
               onChange={e => setExpiry(e.target.value)}
-              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]"
             />
           </div>
 
@@ -199,7 +199,7 @@ export default function PreApprovalModal({
                   ? 'e.g. Subject to satisfactory appraisal, verification of income and employment, and final underwriting approval.'
                   : 'Optional conditions or notes'
               }
-              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c] resize-none"
             />
           </div>
 
@@ -210,7 +210,7 @@ export default function PreApprovalModal({
               <input
                 value={loName}
                 onChange={e => setLoName(e.target.value)}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]"
                 placeholder="Jane Smith"
               />
             </div>
@@ -219,7 +219,7 @@ export default function PreApprovalModal({
               <input
                 value={loNmls}
                 onChange={e => setLoNmls(e.target.value)}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]"
                 placeholder="123456"
               />
             </div>
@@ -228,7 +228,7 @@ export default function PreApprovalModal({
               <input
                 value={loPhone}
                 onChange={e => setLoPhone(e.target.value)}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]"
                 placeholder="(555) 000-0000"
               />
             </div>
@@ -237,7 +237,7 @@ export default function PreApprovalModal({
               <input
                 value={loEmail}
                 onChange={e => setLoEmail(e.target.value)}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]"
                 placeholder="jane@brokerage.com"
               />
             </div>
@@ -247,7 +247,7 @@ export default function PreApprovalModal({
           <div>
             <button
               onClick={() => setShowBranding(v => !v)}
-              className="text-xs text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1"
+              className="text-xs text-[#0f2240] hover:text-[#c9a84c] font-semibold flex items-center gap-1"
             >
               <svg
                 className={`w-3.5 h-3.5 transition-transform ${showBranding ? 'rotate-90' : ''}`}
@@ -268,7 +268,7 @@ export default function PreApprovalModal({
                     <input
                       value={brokName}
                       onChange={e => setBrokName(e.target.value)}
-                      className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#c9a84c]"
                     />
                   </div>
                   <div>
@@ -276,7 +276,7 @@ export default function PreApprovalModal({
                     <input
                       value={brokNmls}
                       onChange={e => setBrokNmls(e.target.value)}
-                      className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#c9a84c]"
                     />
                   </div>
                 </div>
@@ -299,7 +299,7 @@ export default function PreApprovalModal({
           <button
             onClick={handleDownload}
             disabled={loading || !amount}
-            className="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full bg-[#0f2240] text-white font-bold py-3 rounded-xl hover:bg-[#1a3560] transition disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {loading ? (
               <span>Generating…</span>

@@ -54,14 +54,14 @@ export default async function WelcomePage() {
               <span className="text-xs text-gray-400">{doneCount} of {steps.length} complete</span>
             </div>
             <div className="w-full bg-gray-100 rounded-full h-1.5 mb-6">
-              <div className="bg-blue-500 h-1.5 rounded-full transition-all" style={{ width: `${pct}%` }} />
+              <div className="bg-[#fdf6e3]0 h-1.5 rounded-full transition-all" style={{ width: `${pct}%` }} />
             </div>
             <div className="space-y-3">
               {steps.map((step, i) => (
                 <div
                   key={i}
                   className={`flex items-start gap-4 p-4 rounded-xl transition ${
-                    !step.done && step.href ? 'hover:bg-blue-50/50 cursor-pointer' : ''
+                    !step.done && step.href ? 'hover:bg-[#fdf6e3]/50 cursor-pointer' : ''
                   } ${step.done ? 'opacity-60' : ''}`}
                 >
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
@@ -82,7 +82,7 @@ export default async function WelcomePage() {
                     <p className="text-xs text-gray-400 mt-0.5">{step.desc}</p>
                   </div>
                   {!step.done && step.href && (
-                    <Link href={step.href} className="text-xs text-blue-600 font-semibold hover:text-blue-700 flex-shrink-0 mt-1">
+                    <Link href={step.href} className="text-xs text-[#0f2240] font-semibold hover:text-[#c9a84c] flex-shrink-0 mt-1">
                       Start →
                     </Link>
                   )}
@@ -93,7 +93,7 @@ export default async function WelcomePage() {
 
           <Link
             href="/broker/dashboard"
-            className="block w-full text-center bg-blue-600 text-white font-bold py-3.5 rounded-2xl hover:bg-blue-700 transition shadow-sm shadow-blue-200"
+            className="block w-full text-center bg-[#0f2240] text-white font-bold py-3.5 rounded-2xl hover:bg-[#1a3560] transition shadow-sm shadow-blue-200"
           >
             Go to Dashboard →
           </Link>

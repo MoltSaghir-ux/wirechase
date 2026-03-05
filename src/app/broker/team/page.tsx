@@ -91,7 +91,7 @@ export default async function TeamPage() {
                       {m.full_name && <p className="text-xs text-gray-400 truncate">{m.email}</p>}
                     </div>
                     <span className={`text-xs font-semibold px-2 py-0.5 rounded-full flex-shrink-0 ${
-                      m.role === 'admin' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-500'
+                      m.role === 'admin' ? 'bg-blue-100 text-[#0f2240]' : 'bg-gray-100 text-gray-500'
                     }`}>
                       {m.role === 'admin' ? 'Admin' : 'Loan Officer'}
                     </span>

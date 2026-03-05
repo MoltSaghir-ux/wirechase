@@ -6,7 +6,7 @@ const adminSupabase = createAdminSupabaseClient()
 
 const STAGE_CONFIG: Record<string, { label: string; color: string; bar: string }> = {
   application:          { label: 'Application',         color: 'text-gray-600',    bar: 'bg-gray-400' },
-  processing:           { label: 'Processing',           color: 'text-blue-600',    bar: 'bg-blue-500' },
+  processing:           { label: 'Processing',           color: 'text-[#0f2240]',    bar: 'bg-[#fdf6e3]0' },
   submitted_uw:         { label: 'Submitted to UW',      color: 'text-purple-600',  bar: 'bg-purple-500' },
   conditional_approval: { label: 'Conditional Approval', color: 'text-amber-600',   bar: 'bg-amber-500' },
   clear_to_close:       { label: 'Clear to Close',       color: 'text-emerald-600', bar: 'bg-emerald-500' },
@@ -20,7 +20,7 @@ const TYPE_LABELS: Record<string, string> = {
 }
 
 const TYPE_COLORS: Record<string, string> = {
-  conventional: 'bg-blue-500', fha: 'bg-purple-500', va: 'bg-green-500',
+  conventional: 'bg-[#fdf6e3]0', fha: 'bg-purple-500', va: 'bg-green-500',
   usda: 'bg-teal-500', jumbo: 'bg-amber-500', unknown: 'bg-gray-400'
 }
 
@@ -112,7 +112,7 @@ export default async function ReportsPage() {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold text-gray-900">Reports &amp; Analytics</h1>
-            <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${isAdmin ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'}`}>
+            <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${isAdmin ? 'bg-blue-100 text-[#0f2240]' : 'bg-purple-100 text-purple-700'}`}>
               {isAdmin ? 'Brokerage View' : 'My Pipeline'}
             </span>
           </div>
@@ -138,9 +138,9 @@ export default async function ReportsPage() {
           <div className="flex items-end gap-3 h-36">
             {months.map(m => (
               <div key={m.label} className="flex-1 flex flex-col items-center gap-1">
-                <span className="text-[10px] text-blue-600 font-bold">{m.count > 0 ? m.count : ''}</span>
+                <span className="text-[10px] text-[#0f2240] font-bold">{m.count > 0 ? m.count : ''}</span>
                 <div
-                  className="w-full rounded-t-lg bg-blue-500 transition-all"
+                  className="w-full rounded-t-lg bg-[#fdf6e3]0 transition-all"
                   style={{
                     height: `${Math.max((m.count / maxBarCount) * 100, m.count > 0 ? 8 : 2)}%`,
                     minHeight: '3px',

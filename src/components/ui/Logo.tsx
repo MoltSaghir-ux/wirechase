@@ -13,9 +13,13 @@ export default function Logo({ size = 'md', variant = 'full', className = '' }: 
 
   const icon = (
     <svg width={px} height={px} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="40" height="40" rx="8" fill="#0f2240"/>
-      <path d="M7 11 L12 29 L20 18 L28 29 L33 11" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-      <line x1="4" y1="22" x2="36" y2="22" stroke="#c9a84c" strokeWidth="2" strokeLinecap="round"/>
+      <rect width="40" height="40" rx="9" fill="#0f2240"/>
+      {/* Abstract diamond outline */}
+      <path d="M20 7 L33 20 L20 33 L7 20 Z" stroke="white" strokeWidth="2.5" fill="none" strokeLinejoin="round"/>
+      {/* Inner diamond, smaller, gold filled */}
+      <path d="M20 14 L26 20 L20 26 L14 20 Z" stroke="#c9a84c" strokeWidth="1.5" fill="none" strokeLinejoin="round"/>
+      {/* Gold center dot */}
+      <circle cx="20" cy="20" r="2" fill="#c9a84c"/>
     </svg>
   )
 
@@ -26,7 +30,7 @@ export default function Logo({ size = 'md', variant = 'full', className = '' }: 
       {icon}
       <span
         className={`font-semibold tracking-tight ${textSizes[size]}`}
-        style={{ color: '#0f2240', fontFamily: 'Georgia, "Times New Roman", serif', letterSpacing: '-0.02em' }}
+        style={{ color: 'inherit', fontFamily: 'Georgia, "Times New Roman", serif', letterSpacing: '-0.02em' }}
       >
         Wire<span style={{ color: '#c9a84c' }}>Chase</span>
       </span>

@@ -190,8 +190,8 @@ export async function POST(req: NextRequest) {
       <div class="sig-name">${loanOfficerName || 'Loan Officer'}</div>
       <div class="sig-title">Loan Officer${brokerageName ? ` · ${brokerageName}` : ''}</div>
       ${loanOfficerNmls ? `<div class="sig-nmls">NMLS# ${loanOfficerNmls}</div>` : ''}
-      ${loanOfficerPhone ? `<div class="sig-contact">📞 ${loanOfficerPhone}</div>` : ''}
-      ${loanOfficerEmail ? `<div class="sig-contact">✉ ${loanOfficerEmail}</div>` : ''}
+      ${loanOfficerPhone ? `<div class="sig-contact">${loanOfficerPhone}</div>` : ''}
+      ${loanOfficerEmail ? `<div class="sig-contact">${loanOfficerEmail}</div>` : ''}
     </div>
 
     <div class="footer">

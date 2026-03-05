@@ -8,7 +8,7 @@ const adminSupabase = createAdminSupabaseClient()
 const PRIORITY_CONFIG: Record<string, { label: string; color: string }> = {
   urgent: { label: 'Urgent', color: 'bg-red-100 text-red-700' },
   high:   { label: 'High',   color: 'bg-amber-100 text-amber-700' },
-  normal: { label: 'Normal', color: 'bg-blue-100 text-blue-700' },
+  normal: { label: 'Normal', color: 'bg-blue-100 text-[#0f2240]' },
   low:    { label: 'Low',    color: 'bg-gray-100 text-gray-500' },
 }
 
@@ -78,7 +78,7 @@ export default async function TasksPage() {
                     </div>
                     {task.description && <p className="text-xs text-gray-400 mb-2">{task.description}</p>}
                     <div className="flex items-center gap-3 flex-wrap">
-                      <Link href={`/broker/clients/${(task.clients as any)?.id}`} className="text-xs text-blue-600 hover:underline">
+                      <Link href={`/broker/clients/${(task.clients as any)?.id}`} className="text-xs text-[#0f2240] hover:underline">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3.5 h-3.5 inline mr-1"><path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>{(task.clients as any)?.full_name}
                       </Link>
                       {task.assigned_to_name && (

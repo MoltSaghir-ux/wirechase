@@ -185,9 +185,9 @@ export default function EditClientPage() {
       <main className="flex-1 px-8 py-8 max-w-2xl">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm text-gray-400 mb-6">
-          <Link href="/broker/dashboard" className="hover:text-blue-600">Dashboard</Link>
+          <Link href="/broker/dashboard" className="hover:text-[#0f2240]">Dashboard</Link>
           <span>/</span>
-          <Link href={`/broker/clients/${id}`} className="hover:text-blue-600">{fullName}</Link>
+          <Link href={`/broker/clients/${id}`} className="hover:text-[#0f2240]">{fullName}</Link>
           <span>/</span>
           <span className="text-gray-700">Edit</span>
         </div>
@@ -202,25 +202,25 @@ export default function EditClientPage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Full Name</label>
                 <input type="text" value={fullName} onChange={e => setFullName(e.target.value)} required maxLength={100}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Phone</label>
                 <input type="tel" value={phone} onChange={e => setPhone(e.target.value)}
                   placeholder="(555) 555-5555"
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]" />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
                 <input type="email" value={email} onChange={e => setEmail(e.target.value)} required maxLength={200}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Doc Deadline</label>
                 <input type="date" value={deadline} onChange={e => setDeadline(e.target.value)}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]" />
               </div>
             </div>
 
@@ -228,7 +228,7 @@ export default function EditClientPage() {
               <p className={`text-sm px-4 py-2.5 rounded-xl border ${clientErr ? 'text-red-600 bg-red-50 border-red-200' : 'text-green-700 bg-green-50 border-green-200'}`}>{clientMsg}</p>
             )}
             <button type="submit" disabled={savingClient}
-              className="bg-blue-600 text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-700 disabled:opacity-50 transition">
+              className="bg-[#0f2240] text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-[#1a3560] disabled:opacity-50 transition">
               {savingClient ? 'Saving...' : 'Save Borrower Info'}
             </button>
           </form>
@@ -245,7 +245,7 @@ export default function EditClientPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">File Number</label>
                   <input type="text" value={fileNumber} onChange={e => setFileNumber(e.target.value)}
                     placeholder="WC-2026-0001"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono" />
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c] font-mono" />
                 </div>
               </div>
 
@@ -254,7 +254,7 @@ export default function EditClientPage() {
                 <div className="grid grid-cols-3 gap-2">
                   {(Object.entries(LOAN_TYPE_LABELS) as [LoanType, string][]).map(([k, v]) => (
                     <button type="button" key={k} onClick={() => setLoanType(k)}
-                      className={`py-2.5 px-3 rounded-xl border-2 text-sm font-semibold transition ${loanType === k ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-gray-200 text-gray-600 hover:border-gray-300'}`}>
+                      className={`py-2.5 px-3 rounded-xl border-2 text-sm font-semibold transition ${loanType === k ? 'border-[#0f2240] bg-[#fdf6e3] text-[#0f2240]' : 'border-gray-200 text-gray-600 hover:border-gray-300'}`}>
                       {v}
                     </button>
                   ))}
@@ -266,7 +266,7 @@ export default function EditClientPage() {
                 <div className="grid grid-cols-3 gap-2">
                   {(Object.entries(LOAN_PURPOSE_LABELS) as [LoanPurpose, string][]).map(([k, v]) => (
                     <button type="button" key={k} onClick={() => setLoanPurpose(k)}
-                      className={`py-2.5 px-3 rounded-xl border-2 text-xs font-semibold transition text-center ${loanPurpose === k ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-gray-200 text-gray-600 hover:border-gray-300'}`}>
+                      className={`py-2.5 px-3 rounded-xl border-2 text-xs font-semibold transition text-center ${loanPurpose === k ? 'border-[#0f2240] bg-[#fdf6e3] text-[#0f2240]' : 'border-gray-200 text-gray-600 hover:border-gray-300'}`}>
                       {v}
                     </button>
                   ))}
@@ -279,7 +279,7 @@ export default function EditClientPage() {
                   <div className="relative">
                     <span className="absolute left-3.5 top-2.5 text-gray-400 text-sm">$</span>
                     <input type="text" value={purchasePrice} onChange={e => setPurchasePrice(e.target.value)} placeholder="450,000"
-                      className="w-full border border-gray-200 rounded-xl pl-7 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                      className="w-full border border-gray-200 rounded-xl pl-7 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]" />
                   </div>
                 </div>
                 <div>
@@ -287,7 +287,7 @@ export default function EditClientPage() {
                   <div className="relative">
                     <span className="absolute left-3.5 top-2.5 text-gray-400 text-sm">$</span>
                     <input type="text" value={loanAmount} onChange={e => setLoanAmount(e.target.value)} placeholder="360,000"
-                      className="w-full border border-gray-200 rounded-xl pl-7 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                      className="w-full border border-gray-200 rounded-xl pl-7 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]" />
                   </div>
                 </div>
               </div>
@@ -297,7 +297,7 @@ export default function EditClientPage() {
                 <div className="grid grid-cols-2 gap-2">
                   {(Object.entries(EMPLOYMENT_TYPE_LABELS) as [EmploymentType, string][]).map(([k, v]) => (
                     <button type="button" key={k} onClick={() => setEmploymentType(k)}
-                      className={`py-2.5 px-3 rounded-xl border-2 text-sm font-medium transition text-left ${employmentType === k ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-gray-200 text-gray-600 hover:border-gray-300'}`}>
+                      className={`py-2.5 px-3 rounded-xl border-2 text-sm font-medium transition text-left ${employmentType === k ? 'border-[#0f2240] bg-[#fdf6e3] text-[#0f2240]' : 'border-gray-200 text-gray-600 hover:border-gray-300'}`}>
                       {v}
                     </button>
                   ))}
@@ -309,7 +309,7 @@ export default function EditClientPage() {
                 <div className="grid grid-cols-2 gap-2">
                   {(Object.entries(PROPERTY_TYPE_LABELS) as [PropertyType, string][]).map(([k, v]) => (
                     <button type="button" key={k} onClick={() => setPropertyType(k)}
-                      className={`py-2.5 px-3 rounded-xl border-2 text-sm font-medium transition text-left ${propertyType === k ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-gray-200 text-gray-600 hover:border-gray-300'}`}>
+                      className={`py-2.5 px-3 rounded-xl border-2 text-sm font-medium transition text-left ${propertyType === k ? 'border-[#0f2240] bg-[#fdf6e3] text-[#0f2240]' : 'border-gray-200 text-gray-600 hover:border-gray-300'}`}>
                       {v}
                     </button>
                   ))}
@@ -321,7 +321,7 @@ export default function EditClientPage() {
                 <div className="grid grid-cols-3 gap-2">
                   {(Object.entries(PROPERTY_USE_LABELS) as [PropertyUse, string][]).map(([k, v]) => (
                     <button type="button" key={k} onClick={() => setPropertyUse(k)}
-                      className={`py-2.5 px-3 rounded-xl border-2 text-xs font-semibold transition text-center ${propertyUse === k ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-gray-200 text-gray-600 hover:border-gray-300'}`}>
+                      className={`py-2.5 px-3 rounded-xl border-2 text-xs font-semibold transition text-center ${propertyUse === k ? 'border-[#0f2240] bg-[#fdf6e3] text-[#0f2240]' : 'border-gray-200 text-gray-600 hover:border-gray-300'}`}>
                       {v}
                     </button>
                   ))}
@@ -334,7 +334,7 @@ export default function EditClientPage() {
                   value={propertyAddress}
                   onChange={setPropertyAddress}
                   placeholder="123 Main St, Detroit, MI 48201"
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c]"
                 />
               </div>
 
@@ -342,30 +342,30 @@ export default function EditClientPage() {
               <div className="border-t border-gray-100 pt-4">
                 <label className="flex items-center gap-3 cursor-pointer mb-4">
                   <div onClick={() => setCoBorrower(!coBorrower)}
-                    className={`w-11 h-6 rounded-full transition-colors relative ${coBorrower ? 'bg-blue-600' : 'bg-gray-200'}`}>
+                    className={`w-11 h-6 rounded-full transition-colors relative ${coBorrower ? 'bg-[#0f2240]' : 'bg-gray-200'}`}>
                     <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${coBorrower ? 'translate-x-5' : 'translate-x-0.5'}`} />
                   </div>
                   <span className="text-sm font-medium text-gray-700">Co-borrower on this loan</span>
                 </label>
 
                 {coBorrower && (
-                  <div className="bg-blue-50 rounded-xl p-4 space-y-3">
+                  <div className="bg-[#fdf6e3] rounded-xl p-4 space-y-3">
                     <div className="grid grid-cols-2 gap-3">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1.5">Co-Borrower Name</label>
                         <input type="text" value={coBorrowerName} onChange={e => setCoBorrowerName(e.target.value)}
-                          className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" />
+                          className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c] bg-white" />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1.5">Co-Borrower Email</label>
                         <input type="email" value={coBorrowerEmail} onChange={e => setCoBorrowerEmail(e.target.value)}
-                          className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" />
+                          className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c] bg-white" />
                       </div>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1.5">Co-Borrower Employment</label>
                       <select value={coBorrowerEmploymentType} onChange={e => setCoBorrowerEmploymentType(e.target.value as EmploymentType)}
-                        className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                        className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c] bg-white">
                         {Object.entries(EMPLOYMENT_TYPE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                       </select>
                     </div>
@@ -378,7 +378,7 @@ export default function EditClientPage() {
               )}
 
               <button type="submit" disabled={savingLoan}
-                className="bg-blue-600 text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-700 disabled:opacity-50 transition">
+                className="bg-[#0f2240] text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-[#1a3560] disabled:opacity-50 transition">
                 {savingLoan ? 'Saving...' : 'Save Loan Details'}
               </button>
             </form>

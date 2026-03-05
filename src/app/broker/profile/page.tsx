@@ -101,13 +101,13 @@ export default function ProfilePage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Full Name</label>
                 <input type="text" value={fullName} onChange={e => setFullName(e.target.value)} maxLength={100}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#c9a84c] focus:bg-white"
                   placeholder="John Smith" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Phone</label>
                 <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} maxLength={30}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#c9a84c] focus:bg-white"
                   placeholder="(313) 555-0100" />
               </div>
             </div>
@@ -119,7 +119,7 @@ export default function ProfilePage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Personal NMLS #</label>
                 <input type="text" value={nmls} onChange={e => setNmls(e.target.value)} maxLength={20}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#c9a84c] focus:bg-white"
                   placeholder="123456" />
               </div>
             </div>
@@ -129,7 +129,7 @@ export default function ProfilePage() {
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Brokerage</h3>
-              <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${role === 'admin' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-500'}`}>
+              <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${role === 'admin' ? 'bg-blue-100 text-[#0f2240]' : 'bg-gray-100 text-gray-500'}`}>
                 {role === 'admin' ? 'Admin' : 'Loan Officer'}
               </span>
             </div>
@@ -140,13 +140,13 @@ export default function ProfilePage() {
                     <label className="block text-sm font-medium text-gray-700 mb-1.5">Company Name {role !== 'admin' && <span className="text-gray-400 font-normal">(read only)</span>}</label>
                     <input type="text" value={brokerageName} onChange={e => setBrokerageName(e.target.value)} maxLength={100}
                       disabled={role !== 'admin'}
-                      className={`w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${role === 'admin' ? 'bg-gray-50 focus:bg-white' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`} />
+                      className={`w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c] ${role === 'admin' ? 'bg-gray-50 focus:bg-white' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`} />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1.5">Company NMLS #</label>
                     <input type="text" value={brokerageNmls} onChange={e => setBrokerageNmls(e.target.value)} maxLength={20}
                       disabled={role !== 'admin'}
-                      className={`w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${role === 'admin' ? 'bg-gray-50 focus:bg-white' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`} />
+                      className={`w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9a84c] ${role === 'admin' ? 'bg-gray-50 focus:bg-white' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`} />
                   </div>
                 </div>
                 <button type="button" onClick={handleLeaveBrokerage} disabled={leaving}
@@ -158,7 +158,7 @@ export default function ProfilePage() {
               <div className="text-center py-4">
                 <p className="text-sm text-gray-400 mb-3">Not part of a brokerage</p>
                 <button type="button" onClick={() => router.push('/onboard')}
-                  className="text-sm text-blue-600 border border-blue-200 bg-blue-50 px-4 py-2 rounded-xl hover:bg-blue-100 transition">
+                  className="text-sm text-[#0f2240] border border-blue-200 bg-[#fdf6e3] px-4 py-2 rounded-xl hover:bg-blue-100 transition">
                   Join or Create a Brokerage
                 </button>
               </div>
@@ -172,7 +172,7 @@ export default function ProfilePage() {
           )}
 
           <button type="submit" disabled={loading}
-            className="w-full bg-blue-600 text-white rounded-xl py-3 text-sm font-semibold hover:bg-blue-700 disabled:opacity-50 transition shadow-sm">
+            className="w-full bg-[#0f2240] text-white rounded-xl py-3 text-sm font-semibold hover:bg-[#1a3560] disabled:opacity-50 transition shadow-sm">
             {loading ? 'Saving...' : 'Save Changes'}
           </button>
         </form>

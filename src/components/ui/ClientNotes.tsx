@@ -64,10 +64,10 @@ export default function ClientNotes({ clientId }: { clientId: string }) {
             onChange={e => setText(e.target.value)}
             maxLength={1000}
             placeholder="Add a note... (e.g. Called 3x, no response)"
-            className="flex-1 border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+            className="flex-1 border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#c9a84c] focus:bg-white"
           />
           <button type="submit" disabled={saving || !text.trim()}
-            className="bg-blue-600 text-white px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-blue-700 disabled:opacity-40 transition">
+            className="bg-[#0f2240] text-white px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-[#1a3560] disabled:opacity-40 transition">
             {saving ? '...' : 'Add'}
           </button>
         </form>
