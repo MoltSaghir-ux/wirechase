@@ -76,7 +76,7 @@ export default function Nav({ email }: { email: string }) {
       {/* Mobile top bar */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-[#0f2240] border-b border-white/10 px-4 py-3 flex items-center justify-between">
         <Link href="/broker/dashboard">
-          <Logo size="sm" className="text-white [&_span]:!text-white" />
+          <Logo size="sm" variant="icon" className="text-white [&_span]:!text-white" />
         </Link>
         <button
           onClick={() => setMobileOpen(v => !v)}
@@ -152,7 +152,7 @@ export default function Nav({ email }: { email: string }) {
       <aside className="hidden lg:flex w-60 min-h-screen bg-[#0f2240] flex-col sticky top-0 h-screen">
         {/* Logo */}
         <Link href="/broker/dashboard" className="px-6 py-5 border-b border-white/10 flex flex-col gap-1 hover:opacity-80 transition">
-          <Logo size="md" />
+          <Logo size="md" variant="icon" />
           <p className="text-white/40 text-xs mt-0.5 pl-[44px]">Broker Portal</p>
         </Link>
 
