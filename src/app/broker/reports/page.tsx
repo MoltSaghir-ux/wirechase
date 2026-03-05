@@ -33,18 +33,28 @@ function fmt(n: number) {
 export default async function ReportsPage() {
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/auth/login')
+  if (!user) redirect('/login')
 
   const { data: broker } = await adminSupabase.from('brokers').select('brokerage_id').eq('id', user.id).single()
   if (!broker?.brokerage_id) redirect('/onboard')
 
-  // Inline data fetch (same logic as API route)
-  const { data: loans } = await adminSupabase
-    .from('loans')
-    .select('id, loan_stage, loan_amount, purchase_price, loan_type, created_at, closing_date, clients(brokerage_id)')
-    .order('created_at', { ascending: true })
+  // Fetch loans for this brokerage directly
+  const { data: clients } = await adminSupabase
+    .from('clients')
+    .select('id')
+    .eq('brokerage_id', broker.brokerage_id)
 
-  const brokerageLoans = (loans ?? []).filter((l: any) => l.clients?.brokerage_id === broker.brokerage_id)
+  const clientIds = (clients ?? []).map((c: any) => c.id)
+
+  const { data: loansRaw } = clientIds.length > 0
+    ? await adminSupabase
+        .from('loans')
+        .select('id, loan_stage, loan_amount, purchase_price, loan_type, created_at, closing_date')
+        .in('client_id', clientIds)
+        .order('created_at', { ascending: true })
+    : { data: [] }
+
+  const brokerageLoans = loansRaw ?? []
 
   const now = new Date()
   const months = Array.from({ length: 6 }, (_, i) => {

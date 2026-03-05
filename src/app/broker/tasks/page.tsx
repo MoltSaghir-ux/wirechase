@@ -15,7 +15,7 @@ const PRIORITY_CONFIG: Record<string, { label: string; color: string }> = {
 export default async function TasksPage() {
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/auth/login')
+  if (!user) redirect('/login')
 
   const { data: broker } = await adminSupabase.from('brokers').select('brokerage_id').eq('id', user.id).single()
   if (!broker?.brokerage_id) redirect('/onboard')
