@@ -3,12 +3,32 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-export default function DocReview({ docRequestId, currentStatus }: { docRequestId: string; currentStatus: string }) {
+interface DocReviewProps {
+  docRequestId: string
+  currentStatus: string
+  docType?: string | null
+  dateRangeStart?: string | null
+  dateRangeEnd?: string | null
+  borrowerType?: string | null
+}
+
+const DOC_TYPES = ['Pay Stub', 'Bank Statement', 'W-2', 'Tax Return (1040)', 'Profit & Loss', 'VOE', 'Photo ID', 'Purchase Agreement', 'Homeowners Insurance', 'HOA Docs', 'Title Commitment', 'Gift Letter', 'Other']
+
+export default function DocReview(props: DocReviewProps) {
+  const { docRequestId, currentStatus } = props
   const [mode, setMode] = useState<'idle' | 'rejecting'>('idle')
   const [note, setNote] = useState('')
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(currentStatus === 'approved' || currentStatus === 'rejected' ? currentStatus : '')
   const router = useRouter()
+
+  const [showMeta, setShowMeta] = useState(false)
+  const [docType, setDocType] = useState(props.docType ?? '')
+  const [dateStart, setDateStart] = useState(props.dateRangeStart ?? '')
+  const [dateEnd, setDateEnd] = useState(props.dateRangeEnd ?? '')
+  const [borrowerType, setBorrowerType] = useState(props.borrowerType ?? 'primary')
+  const [savingMeta, setSavingMeta] = useState(false)
+  const [metaSaved, setMetaSaved] = useState(false)
 
   async function submit(action: 'approved' | 'rejected') {
     setLoading(true)
@@ -25,14 +45,122 @@ export default function DocReview({ docRequestId, currentStatus }: { docRequestI
     }
   }
 
+  async function saveMeta() {
+    setSavingMeta(true)
+    await fetch(`/api/doc-metadata/${docRequestId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ doc_type: docType || null, date_range_start: dateStart || null, date_range_end: dateEnd || null, borrower_type: borrowerType }),
+    })
+    setSavingMeta(false)
+    setMetaSaved(true)
+    setTimeout(() => setMetaSaved(false), 2000)
+  }
+
   if (done === 'approved') return (
-    <span className="text-xs font-medium text-green-600 bg-green-50 border border-green-200 px-2.5 py-1 rounded-lg">✓ Approved</span>
+    <div className="mt-3 ml-5">
+      <span className="text-xs font-medium text-green-600 bg-green-50 border border-green-200 px-2.5 py-1 rounded-lg">✓ Approved</span>
+      <div className="mt-2 pt-2 border-t border-gray-100">
+        <button onClick={() => setShowMeta(!showMeta)} className="text-xs text-gray-400 hover:text-gray-600 transition flex items-center gap-1">
+          <span>📎</span> {showMeta ? 'Hide metadata' : 'Set metadata'}
+          {(props.docType || props.dateRangeStart) && !showMeta && (
+            <span className="ml-1 text-blue-500 font-medium">✓ set</span>
+          )}
+        </button>
+        {showMeta && (
+          <div className="mt-2 space-y-2 bg-gray-50 rounded-xl p-3">
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-[10px] font-semibold text-gray-500 uppercase mb-1">Doc Type</label>
+                <select value={docType} onChange={e => setDocType(e.target.value)}
+                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white">
+                  <option value="">— Select —</option>
+                  {DOC_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-[10px] font-semibold text-gray-500 uppercase mb-1">Borrower</label>
+                <select value={borrowerType} onChange={e => setBorrowerType(e.target.value)}
+                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white">
+                  <option value="primary">Primary</option>
+                  <option value="co_borrower">Co-Borrower</option>
+                </select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-[10px] font-semibold text-gray-500 uppercase mb-1">Period Start</label>
+                <input type="date" value={dateStart} onChange={e => setDateStart(e.target.value)}
+                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white" />
+              </div>
+              <div>
+                <label className="block text-[10px] font-semibold text-gray-500 uppercase mb-1">Period End</label>
+                <input type="date" value={dateEnd} onChange={e => setDateEnd(e.target.value)}
+                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white" />
+              </div>
+            </div>
+            <button onClick={saveMeta} disabled={savingMeta}
+              className="text-xs bg-gray-800 text-white px-3 py-1.5 rounded-lg font-medium hover:bg-gray-700 disabled:opacity-50 transition">
+              {metaSaved ? '✓ Saved' : savingMeta ? 'Saving...' : 'Save Metadata'}
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
   )
 
   if (done === 'rejected') return (
-    <div className="flex items-center gap-2">
-      <span className="text-xs font-medium text-red-500 bg-red-50 border border-red-200 px-2.5 py-1 rounded-lg">✕ Rejected</span>
-      <button onClick={() => { setDone(''); setMode('idle') }} className="text-xs text-gray-400 hover:text-gray-600">Undo</button>
+    <div className="mt-3 ml-5">
+      <div className="flex items-center gap-2">
+        <span className="text-xs font-medium text-red-500 bg-red-50 border border-red-200 px-2.5 py-1 rounded-lg">✕ Rejected</span>
+        <button onClick={() => { setDone(''); setMode('idle') }} className="text-xs text-gray-400 hover:text-gray-600">Undo</button>
+      </div>
+      <div className="mt-2 pt-2 border-t border-gray-100">
+        <button onClick={() => setShowMeta(!showMeta)} className="text-xs text-gray-400 hover:text-gray-600 transition flex items-center gap-1">
+          <span>📎</span> {showMeta ? 'Hide metadata' : 'Set metadata'}
+          {(props.docType || props.dateRangeStart) && !showMeta && (
+            <span className="ml-1 text-blue-500 font-medium">✓ set</span>
+          )}
+        </button>
+        {showMeta && (
+          <div className="mt-2 space-y-2 bg-gray-50 rounded-xl p-3">
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-[10px] font-semibold text-gray-500 uppercase mb-1">Doc Type</label>
+                <select value={docType} onChange={e => setDocType(e.target.value)}
+                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white">
+                  <option value="">— Select —</option>
+                  {DOC_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-[10px] font-semibold text-gray-500 uppercase mb-1">Borrower</label>
+                <select value={borrowerType} onChange={e => setBorrowerType(e.target.value)}
+                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white">
+                  <option value="primary">Primary</option>
+                  <option value="co_borrower">Co-Borrower</option>
+                </select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-[10px] font-semibold text-gray-500 uppercase mb-1">Period Start</label>
+                <input type="date" value={dateStart} onChange={e => setDateStart(e.target.value)}
+                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white" />
+              </div>
+              <div>
+                <label className="block text-[10px] font-semibold text-gray-500 uppercase mb-1">Period End</label>
+                <input type="date" value={dateEnd} onChange={e => setDateEnd(e.target.value)}
+                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white" />
+              </div>
+            </div>
+            <button onClick={saveMeta} disabled={savingMeta}
+              className="text-xs bg-gray-800 text-white px-3 py-1.5 rounded-lg font-medium hover:bg-gray-700 disabled:opacity-50 transition">
+              {metaSaved ? '✓ Saved' : savingMeta ? 'Saving...' : 'Save Metadata'}
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   )
 
@@ -83,6 +211,53 @@ export default function DocReview({ docRequestId, currentStatus }: { docRequestI
           </div>
         </div>
       )}
+
+      <div className="mt-2 pt-2 border-t border-gray-100">
+        <button onClick={() => setShowMeta(!showMeta)} className="text-xs text-gray-400 hover:text-gray-600 transition flex items-center gap-1">
+          <span>📎</span> {showMeta ? 'Hide metadata' : 'Set metadata'}
+          {(props.docType || props.dateRangeStart) && !showMeta && (
+            <span className="ml-1 text-blue-500 font-medium">✓ set</span>
+          )}
+        </button>
+        {showMeta && (
+          <div className="mt-2 space-y-2 bg-gray-50 rounded-xl p-3">
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-[10px] font-semibold text-gray-500 uppercase mb-1">Doc Type</label>
+                <select value={docType} onChange={e => setDocType(e.target.value)}
+                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white">
+                  <option value="">— Select —</option>
+                  {DOC_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-[10px] font-semibold text-gray-500 uppercase mb-1">Borrower</label>
+                <select value={borrowerType} onChange={e => setBorrowerType(e.target.value)}
+                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white">
+                  <option value="primary">Primary</option>
+                  <option value="co_borrower">Co-Borrower</option>
+                </select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-[10px] font-semibold text-gray-500 uppercase mb-1">Period Start</label>
+                <input type="date" value={dateStart} onChange={e => setDateStart(e.target.value)}
+                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white" />
+              </div>
+              <div>
+                <label className="block text-[10px] font-semibold text-gray-500 uppercase mb-1">Period End</label>
+                <input type="date" value={dateEnd} onChange={e => setDateEnd(e.target.value)}
+                  className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white" />
+              </div>
+            </div>
+            <button onClick={saveMeta} disabled={savingMeta}
+              className="text-xs bg-gray-800 text-white px-3 py-1.5 rounded-lg font-medium hover:bg-gray-700 disabled:opacity-50 transition">
+              {metaSaved ? '✓ Saved' : savingMeta ? 'Saving...' : 'Save Metadata'}
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

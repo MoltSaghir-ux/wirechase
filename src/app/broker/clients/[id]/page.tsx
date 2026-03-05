@@ -55,13 +55,13 @@ export default async function ClientDetailPage({ params, searchParams }: {
   const { data: client } = isAdmin
     ? await adminSupabase
         .from('clients')
-        .select('id, full_name, email, phone, status, invite_token, created_at, broker_id, document_requests (id, label, status, required, category, notes, created_at)')
+        .select('id, full_name, email, phone, status, invite_token, created_at, broker_id, document_requests (id, label, status, required, category, notes, created_at, doc_type, date_range_start, date_range_end, borrower_type)')
         .eq('id', id)
         .eq('brokerage_id', broker.brokerage_id)
         .single()
     : await supabase
         .from('clients')
-        .select('id, full_name, email, phone, status, invite_token, created_at, broker_id, document_requests (id, label, status, required, category, notes, created_at)')
+        .select('id, full_name, email, phone, status, invite_token, created_at, broker_id, document_requests (id, label, status, required, category, notes, created_at, doc_type, date_range_start, date_range_end, borrower_type)')
         .eq('id', id)
         .eq('broker_id', user.id)
         .single()
@@ -356,6 +356,9 @@ export default async function ClientDetailPage({ params, searchParams }: {
                                 }`} />
                                 <div>
                                   <p className="text-sm text-gray-800">{doc.label}</p>
+                                  {(doc as any).doc_type && (
+                                    <p className="text-xs text-blue-500 mt-0.5">📎 {(doc as any).doc_type}{(doc as any).borrower_type === 'co_borrower' ? ' · Co-Borrower' : ''}{(doc as any).date_range_start ? ` · ${new Date((doc as any).date_range_start).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}` : ''}</p>
+                                  )}
                                   {doc.required && <p className="text-xs text-red-400">Required</p>}
                                   {(doc as any).status === 'missing' && (doc as any).created_at && (() => {
                                     const days = Math.floor((Date.now() - new Date((doc as any).created_at).getTime()) / (1000 * 60 * 60 * 24))
@@ -415,7 +418,14 @@ export default async function ClientDetailPage({ params, searchParams }: {
                                 ))}
                               </div>
                             )}
-                            <DocReview docRequestId={doc.id} currentStatus={doc.status} />
+                            <DocReview
+                              docRequestId={doc.id}
+                              currentStatus={doc.status}
+                              docType={(doc as any).doc_type ?? null}
+                              dateRangeStart={(doc as any).date_range_start ?? null}
+                              dateRangeEnd={(doc as any).date_range_end ?? null}
+                              borrowerType={(doc as any).borrower_type ?? null}
+                            />
                           </div>
                         )
                       })}
