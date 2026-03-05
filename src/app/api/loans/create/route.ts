@@ -43,6 +43,7 @@ export async function POST(req: NextRequest) {
       brokerage_id: broker.brokerage_id,
       full_name: fullName.slice(0, 100),
       email: email.slice(0, 200).toLowerCase(),
+      phone: phone?.slice(0, 20) ?? null,
       status: 'pending',
     })
     .select()
@@ -181,6 +182,50 @@ export async function POST(req: NextRequest) {
   } catch (emailErr) {
     console.error('Invite email failed (non-fatal):', emailErr)
     // Don't fail the whole request for email errors
+  }
+
+  // 7. Send co-borrower invite if applicable
+  if (coBorrower && coBorrowerEmail && loan.co_borrower_invite_token) {
+    try {
+      const { Resend } = await import('resend')
+      const resend = new Resend(process.env.RESEND_API_KEY)
+      const coInviteLink = `${process.env.NEXT_PUBLIC_APP_URL}/coborrower/upload/${loan.co_borrower_invite_token}`
+      const toEmail = process.env.NODE_ENV === 'production' ? coBorrowerEmail : (process.env.RESEND_TEST_EMAIL ?? coBorrowerEmail)
+
+      await resend.emails.send({
+        from: 'WireChase <onboarding@resend.dev>',
+        to: toEmail,
+        subject: `Action Required — Upload Your Co-Borrower Documents`,
+        html: `
+          <div style="font-family: sans-serif; max-width: 580px; margin: 0 auto; padding: 32px 24px; color: #111;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:28px;">
+              <div style="background:#3b82f6; width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center;">
+                <span style="color:white; font-weight:bold; font-size:16px;">W</span>
+              </div>
+              <span style="font-weight:bold; font-size:18px;">WireChase</span>
+            </div>
+            <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:8px 14px; display:inline-block; margin-bottom:20px;">
+              <span style="color:#1d4ed8; font-size:12px; font-weight:600;">Co-Borrower Portal</span>
+            </div>
+            <h2 style="margin:0 0 8px; font-size:22px;">Hi ${coBorrowerName}, you're a co-borrower</h2>
+            <p style="color:#6b7280; margin:0 0 20px; font-size:15px;">
+              You've been added as a co-borrower on <strong style="color:#111;">${fullName}'s</strong> loan application. 
+              Please upload your required documents using the secure link below.
+            </p>
+            <a href="${coInviteLink}" 
+               style="display:inline-block; background:#2563eb; color:white; text-decoration:none; 
+                      padding:14px 32px; border-radius:10px; font-weight:700; font-size:15px; margin-bottom:28px;">
+              Upload My Documents →
+            </a>
+            <p style="color:#9ca3af; font-size:12px; margin:0;">This link is secure and unique to you. No account needed.</p>
+            <hr style="border:none; border-top:1px solid #e5e7eb; margin:28px 0;"/>
+            <p style="color:#d1d5db; font-size:11px; margin:0;">WireChase · Secure Mortgage Document Collection</p>
+          </div>
+        `,
+      })
+    } catch (e) {
+      console.error('Co-borrower invite email failed (non-fatal):', e)
+    }
   }
 
   return NextResponse.json({

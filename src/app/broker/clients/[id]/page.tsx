@@ -8,7 +8,9 @@ import DocViewer from '@/components/ui/DocViewer'
 import DocReview from '@/components/ui/DocReview'
 import ClientNotes from '@/components/ui/ClientNotes'
 import ActivityLog from '@/components/ui/ActivityLog'
+import LoanStageTracker from '@/components/ui/LoanStageTracker'
 import type { DocumentRequest, ActivityEntry } from '@/lib/types'
+import { LOAN_TYPE_LABELS, LOAN_PURPOSE_LABELS, EMPLOYMENT_TYPE_LABELS, PROPERTY_TYPE_LABELS } from '@/lib/loan-doc-engine'
 
 type DisplayDocument = { id: string; file_name: string; file_size: number | null; uploaded_at: string; document_request_id: string }
 
@@ -59,6 +61,15 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
     if (!filesByDocId[f.document_request_id]) filesByDocId[f.document_request_id] = []
     filesByDocId[f.document_request_id].push(f)
   }
+
+  // Fetch loan record
+  const { data: loan } = await adminSupabase
+    .from('loans')
+    .select('id, loan_type, loan_purpose, loan_amount, purchase_price, employment_type, co_borrower, co_borrower_name, co_borrower_email, co_borrower_invite_token, property_type, property_use, property_address, loan_stage, file_number')
+    .eq('client_id', id)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
 
   // Fetch activity log
   const { data: activities } = await adminSupabase
@@ -139,6 +150,93 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
             <ResendEmailButton clientId={client.id} />
           </div>
         </div>
+
+        {/* Loan Stage Tracker */}
+        {loan && (
+          <LoanStageTracker
+            loanId={loan.id}
+            currentStage={(loan.loan_stage ?? 'processing') as any}
+            isDenied={loan.loan_stage === 'denied'}
+          />
+        )}
+
+        {/* Loan Summary Card */}
+        {loan && (
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 mb-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold text-gray-800 text-sm">Loan Details</h3>
+              {loan.file_number && (
+                <span className="text-xs font-mono bg-gray-100 text-gray-500 px-2.5 py-1 rounded-lg">{loan.file_number}</span>
+              )}
+            </div>
+            <div className="grid grid-cols-3 gap-x-6 gap-y-3 text-sm">
+              <div>
+                <p className="text-xs text-gray-400">Loan Type</p>
+                <p className="font-semibold text-gray-800 mt-0.5">{LOAN_TYPE_LABELS[loan.loan_type as keyof typeof LOAN_TYPE_LABELS] ?? loan.loan_type}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-400">Purpose</p>
+                <p className="font-semibold text-gray-800 mt-0.5">{LOAN_PURPOSE_LABELS[loan.loan_purpose as keyof typeof LOAN_PURPOSE_LABELS] ?? loan.loan_purpose}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-400">Employment</p>
+                <p className="font-semibold text-gray-800 mt-0.5">{EMPLOYMENT_TYPE_LABELS[loan.employment_type as keyof typeof EMPLOYMENT_TYPE_LABELS] ?? loan.employment_type}</p>
+              </div>
+              {loan.purchase_price && (
+                <div>
+                  <p className="text-xs text-gray-400">{loan.loan_purpose === 'purchase' ? 'Purchase Price' : 'Home Value'}</p>
+                  <p className="font-semibold text-gray-800 mt-0.5">${Number(loan.purchase_price).toLocaleString()}</p>
+                </div>
+              )}
+              {loan.loan_amount && (
+                <div>
+                  <p className="text-xs text-gray-400">Loan Amount</p>
+                  <p className="font-semibold text-gray-800 mt-0.5">${Number(loan.loan_amount).toLocaleString()}</p>
+                </div>
+              )}
+              <div>
+                <p className="text-xs text-gray-400">Property Type</p>
+                <p className="font-semibold text-gray-800 mt-0.5">{PROPERTY_TYPE_LABELS[loan.property_type as keyof typeof PROPERTY_TYPE_LABELS] ?? loan.property_type}</p>
+              </div>
+              {loan.property_address && (
+                <div className="col-span-3">
+                  <p className="text-xs text-gray-400">Property Address</p>
+                  <p className="font-semibold text-gray-800 mt-0.5">{loan.property_address}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Co-borrower section */}
+            {loan.co_borrower && loan.co_borrower_name && (
+              <div className="mt-4 pt-4 border-t border-gray-100">
+                <p className="text-xs text-gray-400 mb-2">Co-Borrower</p>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <span className="text-purple-600 text-xs font-bold">
+                        {loan.co_borrower_name.split(' ').map((n: string) => n[0]).join('').slice(0,2).toUpperCase()}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-800">{loan.co_borrower_name}</p>
+                      <p className="text-xs text-gray-400">{loan.co_borrower_email}</p>
+                    </div>
+                  </div>
+                  {loan.co_borrower_invite_token && (
+                    <a
+                      href={`/coborrower/upload/${loan.co_borrower_invite_token}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-xs text-blue-600 hover:underline font-medium"
+                    >
+                      Co-Borrower Portal →
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Documents */}
         <div className="flex items-center justify-between mb-3">
