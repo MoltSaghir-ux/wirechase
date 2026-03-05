@@ -11,6 +11,15 @@ export async function GET(req: NextRequest) {
   const loanId = req.nextUrl.searchParams.get('loanId')
   if (!loanId) return new NextResponse('loanId required', { status: 400 })
 
+  // Verify user is onboarded
+  const { data: broker } = await adminSupabase
+    .from('brokers')
+    .select('id, brokerage_id, role')
+    .eq('id', user.id)
+    .single()
+
+  if (!broker?.brokerage_id) return new NextResponse('Not onboarded', { status: 403 })
+
   const { data: loan } = await adminSupabase
     .from('loans')
     .select('*, clients(full_name, email, phone)')
@@ -18,6 +27,11 @@ export async function GET(req: NextRequest) {
     .single()
 
   if (!loan) return new NextResponse('Not found', { status: 404 })
+
+  // Verify loan belongs to this broker or their brokerage (admin)
+  const isOwner = loan.broker_id === user.id
+  const isTeamAdmin = broker.role === 'admin' && loan.brokerage_id === broker.brokerage_id
+  if (!isOwner && !isTeamAdmin) return new NextResponse('Forbidden', { status: 403 })
 
   const client = loan.clients as { full_name?: string; email?: string; phone?: string } | null
   const nameParts = (client?.full_name ?? '').split(' ')

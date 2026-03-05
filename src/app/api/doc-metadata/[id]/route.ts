@@ -12,6 +12,23 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const body = await req.json()
   const { doc_type, date_range_start, date_range_end, borrower_type } = body
 
+  // Verify document request belongs to this broker's client
+  const { data: docReq } = await adminSupabase
+    .from('document_requests')
+    .select('id, client_id, clients(broker_id, brokerage_id)')
+    .eq('id', id)
+    .single()
+
+  if (!docReq) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+
+  const clientData = docReq.clients as any
+  const { data: broker } = await adminSupabase.from('brokers').select('id, brokerage_id, role').eq('id', user.id).single()
+  if (!broker?.brokerage_id) return NextResponse.json({ error: 'Not onboarded' }, { status: 403 })
+
+  const isOwner = clientData?.broker_id === user.id
+  const isTeamAdmin = broker.role === 'admin' && clientData?.brokerage_id === broker.brokerage_id
+  if (!isOwner && !isTeamAdmin) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+
   const { data, error } = await adminSupabase
     .from('document_requests')
     .update({

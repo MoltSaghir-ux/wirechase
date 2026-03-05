@@ -17,10 +17,11 @@ const STAGE_COLORS: Record<string, string> = {
   application: 'bg-gray-100 text-gray-600',
   processing: 'bg-blue-100 text-blue-700',
   submitted_uw: 'bg-purple-100 text-purple-700',
-  conditional_approval: 'bg-yellow-100 text-yellow-700',
+  conditional_approval: 'bg-amber-100 text-amber-700',
   clear_to_close: 'bg-emerald-100 text-emerald-700',
   closing: 'bg-teal-100 text-teal-700',
   funded: 'bg-green-100 text-green-700',
+  denied: 'bg-red-100 text-red-700',
 }
 const STAGE_LABELS: Record<string, string> = {
   application: 'Application',
@@ -30,6 +31,7 @@ const STAGE_LABELS: Record<string, string> = {
   clear_to_close: 'CTC',
   closing: 'Closing',
   funded: 'Funded',
+  denied: 'Denied',
 }
 
 const adminSupabase = createAdminSupabaseClient()
@@ -161,7 +163,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
             <Link
               key={stat.label}
               href={stat.filter ? `/broker/dashboard?filter=${stat.filter}` : '/broker/dashboard'}
-              className={`bg-white rounded-2xl border shadow-sm px-5 py-4 transition hover:shadow-md ${
+              className={`bg-gradient-to-br from-white to-blue-50/40 rounded-2xl border shadow-sm px-5 py-4 transition hover:shadow-md hover:-translate-y-0.5 ${
                 stat.filter && filter === stat.filter ? 'border-blue-300 ring-2 ring-blue-100' : 'border-gray-100'
               }`}
             >
@@ -231,7 +233,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                   const openConds = openConditionsByClient[client.id] ?? 0
 
                   return (
-                    <Link key={client.id} href={`/broker/clients/${client.id}`} className="grid grid-cols-12 items-center px-6 py-4 hover:bg-gray-50/80 transition">
+                    <Link key={client.id} href={`/broker/clients/${client.id}`} className="grid grid-cols-12 items-center px-6 py-4 hover:bg-blue-50/30 transition">
                       <div className="col-span-4 flex items-center gap-3">
                         <div className="w-9 h-9 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
                           <span className="text-white text-xs font-bold">

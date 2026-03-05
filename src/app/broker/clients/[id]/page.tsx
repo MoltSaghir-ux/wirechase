@@ -17,6 +17,14 @@ import { LOAN_TYPE_LABELS, LOAN_PURPOSE_LABELS, EMPLOYMENT_TYPE_LABELS, PROPERTY
 
 type DisplayDocument = { id: string; file_name: string; file_size: number | null; uploaded_at: string; document_request_id: string }
 
+function relativeTime(dateStr: string) {
+  const diff = Date.now() - new Date(dateStr).getTime()
+  const days = Math.floor(diff / 86400000)
+  if (days === 0) return 'Today'
+  if (days === 1) return 'Yesterday'
+  return `${days} days ago`
+}
+
 function getDocExpiryDays(label: string): number {
   const l = label.toLowerCase()
   if (l.includes('pay stub') || l.includes('paystub')) return 30
@@ -118,6 +126,19 @@ export default async function ClientDetailPage({ params, searchParams }: {
           <span className="text-gray-700 font-medium">{client.full_name}</span>
         </div>
 
+        {/* Rate lock expiry amber banner */}
+        {loan?.rate_lock_expiry && new Date(loan.rate_lock_expiry) < new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) && (
+          <div className="bg-amber-50 border border-amber-200 rounded-2xl px-5 py-3.5 mb-4 flex items-center gap-3">
+            <span className="text-xl flex-shrink-0">⚠️</span>
+            <div>
+              <p className="text-sm font-semibold text-amber-800">Rate Lock Expiring Soon</p>
+              <p className="text-xs text-amber-600 mt-0.5">
+                Rate lock expires {new Date(loan.rate_lock_expiry).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })} — take action now to avoid repricing.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Header card */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-6">
           <div className="flex items-start justify-between">
@@ -199,7 +220,7 @@ export default async function ClientDetailPage({ params, searchParams }: {
         </div>
 
         {/* Tab nav */}
-        <div className="flex items-center gap-1 mb-5 bg-white rounded-2xl border border-gray-100 shadow-sm p-1.5">
+        <div className="flex items-center mb-5 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
           {[
             { key: 'overview', label: 'Overview', icon: '📋', badge: null },
             { key: 'documents', label: 'Documents', icon: '📄', badge: docs.length - uploaded > 0 ? docs.length - uploaded : null },
@@ -209,16 +230,16 @@ export default async function ClientDetailPage({ params, searchParams }: {
             <Link
               key={t.key}
               href={`/broker/clients/${client.id}?tab=${t.key}`}
-              className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition flex-1 justify-center ${
+              className={`flex items-center gap-1.5 px-4 py-3 text-sm transition flex-1 justify-center border-b-2 ${
                 activeTab === t.key
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                  ? 'border-blue-600 text-blue-600 font-semibold bg-blue-50/40'
+                  : 'border-transparent text-gray-500 font-medium hover:text-gray-700 hover:bg-gray-50'
               }`}
             >
               <span>{t.icon}</span>
               <span>{t.label}</span>
               {t.badge && t.badge > 0 && (
-                <span className={`text-xs font-bold px-1.5 py-0.5 rounded-full ${activeTab === t.key ? 'bg-white/20 text-white' : 'bg-red-100 text-red-600'}`}>
+                <span className={`text-xs font-bold px-1.5 py-0.5 rounded-full ${activeTab === t.key ? 'bg-blue-100 text-blue-700' : 'bg-red-100 text-red-600'}`}>
                   {t.badge}
                 </span>
               )}
@@ -431,7 +452,7 @@ export default async function ClientDetailPage({ params, searchParams }: {
                                           <p className="text-xs font-medium text-gray-700 truncate">{file.file_name}</p>
                                           <p className="text-xs text-gray-400">
                                             {file.file_size ? `${(file.file_size / 1024).toFixed(0)} KB · ` : ''}
-                                            {new Date(file.uploaded_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                            {relativeTime(file.uploaded_at)}
                                           </p>
                                           {(() => {
                                             if (doc.status !== 'approved' && doc.status !== 'uploaded') return null

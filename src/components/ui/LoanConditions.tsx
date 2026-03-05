@@ -32,12 +32,12 @@ const CATEGORY_COLORS: Record<string, string> = {
   Other:     'bg-gray-100 text-gray-600',
 }
 
-const STATUS_CONFIG: Record<ConditionStatus, { label: string; color: string; next: ConditionStatus | null; nextLabel: string | null }> = {
-  open:      { label: 'Open',      color: 'bg-red-100 text-red-700',       next: 'requested', nextLabel: 'Request from Client' },
-  requested: { label: 'Requested', color: 'bg-yellow-100 text-yellow-700', next: 'received',  nextLabel: 'Mark Received' },
-  received:  { label: 'Received',  color: 'bg-blue-100 text-blue-700',     next: 'submitted', nextLabel: 'Mark Submitted' },
-  submitted: { label: 'Submitted', color: 'bg-purple-100 text-purple-700', next: 'cleared',   nextLabel: 'Mark Cleared' },
-  cleared:   { label: 'Cleared',   color: 'bg-green-100 text-green-700',   next: null,        nextLabel: null },
+const STATUS_CONFIG: Record<ConditionStatus, { label: string; color: string; dot: string; next: ConditionStatus | null; nextLabel: string | null }> = {
+  open:      { label: 'Open',      color: 'bg-gray-100 text-gray-600',     dot: 'bg-gray-400',   next: 'requested', nextLabel: 'Request from Client' },
+  requested: { label: 'Requested', color: 'bg-blue-100 text-blue-700',     dot: 'bg-blue-500',   next: 'received',  nextLabel: 'Mark Received' },
+  received:  { label: 'Received',  color: 'bg-amber-100 text-amber-700',   dot: 'bg-amber-500',  next: 'submitted', nextLabel: 'Mark Submitted' },
+  submitted: { label: 'Submitted', color: 'bg-purple-100 text-purple-700', dot: 'bg-purple-500', next: 'cleared',   nextLabel: 'Mark Cleared' },
+  cleared:   { label: 'Cleared',   color: 'bg-green-100 text-green-700',   dot: 'bg-green-500',  next: null,        nextLabel: null },
 }
 
 export default function LoanConditions({ loanId, clientId }: { loanId: string; clientId: string }) {
@@ -133,11 +133,18 @@ export default function LoanConditions({ loanId, clientId }: { loanId: string; c
         <div className="flex items-center gap-3">
           <h3 className="font-semibold text-gray-800 text-sm">UW Conditions</h3>
           <div className="flex items-center gap-1.5">
+            {total > 0 && (
+              <span className="text-xs bg-gray-100 text-gray-600 font-semibold px-2 py-0.5 rounded-full">{total} total</span>
+            )}
             {open > 0 && (
-              <span className="text-xs bg-red-100 text-red-700 font-semibold px-2 py-0.5 rounded-full">{open} open</span>
+              <span className="text-xs bg-gray-100 text-gray-600 font-semibold px-2 py-0.5 rounded-full flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-gray-400 inline-block" />{open} open
+              </span>
             )}
             {cleared > 0 && (
-              <span className="text-xs bg-green-100 text-green-700 font-semibold px-2 py-0.5 rounded-full">{cleared} cleared</span>
+              <span className="text-xs bg-green-100 text-green-700 font-semibold px-2 py-0.5 rounded-full flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />{cleared} cleared
+              </span>
             )}
             {total === 0 && (
               <span className="text-xs text-gray-400">No conditions yet</span>
@@ -242,7 +249,9 @@ export default function LoanConditions({ loanId, clientId }: { loanId: string; c
                     </p>
                     {/* Timestamps */}
                     <div className="flex items-center gap-3 mt-1.5 flex-wrap">
-                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${cfg.color}`}>{cfg.label}</span>
+                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center gap-1 ${cfg.color}`}>
+                        <span className={`w-1.5 h-1.5 rounded-full inline-block flex-shrink-0 ${cfg.dot}`} />{cfg.label}
+                      </span>
                       {days > 0 && c.status !== 'cleared' && (
                         <span className={`text-[10px] ${days >= 14 ? 'text-red-400 font-semibold' : days >= 7 ? 'text-amber-500' : 'text-gray-400'}`}>
                           {days}d open{days >= 14 ? ' ⚠️' : ''}

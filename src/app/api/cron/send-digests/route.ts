@@ -8,9 +8,9 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 const BATCH_WINDOW_MS = 5 * 60 * 1000 // 5 minutes — wait this long after first upload before sending
 
 export async function GET(req: NextRequest) {
-  // Verify cron secret so only Vercel (or us) can trigger this
-  const secret = req.nextUrl.searchParams.get('secret')
-  if (secret !== process.env.CRON_SECRET) {
+  // Verify cron secret via Authorization header (consistent with deadline-reminders)
+  const auth = req.headers.get('authorization')
+  if (!process.env.CRON_SECRET || auth !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

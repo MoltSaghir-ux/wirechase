@@ -108,10 +108,10 @@ export default async function BorrowerStatusPage({ params }: { params: Promise<{
                 const isComplete = i < currentStageIdx
                 const isCurrent = i === currentStageIdx
                 return (
-                  <div key={stage.key} className={`flex items-start gap-3 p-3 rounded-xl transition ${isCurrent ? 'bg-blue-50 border border-blue-100' : ''}`}>
+                  <div key={stage.key} className={`flex items-start gap-3 p-3 rounded-xl transition ${isCurrent ? 'bg-blue-600/5 border border-blue-200 shadow-sm' : ''}`}>
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold ${
                       isComplete ? 'bg-green-500 text-white' :
-                      isCurrent ? 'bg-blue-600 text-white shadow-md' :
+                      isCurrent ? 'bg-blue-700 text-white shadow-lg shadow-blue-200' :
                       'bg-gray-100 text-gray-400'
                     }`}>
                       {isComplete ? '✓' : isCurrent ? stage.icon : <span className="text-xs">{i + 1}</span>}
@@ -146,8 +146,14 @@ export default async function BorrowerStatusPage({ params }: { params: Promise<{
             <span className="text-xs text-gray-400">{approvedDocs}/{totalDocs} approved</span>
           </div>
 
-          <div className="w-full bg-gray-100 rounded-full h-2 mb-4">
-            <div className="bg-blue-500 h-2 rounded-full transition-all" style={{ width: `${pct}%` }} />
+          <div className="mb-4">
+            <div className="flex justify-between text-xs text-gray-400 mb-1.5">
+              <span>{uploadedDocs} of {totalDocs} submitted</span>
+              <span className="font-semibold text-blue-600">{pct}%</span>
+            </div>
+            <div className="w-full bg-gray-100 rounded-full h-2">
+              <div className="bg-blue-500 h-2 rounded-full transition-all" style={{ width: `${pct}%` }} />
+            </div>
           </div>
 
           {missingDocs.length > 0 && (
@@ -186,12 +192,21 @@ export default async function BorrowerStatusPage({ params }: { params: Promise<{
             </Link>
           )}
 
-          {missingDocs.length === 0 && (
+          {missingDocs.length === 0 && loan?.loan_stage === 'funded' && approvedDocs === totalDocs && totalDocs > 0 ? (
+            <div className="text-center py-6">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <span className="text-3xl">🏠</span>
+              </div>
+              <p className="text-green-700 font-bold text-lg">Congratulations!</p>
+              <p className="text-green-600 font-semibold text-sm mt-0.5">Your loan has been funded.</p>
+              <p className="text-gray-400 text-xs mt-1.5">Welcome home — all documents approved and funding complete.</p>
+            </div>
+          ) : missingDocs.length === 0 ? (
             <div className="text-center py-3">
               <p className="text-green-600 font-semibold text-sm">✓ All documents submitted!</p>
               <p className="text-gray-400 text-xs mt-0.5">We&apos;ll notify you if anything else is needed.</p>
             </div>
-          )}
+          ) : null}
         </div>
 
         {/* Footer */}

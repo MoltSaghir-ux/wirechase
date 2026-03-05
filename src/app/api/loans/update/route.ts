@@ -21,6 +21,28 @@ export async function PATCH(req: NextRequest) {
 
   if (!loanId) return NextResponse.json({ error: 'loanId required' }, { status: 400 })
 
+  // Verify ownership: loan must belong to the authenticated broker or their brokerage
+  const { data: broker } = await adminSupabase
+    .from('brokers')
+    .select('id, brokerage_id, role')
+    .eq('id', user.id)
+    .single()
+
+  if (!broker?.brokerage_id) return NextResponse.json({ error: 'Not onboarded' }, { status: 403 })
+
+  const { data: existingLoan } = await adminSupabase
+    .from('loans')
+    .select('id, broker_id, brokerage_id')
+    .eq('id', loanId)
+    .single()
+
+  if (!existingLoan) return NextResponse.json({ error: 'Loan not found' }, { status: 404 })
+
+  // Allow if direct broker, or if admin of the same brokerage
+  const isOwner = existingLoan.broker_id === user.id
+  const isTeamAdmin = broker.role === 'admin' && existingLoan.brokerage_id === broker.brokerage_id
+  if (!isOwner && !isTeamAdmin) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+
   const { data, error } = await adminSupabase
     .from('loans')
     .update({

@@ -19,6 +19,23 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const body = await req.json()
   const { status, notes } = body
 
+  // Verify condition belongs to this broker's loan/client
+  const { data: condition } = await adminSupabase
+    .from('loan_conditions')
+    .select('id, loan_id, loans(broker_id, brokerage_id)')
+    .eq('id', id)
+    .single()
+
+  if (!condition) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+
+  const loanData = condition.loans as any
+  const { data: broker } = await adminSupabase.from('brokers').select('id, brokerage_id, role').eq('id', user.id).single()
+  if (!broker?.brokerage_id) return NextResponse.json({ error: 'Not onboarded' }, { status: 403 })
+
+  const isOwner = loanData?.broker_id === user.id
+  const isTeamAdmin = broker.role === 'admin' && loanData?.brokerage_id === broker.brokerage_id
+  if (!isOwner && !isTeamAdmin) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+
   const updates: Record<string, unknown> = { updated_at: new Date().toISOString() }
   if (status) {
     updates.status = status
@@ -44,6 +61,23 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { id } = await params
+
+  // Verify condition belongs to this broker's loan
+  const { data: condition } = await adminSupabase
+    .from('loan_conditions')
+    .select('id, loan_id, loans(broker_id, brokerage_id)')
+    .eq('id', id)
+    .single()
+
+  if (!condition) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+
+  const loanData = condition.loans as any
+  const { data: broker } = await adminSupabase.from('brokers').select('id, brokerage_id, role').eq('id', user.id).single()
+  if (!broker?.brokerage_id) return NextResponse.json({ error: 'Not onboarded' }, { status: 403 })
+
+  const isOwner = loanData?.broker_id === user.id
+  const isTeamAdmin = broker.role === 'admin' && loanData?.brokerage_id === broker.brokerage_id
+  if (!isOwner && !isTeamAdmin) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const { error } = await adminSupabase
     .from('loan_conditions')

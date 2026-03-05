@@ -19,3 +19,12 @@
 - Commit: ac0cf4d
 
 - **Backend Engineer** | Pre-approval letter HTML generator API (`/api/loans/pre-approval`) + milestone email automations on stage change (`/api/loans/update-stage`) | commit `f66c77f`
+
+---
+## Full-Stack Engineer — Borrower-Facing Status Page
+**Commit:** 5dd0ec8
+**Date:** 2026-03-05
+
+### What was built
+- **`src/app/client/status/[token]/page.tsx`** — New server component at `/client/status/[token]`. Borrowers can check loan progress without logging in using their `invite_token`. Shows: 7-stage loan pipeline with current stage highlighted, document checklist (missing/under review/approved), progress bar, closing date, denied state, and link to upload portal.
+- **`src/app/broker/clients/[id]/page.tsx`** — Added status page link row below the existing invite link in the client header card. Includes copyable URL and Preview → link.

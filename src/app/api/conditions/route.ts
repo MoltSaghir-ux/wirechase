@@ -11,6 +11,17 @@ export async function GET(req: NextRequest) {
   const loanId = req.nextUrl.searchParams.get('loanId')
   if (!loanId) return NextResponse.json({ error: 'loanId required' }, { status: 400 })
 
+  // Verify loan belongs to this broker or their brokerage
+  const { data: broker } = await adminSupabase.from('brokers').select('id, brokerage_id, role').eq('id', user.id).single()
+  if (!broker?.brokerage_id) return NextResponse.json({ error: 'Not onboarded' }, { status: 403 })
+
+  const { data: loan } = await adminSupabase.from('loans').select('id, broker_id, brokerage_id').eq('id', loanId).single()
+  if (!loan) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+
+  const isOwner = loan.broker_id === user.id
+  const isTeamAdmin = broker.role === 'admin' && loan.brokerage_id === broker.brokerage_id
+  if (!isOwner && !isTeamAdmin) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+
   const { data, error } = await adminSupabase
     .from('loan_conditions')
     .select('*')
@@ -32,6 +43,17 @@ export async function POST(req: NextRequest) {
   if (!loanId || !clientId || !conditionText?.trim()) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
   }
+
+  // Verify loan ownership before inserting
+  const { data: broker } = await adminSupabase.from('brokers').select('id, brokerage_id, role').eq('id', user.id).single()
+  if (!broker?.brokerage_id) return NextResponse.json({ error: 'Not onboarded' }, { status: 403 })
+
+  const { data: loan } = await adminSupabase.from('loans').select('id, broker_id, brokerage_id').eq('id', loanId).single()
+  if (!loan) return NextResponse.json({ error: 'Loan not found' }, { status: 404 })
+
+  const isOwner = loan.broker_id === user.id
+  const isTeamAdmin = broker.role === 'admin' && loan.brokerage_id === broker.brokerage_id
+  if (!isOwner && !isTeamAdmin) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const { data, error } = await adminSupabase
     .from('loan_conditions')
