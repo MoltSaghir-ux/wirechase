@@ -1,5 +1,6 @@
 import { createServerSupabaseClient, createAdminSupabaseClient } from '@/lib/supabase-server'
 import { redirect } from 'next/navigation'
+import Nav from '@/components/ui/Nav'
 
 const adminSupabase = createAdminSupabaseClient()
 
@@ -88,6 +89,9 @@ export default async function ReportsPage() {
   ]
 
   return (
+    <div className="flex min-h-screen bg-[#f8fafc]">
+      <Nav email={user.email ?? ''} />
+      <main className="flex-1 overflow-auto">
     <div className="max-w-5xl mx-auto px-6 py-8 space-y-8">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Reports &amp; Analytics</h1>
@@ -201,6 +205,8 @@ export default async function ReportsPage() {
           </div>
         )}
       </div>
+    </div>
+      </main>
     </div>
   )
 }

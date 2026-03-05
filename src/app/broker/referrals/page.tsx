@@ -20,9 +20,22 @@ export default async function ReferralsPage() {
 
   const { data: partners } = await adminSupabase
     .from('referral_partners')
-    .select('*, loans(id)')
+    .select('*')
     .eq('brokerage_id', broker.brokerage_id)
     .order('full_name')
+
+  // Count loans per partner separately (avoids FK relationship cache issues)
+  const { data: loanCounts } = await adminSupabase
+    .from('loans')
+    .select('referral_partner_id')
+    .eq('clients.brokerage_id', broker.brokerage_id)
+
+  const loanCountMap: Record<string, number> = {}
+  for (const l of loanCounts ?? []) {
+    if (l.referral_partner_id) {
+      loanCountMap[l.referral_partner_id] = (loanCountMap[l.referral_partner_id] ?? 0) + 1
+    }
+  }
 
   return (
     <div className="flex min-h-screen bg-[#f8fafc]">
@@ -68,7 +81,7 @@ export default async function ReferralsPage() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-2xl font-bold text-gray-900">{p.loans?.length ?? 0}</p>
+                    <p className="text-2xl font-bold text-gray-900">{loanCountMap[p.id] ?? 0}</p>
                     <p className="text-xs text-gray-400">loans referred</p>
                   </div>
                 </div>

@@ -1,6 +1,7 @@
 import { createServerSupabaseClient, createAdminSupabaseClient } from '@/lib/supabase-server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import Nav from '@/components/ui/Nav'
 
 const adminSupabase = createAdminSupabaseClient()
 
@@ -30,6 +31,9 @@ export default async function TasksPage() {
   const now = new Date()
 
   return (
+    <div className="flex min-h-screen bg-[#f8fafc]">
+      <Nav email={user.email ?? ''} />
+      <main className="flex-1 overflow-auto">
     <div className="max-w-4xl mx-auto px-6 py-8">
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -83,6 +87,8 @@ export default async function TasksPage() {
           })}
         </div>
       )}
+    </div>
+      </main>
     </div>
   )
 }
