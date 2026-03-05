@@ -178,6 +178,24 @@ export default async function ClientDetailPage({ params, searchParams }: {
             <code className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs text-gray-500 truncate min-w-0">{inviteLink}</code>
             <ResendEmailButton clientId={client.id} />
           </div>
+
+          {/* Status page link */}
+          <div className="mt-3 pt-3 border-t border-gray-100 flex items-center gap-3 flex-wrap">
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              <span className="text-xs text-gray-400 flex-shrink-0">Status page:</span>
+              <code className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-1.5 text-xs text-gray-500 truncate min-w-0">
+                {`${process.env.NEXT_PUBLIC_APP_URL}/client/status/${client.invite_token}`}
+              </code>
+            </div>
+            <a
+              href={`/client/status/${client.invite_token}`}
+              target="_blank"
+              rel="noreferrer"
+              className="text-xs bg-gray-50 border border-gray-200 text-gray-600 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition flex-shrink-0"
+            >
+              Preview →
+            </a>
+          </div>
         </div>
 
         {/* Tab nav */}
