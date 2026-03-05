@@ -23,7 +23,7 @@ import StackingOrder from '@/components/ui/StackingOrder'
 import type { DocumentRequest, ActivityEntry } from '@/lib/types'
 import { LOAN_TYPE_LABELS, LOAN_PURPOSE_LABELS, EMPLOYMENT_TYPE_LABELS, PROPERTY_TYPE_LABELS } from '@/lib/loan-doc-engine'
 
-type DisplayDocument = { id: string; file_name: string; file_size: number | null; uploaded_at: string; document_request_id: string }
+type DisplayDocument = { id: string; file_name: string; file_size: number | null; created_at: string; document_request_id: string }
 
 function relativeTime(dateStr: string) {
   const diff = Date.now() - new Date(dateStr).getTime()
@@ -89,7 +89,7 @@ export default async function ClientDetailPage({ params, searchParams }: {
   // Fetch uploaded documents via admin client (bypasses RLS gap on documents table)
   const docIds = client.document_requests.map((d: DocumentRequest) => d.id)
   const { data: allFiles } = docIds.length > 0
-    ? await adminSupabase.from('documents').select('id, file_name, file_size, uploaded_at, document_request_id').in('document_request_id', docIds)
+    ? await adminSupabase.from('documents').select('id, file_name, file_size, created_at, document_request_id').in('document_request_id', docIds)
     : { data: [] }
 
   // Group files by document_request_id
@@ -501,12 +501,12 @@ export default async function ClientDetailPage({ params, searchParams }: {
                                           <p className="text-xs font-medium text-gray-700 truncate">{file.file_name}</p>
                                           <p className="text-xs text-gray-400">
                                             {file.file_size ? `${(file.file_size / 1024).toFixed(0)} KB · ` : ''}
-                                            {relativeTime(file.uploaded_at)}
+                                            {relativeTime(file.created_at ?? "")}
                                           </p>
                                           {(() => {
                                             if (doc.status !== 'approved' && doc.status !== 'uploaded') return null
                                             const expiryDays = getDocExpiryDays(doc.label)
-                                            const uploadedAt = new Date(file.uploaded_at)
+                                            const uploadedAt = new Date(file.created_at)
                                             const expiresAt = new Date(uploadedAt.getTime() + expiryDays * 24 * 60 * 60 * 1000)
                                             const daysLeft = Math.ceil((expiresAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24))
                                             if (daysLeft > 30) return null
