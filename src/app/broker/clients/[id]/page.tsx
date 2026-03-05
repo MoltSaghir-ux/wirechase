@@ -11,6 +11,7 @@ import ActivityLog from '@/components/ui/ActivityLog'
 import LoanStageTracker from '@/components/ui/LoanStageTracker'
 import LoanConditions from '@/components/ui/LoanConditions'
 import ExportDropdown from '@/components/ui/ExportDropdown'
+import PreApprovalButton from '@/components/ui/PreApprovalButton'
 import type { DocumentRequest, ActivityEntry } from '@/lib/types'
 import { LOAN_TYPE_LABELS, LOAN_PURPOSE_LABELS, EMPLOYMENT_TYPE_LABELS, PROPERTY_TYPE_LABELS } from '@/lib/loan-doc-engine'
 
@@ -229,6 +230,14 @@ export default async function ClientDetailPage({ params, searchParams }: {
                       <span className="text-xs font-mono bg-gray-100 text-gray-500 px-2.5 py-1 rounded-lg">{loan.file_number}</span>
                     )}
                     <ExportDropdown loanId={loan.id} fileNumber={loan.file_number} />
+                    <PreApprovalButton
+                      loanId={loan.id}
+                      clientName={client.full_name}
+                      loanAmount={loan.loan_amount}
+                      purchasePrice={loan.purchase_price}
+                      loanType={loan.loan_type}
+                      loanPurpose={loan.loan_purpose}
+                    />
                   </div>
                 </div>
                 <div className="grid grid-cols-3 gap-x-6 gap-y-3 text-sm">
