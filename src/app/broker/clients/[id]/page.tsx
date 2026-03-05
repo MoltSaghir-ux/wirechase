@@ -289,6 +289,7 @@ export default async function ClientDetailPage({ params, searchParams }: {
                       purchasePrice={loan.purchase_price}
                       loanType={loan.loan_type}
                       loanPurpose={loan.loan_purpose}
+                      propertyAddress={loan.property_address}
                     />
                   </div>
                 </div>
