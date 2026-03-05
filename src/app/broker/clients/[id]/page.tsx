@@ -10,9 +10,13 @@ import ClientNotes from '@/components/ui/ClientNotes'
 import ActivityLog from '@/components/ui/ActivityLog'
 import LoanStageTracker from '@/components/ui/LoanStageTracker'
 import LoanConditions from '@/components/ui/LoanConditions'
+import LoanTasks from '@/components/ui/LoanTasks'
 import ExportDropdown from '@/components/ui/ExportDropdown'
 import ReferralPartnerPanel from '@/components/ui/ReferralPartnerPanel'
 import PreApprovalButton from '@/components/ui/PreApprovalButton'
+import BulkApproveButton from '@/components/ui/BulkApproveButton'
+import LOERequestButton from '@/components/ui/LOERequestButton'
+import StackingOrder from '@/components/ui/StackingOrder'
 import type { DocumentRequest, ActivityEntry } from '@/lib/types'
 import { LOAN_TYPE_LABELS, LOAN_PURPOSE_LABELS, EMPLOYMENT_TYPE_LABELS, PROPERTY_TYPE_LABELS } from '@/lib/loan-doc-engine'
 
@@ -351,6 +355,16 @@ export default async function ClientDetailPage({ params, searchParams }: {
                   )}
                 </div>
 
+                {/* Referral Partner section */}
+                <div className="mt-4 pt-4 border-t border-gray-100">
+                  <ReferralPartnerPanel
+                    loanId={loan.id}
+                    currentPartnerId={(loan as any).referral_partner_id ?? null}
+                    currentPartnerName={(loan as any).referral_partners?.full_name ?? null}
+                    referralNotes={(loan as any).referral_notes ?? null}
+                  />
+                </div>
+
                 {/* Co-borrower section */}
                 {loan.co_borrower && loan.co_borrower_name && (
                   <div className="mt-4 pt-4 border-t border-gray-100">
@@ -392,6 +406,19 @@ export default async function ClientDetailPage({ params, searchParams }: {
               <h3 className="font-semibold text-gray-800">Document Checklist</h3>
               <AddDocDropdown clientId={client.id} existingLabels={existingLabels} />
             </div>
+
+            {(() => {
+              const uploadedDocIds = docs.filter((d: DocumentRequest) => d.status === 'uploaded').map((d: DocumentRequest) => d.id)
+              return (
+                <div className="flex items-center gap-2 flex-wrap mb-4">
+                  {uploadedDocIds.length > 0 && (
+                    <BulkApproveButton docIds={uploadedDocIds} onDone={() => { if (typeof window !== 'undefined') window.location.reload() }} />
+                  )}
+                  <LOERequestButton clientId={client.id} loanId={loan?.id} />
+                  <StackingOrder docs={docs.map((d: DocumentRequest) => ({ id: d.id, label: d.label, status: d.status, doc_type: (d as any).doc_type }))} />
+                </div>
+              )
+            })()}
 
             <div className="space-y-4">
               {categories.map((cat: string) => {
@@ -513,9 +540,14 @@ export default async function ClientDetailPage({ params, searchParams }: {
 
         {/* Notes & Activity Tab */}
         {activeTab === 'notes' && (
-          <div className="grid grid-cols-2 gap-4">
-            <ClientNotes clientId={client.id} />
-            <ActivityLog activities={activities ?? []} />
+          <div className="space-y-4">
+            {loan && (
+              <LoanTasks loanId={loan.id} clientId={client.id} />
+            )}
+            <div className="grid grid-cols-2 gap-4">
+              <ClientNotes clientId={client.id} />
+              <ActivityLog activities={activities ?? []} />
+            </div>
           </div>
         )}
       </main>
