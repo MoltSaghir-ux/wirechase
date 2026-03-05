@@ -106,8 +106,8 @@ export default async function ReportsPage() {
   return (
     <div className="flex min-h-screen bg-[#f8fafc]">
       <Nav email={user.email ?? ''} />
-      <main className="flex-1 overflow-auto">
-    <div className="max-w-5xl mx-auto px-6 py-8 space-y-8">
+      <main className="flex-1 overflow-auto pt-[52px] lg:pt-0">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-8">
       <div className="flex items-start justify-between">
         <div>
           <div className="flex items-center gap-2">

@@ -41,9 +41,9 @@ export default async function TasksPage() {
   return (
     <div className="flex min-h-screen bg-[#f8fafc]">
       <Nav email={user.email ?? ''} />
-      <main className="flex-1 overflow-auto">
-    <div className="max-w-4xl mx-auto px-6 py-8">
-      <div className="flex items-center justify-between mb-6">
+      <main className="flex-1 overflow-auto pt-[52px] lg:pt-0">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+      <div className="flex items-center justify-between mb-6 flex-wrap gap-2">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Team Tasks</h1>
           <p className="text-sm text-gray-400 mt-0.5">{isAdmin ? 'All open tasks across your brokerage pipeline.' : 'Your assigned and created tasks.'}</p>

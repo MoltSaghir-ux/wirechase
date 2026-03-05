@@ -124,7 +124,7 @@ export default async function ClientDetailPage({ params, searchParams }: {
     <div className="flex min-h-screen bg-[#f8fafc]">
       <Nav email={user.email ?? ''} />
 
-      <main className="flex-1 px-8 py-8 max-w-4xl">
+      <main className="flex-1 px-4 sm:px-8 py-8 pt-[72px] lg:pt-8 max-w-4xl w-full">
         <div className="flex items-center gap-2 text-sm text-gray-400 mb-6">
           <Link href="/broker/dashboard" className="hover:text-blue-600 transition">Dashboard</Link>
           <span>/</span>
@@ -133,8 +133,8 @@ export default async function ClientDetailPage({ params, searchParams }: {
 
         {/* Rate lock expiry amber banner */}
         {loan?.rate_lock_expiry && new Date(loan.rate_lock_expiry) < new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) && (
-          <div className="bg-amber-50 border border-amber-200 rounded-2xl px-5 py-3.5 mb-4 flex items-center gap-3">
-            <span className="text-xl flex-shrink-0">⚠️</span>
+          <div className="bg-amber-50 border border-amber-200 rounded-2xl px-4 py-3 mb-4 flex items-start gap-3">
+            <span className="text-xl flex-shrink-0 mt-0.5">⚠️</span>
             <div>
               <p className="text-sm font-semibold text-amber-800">Rate Lock Expiring Soon</p>
               <p className="text-xs text-amber-600 mt-0.5">
@@ -145,8 +145,8 @@ export default async function ClientDetailPage({ params, searchParams }: {
         )}
 
         {/* Header card */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-6">
-          <div className="flex items-start justify-between">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 sm:p-6 mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-sm">
                 <span className="text-white font-bold text-sm">
@@ -200,7 +200,7 @@ export default async function ClientDetailPage({ params, searchParams }: {
             </div>
           </div>
 
-          <div className="mt-5 pt-5 border-t border-gray-100 flex items-center gap-3 flex-wrap">
+          <div className="mt-5 pt-5 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center gap-3">
             <code className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs text-gray-500 truncate min-w-0">{inviteLink}</code>
             <ResendEmailButton clientId={client.id} />
           </div>
@@ -225,7 +225,7 @@ export default async function ClientDetailPage({ params, searchParams }: {
         </div>
 
         {/* Tab nav */}
-        <div className="flex items-center mb-5 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="flex items-center mb-5 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-x-auto whitespace-nowrap">
           {[
             { key: 'overview', label: 'Overview', icon: '📋', badge: null },
             { key: 'documents', label: 'Documents', icon: '📄', badge: docs.length - uploaded > 0 ? docs.length - uploaded : null },
@@ -284,7 +284,7 @@ export default async function ClientDetailPage({ params, searchParams }: {
                     />
                   </div>
                 </div>
-                <div className="grid grid-cols-3 gap-x-6 gap-y-3 text-sm">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-3 text-sm">
                   <div>
                     <p className="text-xs text-gray-400">Loan Type</p>
                     <p className="font-semibold text-gray-800 mt-0.5">{LOAN_TYPE_LABELS[loan.loan_type as keyof typeof LOAN_TYPE_LABELS] ?? loan.loan_type}</p>
@@ -544,7 +544,7 @@ export default async function ClientDetailPage({ params, searchParams }: {
             {loan && (
               <LoanTasks loanId={loan.id} clientId={client.id} />
             )}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <ClientNotes clientId={client.id} />
               <ActivityLog activities={activities ?? []} />
             </div>

@@ -64,9 +64,9 @@ export default async function ReferralsPage() {
   return (
     <div className="flex min-h-screen bg-[#f8fafc]">
       <Nav email={user.email ?? ''} />
-      <main className="flex-1">
-        <div className="max-w-4xl mx-auto px-6 py-8">
-          <div className="flex items-center justify-between mb-6">
+      <main className="flex-1 pt-[52px] lg:pt-0">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+          <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Referral Partners</h1>
               <p className="text-sm text-gray-400 mt-0.5">{isAdmin ? 'Realtors, builders, and other partners who refer loans to your brokerage.' : 'Partners associated with your submitted loans.'}</p>
@@ -94,9 +94,9 @@ export default async function ReferralsPage() {
           ) : (
             <div className="space-y-3">
               {partners.map((p: any) => (
-                <div key={p.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-center justify-between hover:shadow-md transition">
-                  <div>
-                    <div className="flex items-center gap-2">
+                <div key={p.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 hover:shadow-md transition">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <p className="font-semibold text-gray-900">{p.full_name}</p>
                       <span className="text-xs bg-blue-50 text-blue-600 font-semibold px-2 py-0.5 rounded-full">
                         {TYPE_LABELS[p.partner_type] ?? p.partner_type}
@@ -107,8 +107,12 @@ export default async function ReferralsPage() {
                       {p.email && <span className="text-xs text-gray-400">{p.email}</span>}
                       {p.phone && <span className="text-xs text-gray-400">{p.phone}</span>}
                     </div>
+                    <div className="sm:hidden mt-2">
+                      <span className="text-lg font-bold text-gray-900">{loanCountMap[p.id] ?? 0}</span>
+                      <span className="text-xs text-gray-400 ml-1">loans referred</span>
+                    </div>
                   </div>
-                  <div className="text-right">
+                  <div className="text-right hidden sm:block">
                     <p className="text-2xl font-bold text-gray-900">{loanCountMap[p.id] ?? 0}</p>
                     <p className="text-xs text-gray-400">loans referred</p>
                   </div>

@@ -140,7 +140,7 @@ export default function ClientUploadPage({ params }: { params: Promise<{ token: 
         const brokerName = broker?.full_name
         const initials = displayName.slice(0, 2).toUpperCase()
         return (
-          <header className="bg-[#0f172a] px-6 py-4 flex items-center justify-between">
+          <header className="bg-[#0f172a] px-4 py-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
                 <span className="text-white text-xs font-bold">{initials}</span>
@@ -161,7 +161,7 @@ export default function ClientUploadPage({ params }: { params: Promise<{ token: 
         )
       })()}
 
-      <main className="max-w-xl mx-auto px-4 py-8">
+      <main className="max-w-xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Greeting */}
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-gray-900">Hi, {client?.full_name} 👋</h2>
@@ -196,12 +196,12 @@ export default function ClientUploadPage({ params }: { params: Promise<{ token: 
               <div className="divide-y divide-gray-50">
                 {docs.filter(d => (d.category ?? 'Documents') === cat).map(doc => (
                   <div key={doc.id} className="p-4">
-                    <div className="flex items-center justify-between mb-3">
-                      <div>
-                        <p className="font-medium text-gray-800 text-sm">{doc.label}</p>
+                    <div className="flex items-start justify-between mb-3 gap-2">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-gray-800 text-sm truncate">{doc.label}</p>
                         {doc.required && <span className="text-xs text-red-400">Required</span>}
                       </div>
-                      <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
+                      <span className={`text-xs px-2.5 py-1 rounded-full font-medium flex-shrink-0 ${
                         doc.status === 'approved' ? 'bg-green-100 text-green-700' :
                         doc.status === 'uploaded' ? 'bg-blue-100 text-blue-700' :
                         doc.status === 'rejected' ? 'bg-red-100 text-red-600' :
@@ -215,7 +215,7 @@ export default function ClientUploadPage({ params }: { params: Promise<{ token: 
                     </div>
 
                     {(doc.status === 'missing' || doc.status === 'rejected') ? (
-                      <label className={`flex items-center justify-center gap-2 w-full border-2 border-dashed border-gray-200 rounded-xl p-3 text-sm text-gray-400 cursor-pointer hover:border-blue-400 hover:text-blue-500 hover:bg-blue-50 transition ${uploading === doc.id ? 'opacity-50 pointer-events-none' : ''}`}>
+                      <label className={`flex items-center justify-center gap-2 w-full border-2 border-dashed border-gray-200 rounded-xl py-4 px-3 text-sm text-gray-400 cursor-pointer hover:border-blue-400 hover:text-blue-500 hover:bg-blue-50 transition min-h-[52px] ${uploading === doc.id ? 'opacity-50 pointer-events-none' : ''}`}>
                         <input
                           type="file"
                           className="hidden"

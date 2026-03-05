@@ -121,8 +121,8 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
     <div className="flex min-h-screen bg-[#f8fafc]">
       <Nav email={user.email ?? ''} />
 
-      <main className="flex-1 px-8 py-8">
-        <div className="flex items-center justify-between mb-8">
+      <main className="flex-1 px-4 sm:px-8 py-8 pt-[72px] lg:pt-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Dashboard</h2>
             <p className="text-gray-400 text-sm mt-0.5">
@@ -133,7 +133,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
               </span>
             </p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
             <Suspense fallback={null}>
               <DashboardSearch defaultValue={q ?? ''} />
             </Suspense>
@@ -150,15 +150,15 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
               >
                 ⊞
               </Link>
+              <Link href="/broker/loans/new" className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-700 transition shadow-sm">
+                <span className="text-base leading-none">+</span> Add Client
+              </Link>
             </div>
-            <Link href="/broker/loans/new" className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-700 transition shadow-sm">
-              <span className="text-base leading-none">+</span> Add Client
-            </Link>
           </div>
         </div>
 
         {/* Clickable stat cards */}
-        <div className="grid grid-cols-3 md:grid-cols-5 gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
           {stats.map(stat => (
             <Link
               key={stat.label}
@@ -213,7 +213,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
               </div>
             ) : filtered.length > 0 ? (
               <div className="divide-y divide-gray-50">
-                <div className="grid grid-cols-12 px-6 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wide border-b border-gray-50">
+                <div className="hidden md:grid grid-cols-12 px-6 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wide border-b border-gray-50">
                   <span className="col-span-4">Client</span>
                   <span className="col-span-2">Stage</span>
                   <span className="col-span-3">Progress</span>
@@ -233,49 +233,52 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                   const openConds = openConditionsByClient[client.id] ?? 0
 
                   return (
-                    <Link key={client.id} href={`/broker/clients/${client.id}`} className="grid grid-cols-12 items-center px-6 py-4 hover:bg-blue-50/30 transition">
-                      <div className="col-span-4 flex items-center gap-3">
+                    <Link key={client.id} href={`/broker/clients/${client.id}`} className="flex flex-col md:grid md:grid-cols-12 md:items-center px-4 md:px-6 py-4 hover:bg-blue-50/30 transition gap-2 md:gap-0">
+                      <div className="md:col-span-4 flex items-center gap-3">
                         <div className="w-9 h-9 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
                           <span className="text-white text-xs font-bold">
                             {client.full_name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
                           </span>
                         </div>
-                        <div>
-                          <p className="font-semibold text-gray-900 text-sm">{client.full_name}</p>
-                          <p className="text-xs text-gray-400">{client.email}</p>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-gray-900 text-sm truncate">{client.full_name}</p>
+                          <p className="text-xs text-gray-400 truncate hidden sm:block">{client.email}</p>
                         </div>
-                        <span className="text-xs text-gray-300 ml-1">{daysAgo}d</span>
+                        <span className="text-xs text-gray-300 ml-1 hidden md:inline">{daysAgo}d</span>
                       </div>
 
-                      <div className="col-span-2">
-                        <span className={`inline-flex text-xs px-2 py-0.5 rounded-full font-medium ${stageColor}`}>
-                          {stageLabel}
-                        </span>
-                      </div>
-
-                      <div className="col-span-3 pr-6">
-                        <div className="w-full bg-gray-100 rounded-full h-1.5">
-                          <div className="bg-blue-500 h-1.5 rounded-full" style={{ width: `${pct}%` }} />
-                        </div>
-                        <p className="text-xs text-gray-400 mt-1">{pct}% uploaded</p>
-                      </div>
-
-                      <div className="col-span-1">
-                        {openConds > 0 && (
-                          <span className="inline-flex text-xs bg-red-100 text-red-600 font-bold px-2 py-0.5 rounded-full">
-                            {openConds}
+                      {/* Mobile: stage + progress inline */}
+                      <div className="flex items-center gap-3 md:contents">
+                        <div className="md:col-span-2">
+                          <span className={`inline-flex text-xs px-2 py-0.5 rounded-full font-medium ${stageColor}`}>
+                            {stageLabel}
                           </span>
-                        )}
-                      </div>
+                        </div>
 
-                      <div className="col-span-2">
-                        <span className={`inline-flex text-xs px-2.5 py-1 rounded-full font-medium capitalize ${
-                          client.status === 'complete' ? 'bg-green-100 text-green-700' :
-                          client.status === 'in_progress' ? 'bg-blue-100 text-blue-700' :
-                          'bg-gray-100 text-gray-500'
-                        }`}>
-                          {client.status.replace('_', ' ')}
-                        </span>
+                        <div className="flex-1 md:col-span-3 md:pr-6">
+                          <div className="w-full bg-gray-100 rounded-full h-1.5">
+                            <div className="bg-blue-500 h-1.5 rounded-full" style={{ width: `${pct}%` }} />
+                          </div>
+                          <p className="text-xs text-gray-400 mt-1">{pct}%</p>
+                        </div>
+
+                        <div className="md:col-span-1">
+                          {openConds > 0 && (
+                            <span className="inline-flex text-xs bg-red-100 text-red-600 font-bold px-2 py-0.5 rounded-full">
+                              {openConds}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="md:col-span-2 hidden md:block">
+                          <span className={`inline-flex text-xs px-2.5 py-1 rounded-full font-medium capitalize ${
+                            client.status === 'complete' ? 'bg-green-100 text-green-700' :
+                            client.status === 'in_progress' ? 'bg-blue-100 text-blue-700' :
+                            'bg-gray-100 text-gray-500'
+                          }`}>
+                            {client.status.replace('_', ' ')}
+                          </span>
+                        </div>
                       </div>
                     </Link>
                   )

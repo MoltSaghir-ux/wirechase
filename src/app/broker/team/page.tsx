@@ -40,8 +40,8 @@ export default async function TeamPage() {
     return (
       <div className="flex min-h-screen bg-[#f8fafc]">
         <Nav email={user.email ?? ''} />
-        <main className="flex-1 overflow-auto">
-          <div className="max-w-3xl mx-auto px-6 py-8">
+        <main className="flex-1 overflow-auto pt-[52px] lg:pt-0">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
             <div className="mb-6">
               <h1 className="text-2xl font-bold text-gray-900">Team</h1>
               <p className="text-sm text-gray-400 mt-0.5">Your brokerage and team members.</p>
@@ -119,7 +119,7 @@ export default async function TeamPage() {
   return (
     <div className="flex min-h-screen bg-[#f8fafc]">
       <Nav email={user.email ?? ''} />
-      <main className="flex-1 px-8 py-8 max-w-3xl">
+      <main className="flex-1 px-4 sm:px-8 py-8 pt-[72px] lg:pt-8 max-w-3xl w-full">
         <div className="mb-7">
           <h2 className="text-2xl font-bold text-gray-900">{brokerage.name}</h2>
           <p className="text-gray-400 text-sm mt-0.5">

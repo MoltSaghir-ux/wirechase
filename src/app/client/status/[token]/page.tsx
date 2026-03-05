@@ -69,7 +69,7 @@ export default async function BorrowerStatusPage({ params }: { params: Promise<{
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-6 py-8 space-y-5">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-5">
         {/* Welcome card */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
           <h1 className="text-xl font-bold text-gray-900">Hi, {client.full_name.split(' ')[0]}! 👋</h1>
